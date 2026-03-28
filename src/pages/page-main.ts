@@ -25,7 +25,7 @@ declare global {
 export class PageMain extends PageElement {
 	render() {
 		return html`<!---->
-			<div class="p-4">
+			<div class="p-4 text-xl">
 				${store.input.split('\n').map((line) => {
 					return html`<!-- -->
 						<div>
