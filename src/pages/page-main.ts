@@ -18,8 +18,8 @@ declare global {
 	}
 
 	.letter[highlight1] {
-		background-color: yellow;
-		color: black;
+		background-color: var(--md-sys-color-primary-container);
+		color: var(--md-sys-color-on-primary-container);
 	}
 `)
 export class PageMain extends PageElement {
