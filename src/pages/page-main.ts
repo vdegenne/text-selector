@@ -19,13 +19,15 @@ declare global {
 
 	.letter[highlight1] {
 		background-color: var(--md-sys-color-primary-container);
+		background-color: #caca00;
 		color: var(--md-sys-color-on-primary-container);
+		color: #ff0000;
 	}
 `)
 export class PageMain extends PageElement {
 	render() {
 		return html`<!---->
-			<div class="p-4 text-xl">
+			<div class="p-4 text-2xl">
 				${store.input.split('\n').map((line) => {
 					return html`<!-- -->
 						<div>
