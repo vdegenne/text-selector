@@ -1,2 +1,0 @@
-import{h as e,m as t,t as n,u as r}from"./store-DBN_KFcR.js";import{h as i,u as a,y as o}from"./directive-lPw2sjmk.js";import{t as s}from"./PageElement-K9Lxb2jN.js";var c=class extends s{render(){return i`<div class="p-4">${n.input.split(`
-`).map(e=>i`<div>${e.split(``).map(e=>i`<span class="letter">${e}</span>`)}</div>`)}</div>`}};c=r([a(`page-main`),e(n),t(o`.letter[highlight1]{background-color:#ff0;color:#000}`)],c);export{c as PageMain};
