@@ -16,6 +16,11 @@ declare global {
 @withStyles(css`
 	:host {
 	}
+
+	.letter[highlight1] {
+		background-color: yellow;
+		color: black;
+	}
 `)
 export class PageMain extends PageElement {
 	render() {
