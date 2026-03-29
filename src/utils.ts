@@ -330,6 +330,9 @@ export function getTextInfo(
 	let index = 0
 
 	const rawLines = text.split(lineDelimiter)
+	if (rawLines[rawLines.length - 1] === '') {
+		rawLines.pop()
+	}
 	let currentLine = 0
 
 	for (let i = 0; i < rawLines.length; i++) {

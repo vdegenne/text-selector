@@ -2,9 +2,11 @@ import {Mode} from '@vdegenne/mini-gamepad'
 import {Repeater} from '@vdegenne/mini-gamepad/repeater.js'
 import {mainPage} from './pages/page-main.js'
 
+const repeatTimeoutMs = 300
+
 export const prevRepeater = new Repeater({
-	repeatTimeoutMs: 200,
-	speedMs: 30,
+	repeatTimeoutMs,
+	speedMs: 38,
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
@@ -22,8 +24,8 @@ export const prevRepeater = new Repeater({
 })
 
 export const nextRepeater = new Repeater({
-	repeatTimeoutMs: 200,
-	speedMs: 30,
+	repeatTimeoutMs,
+	speedMs: 38,
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
@@ -40,7 +42,7 @@ export const nextRepeater = new Repeater({
 })
 
 export const upRepeater = new Repeater({
-	repeatTimeoutMs: 200,
+	repeatTimeoutMs,
 	speedMs: 60,
 	action(mode) {
 		switch (mode) {
@@ -52,7 +54,7 @@ export const upRepeater = new Repeater({
 })
 
 export const downRepeater = new Repeater({
-	repeatTimeoutMs: 200,
+	repeatTimeoutMs,
 	speedMs: 60,
 	action(mode) {
 		switch (mode) {
