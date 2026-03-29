@@ -1,2 +1,0 @@
-import{h as e,m as t,t as n,u as r}from"./store-5fQQ_TtI.js";import{h as i,u as a,y as o}from"./directive-lPw2sjmk.js";import{t as s}from"./PageElement-OkeFAl46.js";var c=class extends s{render(){return i`<div class="p-4 text-2xl">${n.input.split(`
-`).map(e=>i`<div>${e.split(``).map(e=>i`<span class="letter">${e}</span>`)}</div>`)}</div>`}};c=r([a(`page-main`),e(n),t(o`.letter[highlight1]{background-color:var(--md-sys-color-primary-container);background-color:#caca00;color:var(--md-sys-color-on-primary-container);color:red}`)],c);export{c as PageMain};
