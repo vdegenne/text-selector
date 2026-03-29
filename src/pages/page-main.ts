@@ -91,7 +91,7 @@ export class PageMain extends PageElement {
 		const prevLine = lines[previousLineIndex]
 		this.highlighter.highlight(
 			prevLine.firstCharIndex +
-				Math.min(prevLine.length, currLine.cursorIndex ?? 9999999999),
+				Math.min(prevLine.length - 1, currLine.cursorIndex ?? 9999999999),
 		)
 		// if (highlightIndexStart >= 0) {
 		// 	const {currentLineIndex} = getTextInfo(store.input, {
@@ -123,7 +123,7 @@ export class PageMain extends PageElement {
 		const nextLine = lines[nextLineIndex]
 		this.highlighter.highlight(
 			nextLine.firstCharIndex +
-				Math.min(nextLine.length, currLine.cursorIndex ?? 9999999999),
+				Math.min(nextLine.length - 1, currLine.cursorIndex ?? 9999999999),
 		)
 		// if (highlightIndexStart >= 0) {
 		// 	const currentLineIndex = getLineIndexFromCharIndex(
