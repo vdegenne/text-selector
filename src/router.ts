@@ -28,6 +28,6 @@ export const router = new Router(async ({location, parts}) => {
 	const params = new URLSearchParams(location.search)
 	// const input = params.get('input')
 	if (params.has('input')) {
-		store.input = params.get('input')!
+		store.input = params.get('input')!.replace(/\n{2,}/g, '\n')
 	}
 })

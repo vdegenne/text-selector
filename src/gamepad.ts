@@ -1,6 +1,14 @@
 import {ReactiveController} from '@snar/lit'
+import {googleImagesOpen} from '@vdegenne/links'
 import {MGamepad, MiniGamepad, Mode} from '@vdegenne/mini-gamepad'
 import {state} from 'lit/decorators.js'
+import {
+	downRepeater,
+	nextRepeater,
+	prevRepeater,
+	upRepeater,
+} from './gamepad-repeaters.js'
+import {mainPage} from './pages/page-main.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -10,34 +18,58 @@ class GamepadController extends ReactiveController {
 		const minigp = new MiniGamepad({
 			// pollSleepMs: 900,
 			focusDeadTimeMs: 200,
+			axesThreshold: 0.2,
 		})
 		minigp.onConnect((gamepad) => {
 			this.gamepad = gamepad
 			const map = gamepad.mapping
 
-			gamepad.for(map.LEFT_STICK_LEFT).before(({mode}) => {
-				switch (mode) {
-					case Mode.NORMAL:
-						break
-					case Mode.PRIMARY:
-						break
-					case Mode.SECONDARY:
-						break
-					case Mode.TERTIARY:
-						break
-				}
+			let execute = true
+			window.addEventListener('chatgpt-selector-open', () => {
+				execute = false
 			})
-			gamepad.for(map.LEFT_STICK_RIGHT).before(({mode}) => {
-				switch (mode) {
-					case Mode.NORMAL:
-						break
-					case Mode.TERTIARY:
-						break
-				}
+			window.addEventListener('chatgpt-selector-close', () => {
+				execute = true
 			})
+
+			gamepad
+				.for(map.LEFT_STICK_LEFT)
+				.before(({mode}) => {
+					prevRepeater.start(mode)
+				})
+				.after(() => {
+					prevRepeater.stop()
+				})
+
+			gamepad
+				.for(map.LEFT_STICK_RIGHT)
+				.before(({mode}) => {
+					nextRepeater.start(mode)
+				})
+				.after(() => {
+					nextRepeater.stop()
+				})
+
+			gamepad
+				.for(map.LEFT_STICK_UP)
+				.before(({mode}) => {
+					upRepeater.start(mode)
+				})
+				.after(() => {
+					upRepeater.stop()
+				})
+			gamepad
+				.for(map.LEFT_STICK_DOWN)
+				.before(({mode}) => {
+					downRepeater.start(mode)
+				})
+				.after(() => {
+					downRepeater.stop()
+				})
 			gamepad.for(map.RIGHT_BUTTONS_LEFT).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
+						mainPage.highlightWordUnderCursor()
 						break
 				}
 			})
@@ -96,6 +128,10 @@ class GamepadController extends ReactiveController {
 			gamepad.for(map.LEFT_BUTTONS_BOTTOM).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
+						const {highlightContent} = mainPage.highlighter.getInfo()
+						if (highlightContent) {
+							googleImagesOpen(highlightContent)
+						}
 						break
 					case Mode.PRIMARY:
 						break
@@ -107,6 +143,7 @@ class GamepadController extends ReactiveController {
 					case Mode.NORMAL:
 						break
 					case Mode.PRIMARY:
+						mainPage.openChatGPTSelector()
 						break
 					case Mode.TERTIARY:
 						break
@@ -127,6 +164,7 @@ class GamepadController extends ReactiveController {
 			gamepad.for(map.MIDDLE_LEFT).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
+						mainPage.openFullScreener()
 						break
 				}
 			})

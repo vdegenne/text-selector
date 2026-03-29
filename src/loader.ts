@@ -15,7 +15,7 @@ import './router.js'
 
 import './global-listeners.js'
 
-// import './gamepad.js';
+import './gamepad.js'
 
 // app.updateComplete.then(() => {});
 

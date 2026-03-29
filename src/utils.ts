@@ -68,7 +68,7 @@ export function getElementsTree(node: Element): Promise<Element[]> {
 }
 export async function getElementInTree(
 	from: Element,
-	condition: (element: Element) => boolean
+	condition: (element: Element) => boolean,
 ): Promise<Element | undefined> {
 	for (const element of await getElementsTree(from)) {
 		if (condition(element)) {
@@ -143,10 +143,10 @@ export async function loadDataFromFile(): Promise<string> {
 
 export function propertyValuesToJson<T>(
 	changed: PropertyValues<T>,
-	object: T
+	object: T,
 ): Partial<T> {
 	return Object.fromEntries(
-		[...changed.keys()].map((key) => [key, object[key as keyof typeof object]])
+		[...changed.keys()].map((key) => [key, object[key as keyof typeof object]]),
 	) as Partial<T>
 }
 
@@ -187,7 +187,7 @@ export function waitForTransition(element: HTMLElement) {
 
 export function createHighlightedHtml(
 	input: string,
-	search: string | string[]
+	search: string | string[],
 ): string {
 	if (!search || (Array.isArray(search) && search.length === 0)) return input
 
@@ -211,7 +211,7 @@ export function createHighlightedHtml(
 
 	// Escape regex characters in each keyword
 	const escapedKeywords = keywords.map((k) =>
-		k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+		k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
 	)
 
 	// Create a regex matching any keyword
@@ -244,4 +244,161 @@ export function removeObjectKeys(arr: any, keys: string[]) {
 		delete clone[key]
 	}
 	return clone
+}
+
+export function getWordBounds(
+	text: string,
+	index: number,
+): {start: number; end: number} {
+	if (index < 0 || index >= text.length) {
+		return {start: index, end: index}
+	}
+
+	const isWordChar = function (c: string): boolean {
+		return /\w|é|è|à|ù|â|ê|î|ô|û|ç/i.test(c) // letters, numbers, accented letters
+	}
+
+	// If pointer is not on a word character → return same index
+	if (!isWordChar(text[index])) {
+		return {start: index, end: index}
+	}
+
+	let start = index
+	let end = index
+
+	// expand left
+	while (start > 0 && isWordChar(text[start - 1])) {
+		start--
+	}
+
+	// expand right
+	while (end < text.length - 1 && isWordChar(text[end + 1])) {
+		end++
+	}
+
+	return {start, end}
+}
+
+interface LineInfo {
+	/**
+	 * Index of the first character of this line relative to the whole text
+	 */
+	firstCharIndex: number
+	/**
+	 * Length of the text
+	 */
+	length: number
+
+	/**
+	 * Cursor index relative to this line
+	 * undefined if the cursor is not in the line
+	 */
+	cursorIndex?: number
+}
+interface TextInfo {
+	/**
+	 * Number of lines in the text
+	 */
+	numberOfLines: number
+	/**
+	 * Information about the lines
+	 */
+	lines: LineInfo[]
+	/**
+	 * The line of the cursor's current position
+	 * @default 0
+	 */
+	currentLineIndex: number
+
+	previousLineIndex: number
+	nextLineIndex: number
+}
+
+interface TextInfoOptions {
+	lineDelimiter?: string
+	cursorPosition?: number
+}
+
+export function getTextInfo(
+	text: string,
+	options: TextInfoOptions = {},
+): TextInfo {
+	const lineDelimiter = options.lineDelimiter ?? '\n'
+	const cursorPosition = options.cursorPosition ?? 0
+
+	const lines: LineInfo[] = []
+	let index = 0
+
+	const rawLines = text.split(lineDelimiter)
+	let currentLine = 0
+
+	for (let i = 0; i < rawLines.length; i++) {
+		const line = rawLines[i]
+		const lineStart = index
+		const lineEnd = lineStart + line.length
+
+		const lineInfo: LineInfo = {
+			firstCharIndex: lineStart,
+			length: line.length,
+		}
+
+		// Si le curseur est dans cette ligne, on calcule l'index relatif
+		if (cursorPosition >= lineStart && cursorPosition <= lineEnd) {
+			lineInfo.cursorIndex = cursorPosition - lineStart
+			currentLine = i
+		}
+
+		lines.push(lineInfo)
+		index += line.length + lineDelimiter.length
+	}
+
+	const numberOfLines = lines.length
+	const previousLineIndex = (currentLine - 1 + numberOfLines) % numberOfLines
+	const nextLineIndex = (currentLine + 1) % numberOfLines
+
+	return {
+		numberOfLines,
+		lines,
+		currentLineIndex: currentLine,
+		previousLineIndex,
+		nextLineIndex,
+	}
+}
+
+export function getLineIndexFromCharIndex(
+	text: string,
+	charIndex: number,
+): number {
+	if (charIndex < 0 || charIndex > text.length) return -1
+
+	let line = 0
+
+	for (let i = 0; i < charIndex; i++) {
+		if (text[i] === '\n') {
+			line++
+		}
+	}
+
+	return line
+}
+
+export function getLineStartIndex(text: string, lineIndex: number): number {
+	if (lineIndex < 0) return -1
+
+	let currentLine = 0
+
+	// cas ligne 0 → début du texte
+	if (lineIndex === 0) return 0
+
+	for (let i = 0; i < text.length; i++) {
+		if (text[i] === '\n') {
+			currentLine++
+
+			if (currentLine === lineIndex) {
+				return i + 1 // premier caractère après le \n
+			}
+		}
+	}
+
+	return -1 // out of bounds
 }
