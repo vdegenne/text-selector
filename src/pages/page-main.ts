@@ -42,7 +42,9 @@ export class PageMain extends PageElement {
 	render() {
 		const lines = store.input.split('\n').filter((l) => l)
 		return html`<!---->
-			<div class="p-7 text-3xl leading-normal mb-48 max-w-4xl w-full mx-auto">
+			<div
+				class="p-7 text-3xl leading-normal mb-48 max-w-4xl w-full mx-auto box-border"
+			>
 				${lines.map((line, i) => {
 					return html`<!-- -->
 						<div
@@ -208,3 +210,4 @@ export class PageMain extends PageElement {
 }
 
 export let mainPage = new PageMain()
+mainPage.active = true
