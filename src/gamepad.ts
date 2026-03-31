@@ -1,5 +1,5 @@
 import {ReactiveController} from '@snar/lit'
-import {googleImagesOpen} from '@vdegenne/links'
+import {googleImagesOpen, lazyMapOpen} from '@vdegenne/links'
 import {MGamepad, MiniGamepad, Mode} from '@vdegenne/mini-gamepad'
 import {state} from 'lit/decorators.js'
 import {
@@ -139,15 +139,16 @@ class GamepadController extends ReactiveController {
 			})
 
 			gamepad.for(map.LEFT_BUTTONS_BOTTOM).before(({mode}) => {
-				switch (mode) {
-					case Mode.NORMAL:
-						const {highlightContent} = mainPage.highlighter.getInfo()
-						if (highlightContent) {
+				const {highlightContent} = mainPage.highlighter.getInfo()
+				if (highlightContent) {
+					switch (mode) {
+						case Mode.NORMAL:
 							googleImagesOpen(highlightContent)
-						}
-						break
-					case Mode.PRIMARY:
-						break
+							break
+						case Mode.PRIMARY:
+							lazyMapOpen(highlightContent)
+							break
+					}
 				}
 			})
 
