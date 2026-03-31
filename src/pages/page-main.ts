@@ -5,6 +5,7 @@ import {customElement, query} from 'lit/decorators.js'
 import {HighLightManager} from '../HighlightManager.js'
 import {store} from '../store.js'
 import {
+	copyToClipboard,
 	getLineIndexFromCharIndex,
 	getLineStartIndex,
 	getTextInfo,
@@ -12,6 +13,7 @@ import {
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
 import {chatGptMediatorOpen} from '@vdegenne/links'
+import toast from 'toastit'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -48,7 +50,10 @@ export class PageMain extends PageElement {
 			<div class="p-7 text-3xl leading-normal mb-48 max-w-4xl w-full mx-auto">
 				${lines.map((line, i) => {
 					return html`<!-- -->
-						<div class="flex items-center gap-3">
+						<div
+							class="flex items-center gap-5 py-3"
+							style="border-bottom: 1px solid var(--md-sys-color-outline-variant)"
+						>
 							<span class="text-(--md-sys-color-outline) text-sm">#${i}</span>
 							<div>
 								${line.split('').map((letter) => {
@@ -145,6 +150,7 @@ export class PageMain extends PageElement {
 	}
 
 	openFullScreener() {
+		return
 		const {highlightContent} = this.highlighter.getInfo()
 		if (highlightContent) {
 			document.dispatchEvent(
@@ -170,6 +176,38 @@ export class PageMain extends PageElement {
 			// 		},
 			// 	}),
 			// )
+		}
+	}
+
+	addCurrentSelectionToJpSynDex() {
+		const {highlightContent} = this.highlighter.getInfo()
+		if (highlightContent) {
+			document.dispatchEvent(
+				new CustomEvent('add-jpsyndex-item', {
+					bubbles: true,
+					detail: {
+						word: highlightContent,
+					},
+				}),
+			)
+		}
+	}
+
+	copySelectionToClipBoard() {
+		const {highlightContent} = this.highlighter.getInfo()
+		if (highlightContent) {
+			copyToClipboard(highlightContent)
+			toast(highlightContent)
+		}
+	}
+
+	openCNRTL() {
+		const {highlightContent} = this.highlighter.getInfo()
+		if (highlightContent) {
+			window.open(
+				`https://www.cnrtl.fr/definition/${encodeURIComponent(highlightContent)}`,
+				'_blank',
+			)
 		}
 	}
 }

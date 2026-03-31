@@ -9,6 +9,7 @@ import {
 	upRepeater,
 } from './gamepad-repeaters.js'
 import {mainPage} from './pages/page-main.js'
+import {getMainPage} from './pages/index.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -30,6 +31,17 @@ class GamepadController extends ReactiveController {
 			})
 			window.addEventListener('chatgpt-selector-close', () => {
 				execute = true
+			})
+
+			gamepad.for(map.LEFT_STICK_PRESS).before(({mode}) => {
+				switch (mode) {
+					case Mode.PRIMARY:
+						getMainPage()?.addCurrentSelectionToJpSynDex()
+						break
+					case Mode.SECONDARY:
+						getMainPage()?.copySelectionToClipBoard()
+						break
+				}
 			})
 
 			gamepad
@@ -112,6 +124,7 @@ class GamepadController extends ReactiveController {
 			gamepad.for(map.LEFT_BUTTONS_RIGHT).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
+						getMainPage()?.openCNRTL()
 						break
 				}
 			})
