@@ -39,11 +39,6 @@ export class PageMain extends PageElement {
 
 	@query('.letter[selected]') firstSelectedCharacter!: HTMLDivElement
 
-	constructor() {
-		super()
-		mainPage = this
-	}
-
 	render() {
 		const lines = store.input.split('\n').filter((l) => l)
 		return html`<!---->
@@ -212,4 +207,4 @@ export class PageMain extends PageElement {
 	}
 }
 
-export let mainPage: PageMain
+export let mainPage = new PageMain()

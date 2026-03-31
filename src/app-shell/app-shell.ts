@@ -3,11 +3,8 @@ import {withController} from '@snar/lit'
 import {html, type PropertyValues} from 'lit'
 import {withStyles} from 'lit-with-styles'
 import {customElement} from 'lit/decorators.js'
-import {unsafeSVG} from 'lit/directives/unsafe-svg.js'
 import {MaterialShellChild} from 'material-shell/MaterialShellChild'
-import {SVG_LOGO} from '../assets/assets.js'
-import {availablePages} from '../constants.js'
-import {openSettingsDialog} from '../imports.js'
+import {mainPage} from '../pages/page-main.js'
 import {store} from '../store.js'
 import styles from './app-shell.css?inline'
 
@@ -26,47 +23,7 @@ declare global {
 export class AppShell extends MaterialShellChild {
 	render() {
 		return html`<!-- -->
-			<mwc-top-app-bar
-				?dense=${false}
-				style="--mdc-theme-primary:var(--md-sys-color-surface-container, transparent);--mdc-theme-on-primary:var(--md-sys-color-on-surface)"
-			>
-				<md-list-item
-					slot="title"
-					class="--ml-[-20px] ml-2"
-					slot="navigationIcon"
-				>
-					<md-icon-button
-						slot="start"
-						style="--md-icon-button-icon-size:32px;"
-						inert
-					>
-						<md-icon>${unsafeSVG(SVG_LOGO)}</md-icon>
-					</md-icon-button>
-					<span>text-selector</span>
-				</md-list-item>
-
-				<div slot="actionItems" class="flex gap-3">
-					<!-- <md-icon-button -->
-					<!-- 	toggle -->
-					<!-- 	@click=${store.toggleAudio} -->
-					<!-- 	?selected=${store.audio} -->
-					<!-- > -->
-					<!-- 	<md-icon>volume_off</md-icon> -->
-					<!-- 	<md-icon slot="selected">volume_up</md-icon> -->
-					<!-- </md-icon-button> -->
-					<!-- <md-icon-button slot="actionItems" @click=${() =>
-						this._logout()}> -->
-					<!-- 	<md-icon>logout</md-icon> -->
-					<!-- </md-icon-button> -->
-					<md-icon-button @click=${openSettingsDialog}>
-						<md-icon>settings</md-icon>
-					</md-icon-button>
-				</div>
-				<div>
-					<page-main ?active=${store.page === 'main'}></page-main>
-					<page-404 ?active=${!availablePages.includes(store.page)}></page-404>
-				</div>
-			</mwc-top-app-bar>
+			${mainPage}
 			<!-- -->`
 	}
 
@@ -102,7 +59,7 @@ export class AppShell extends MaterialShellChild {
 				'geometrychange',
 				(event: any) => {
 					const buttons = this.renderRoot.querySelector<HTMLElement>(
-						'[slot="actionItems"]'
+						'[slot="actionItems"]',
 					)
 					if (!buttons) return
 					if (event.visible) {
@@ -112,7 +69,7 @@ export class AppShell extends MaterialShellChild {
 						buttons.style.paddingTop = '0'
 						buttons.style.transform = 'initial'
 					}
-				}
+				},
 			)
 		}
 	}
