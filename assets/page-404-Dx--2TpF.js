@@ -1,0 +1,1 @@
+import{P as p,c as v,t as g,u as w,w as O,a as P,v as c}from"./index-CyrbcT-7.js";var i=Object.getOwnPropertyDescriptor,u=(t,s,o,a)=>{for(var e=a>1?void 0:a?i(s,o):s,r=t.length-1,l;r>=0;r--)(l=t[r])&&(e=l(e)||e);return e};let n=class extends p{render(){return v`404 NOT FOUND`}};n=u([g("page-404"),w(c),O(P``)],n);export{n as Page404};
