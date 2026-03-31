@@ -10,6 +10,7 @@ import {
 } from './gamepad-repeaters.js'
 import {mainPage} from './pages/page-main.js'
 import {getMainPage} from './pages/index.js'
+import {sleep} from './utils.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -18,12 +19,14 @@ class GamepadController extends ReactiveController {
 		super()
 		const minigp = new MiniGamepad({
 			// pollSleepMs: 900,
-			focusDeadTimeMs: 200,
+			focusDeadTimeMs: 100,
 			axesThreshold: 0.2,
+			debug: true,
 		})
-		minigp.onConnect((gamepad) => {
+		minigp.onConnect(async (gamepad) => {
 			this.gamepad = gamepad
 			const map = gamepad.mapping
+			const loadTime = Date.now()
 
 			let execute = true
 			window.addEventListener('chatgpt-selector-open', () => {
@@ -121,6 +124,20 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
+			gamepad.for(map.LEFT_BUTTONS_LEFT).before(({mode}) => {
+				switch (mode) {
+					case Mode.NORMAL:
+						break
+					case Mode.PRIMARY:
+						// Trick to avoid trigger this event on page open
+						if (Date.now() - loadTime > 100) {
+							mainPage.openChatGPTSelector()
+						}
+						break
+					case Mode.TERTIARY:
+						break
+				}
+			})
 			gamepad.for(map.LEFT_BUTTONS_RIGHT).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
@@ -149,18 +166,6 @@ class GamepadController extends ReactiveController {
 							lazyMapOpen(highlightContent)
 							break
 					}
-				}
-			})
-
-			gamepad.for(map.LEFT_BUTTONS_LEFT).before(({mode}) => {
-				switch (mode) {
-					case Mode.NORMAL:
-						break
-					case Mode.PRIMARY:
-						mainPage.openChatGPTSelector()
-						break
-					case Mode.TERTIARY:
-						break
 				}
 			})
 

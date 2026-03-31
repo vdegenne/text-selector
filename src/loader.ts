@@ -15,10 +15,7 @@ import './router.js'
 
 import './global-listeners.js'
 
-// Defer to avoid consecutive press with referer page
-setTimeout(() => {
-	import('./gamepad.js')
-}, 200)
+import './gamepad.js'
 
 // app.updateComplete.then(() => {});
 
