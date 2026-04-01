@@ -254,12 +254,12 @@ export function getWordBounds(
 		return {start: index, end: index}
 	}
 
-	const isWordChar = function (c: string): boolean {
-		return /\w|é|è|à|ù|â|ê|î|ô|û|ç/i.test(c) // letters, numbers, accented letters
+	const isDelimiter = (c: string): boolean => {
+		return /[\s.,;:!?()[\]{}"']/u.test(c)
 	}
 
-	// If pointer is not on a word character → return same index
-	if (!isWordChar(text[index])) {
+	// Si on est sur un délimiteur → rien
+	if (isDelimiter(text[index])) {
 		return {start: index, end: index}
 	}
 
@@ -267,12 +267,12 @@ export function getWordBounds(
 	let end = index
 
 	// expand left
-	while (start > 0 && isWordChar(text[start - 1])) {
+	while (start > 0 && !isDelimiter(text[start - 1])) {
 		start--
 	}
 
 	// expand right
-	while (end < text.length - 1 && isWordChar(text[end + 1])) {
+	while (end < text.length - 1 && !isDelimiter(text[end + 1])) {
 		end++
 	}
 
