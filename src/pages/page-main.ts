@@ -1,5 +1,5 @@
 import {withController} from '@snar/lit'
-import {chatGptMediatorOpen} from '@vdegenne/links'
+import {chatGptMediatorOpen, chatGptMediatorUrl} from '@vdegenne/links'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
 import {customElement, query} from 'lit/decorators.js'
@@ -176,15 +176,8 @@ export class PageMain extends PageElement {
 	openChatGPTSelector() {
 		const {highlightContent} = this.highlighter.getInfo()
 		if (highlightContent) {
-			chatGptMediatorOpen(highlightContent)
-			// document.dispatchEvent(
-			// 	new CustomEvent('open-chatgpt-selector', {
-			// 		bubbles: true,
-			// 		detail: {
-			// 			value: highlightContent,
-			// 		},
-			// 	}),
-			// )
+			window.location.href = chatGptMediatorUrl(highlightContent)
+			// chatGptMediatorOpen(highlightContent)
 		}
 	}
 
