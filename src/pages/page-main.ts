@@ -1,19 +1,13 @@
 import {withController} from '@snar/lit'
+import {chatGptMediatorOpen} from '@vdegenne/links'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
 import {customElement, query} from 'lit/decorators.js'
+import toast from 'toastit'
 import {HighLightManager} from '../HighlightManager.js'
 import {store} from '../store.js'
-import {
-	copyToClipboard,
-	getLineIndexFromCharIndex,
-	getLineStartIndex,
-	getTextInfo,
-	getWordBounds,
-} from '../utils.js'
+import {copyToClipboard, getTextInfo, getWordBounds} from '../utils.js'
 import {PageElement} from './PageElement.js'
-import {chatGptMediatorOpen} from '@vdegenne/links'
-import toast from 'toastit'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -42,6 +36,14 @@ export class PageMain extends PageElement {
 	render() {
 		const lines = store.input.split('\n').filter((l) => l)
 		return html`<!---->
+			${!store.input
+				? html`<!---->
+						<div class="m-12">
+							Use ?input=${'<your-text>'} in the url (then use your controller
+							to navigate)
+						</div>
+						<!---->`
+				: null}
 			<div
 				class="p-7 text-3xl leading-normal mb-48 max-w-4xl w-full mx-auto box-border"
 			>
@@ -69,7 +71,8 @@ export class PageMain extends PageElement {
 	}
 
 	firstUpdated() {
-		this.highlighter.highlightWhenAvailable(0)
+		// this.highlighter.highlightWhenAvailable(0)
+		this.highlighter.highlight(0, store.input.length - 1)
 	}
 
 	highlightWordUnderCursor() {
