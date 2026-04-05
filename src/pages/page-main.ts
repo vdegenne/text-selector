@@ -29,7 +29,12 @@ declare global {
 	}
 `)
 export class PageMain extends PageElement {
-	highlighter = new HighLightManager('.letter')
+	highlighter = new HighLightManager('.letter', {
+		onSelectionChange(info) {
+			store.startIndex = info.highlightIndexStart
+			store.endIndex = info.highlightIndexEnd
+		},
+	})
 
 	@query('.letter[selected]') firstSelectedCharacter!: HTMLDivElement
 
@@ -71,8 +76,8 @@ export class PageMain extends PageElement {
 	}
 
 	firstUpdated() {
-		// this.highlighter.highlightWhenAvailable(0)
-		this.highlighter.highlight(0, store.input.length - 1)
+		console.log(store.startIndex, store.endIndex)
+		this.highlighter.highlight(store.startIndex, store.endIndex)
 	}
 
 	highlightWordUnderCursor() {
@@ -82,6 +87,10 @@ export class PageMain extends PageElement {
 			info.highlightIndexStart,
 		)
 		this.highlighter.highlight(start, end)
+	}
+
+	selectAll() {
+		this.highlighter.highlight(0, store.input.length)
 	}
 
 	previousLine() {

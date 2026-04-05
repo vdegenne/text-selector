@@ -8,9 +8,8 @@ import {
 	prevRepeater,
 	upRepeater,
 } from './gamepad-repeaters.js'
-import {mainPage} from './pages/page-main.js'
 import {getMainPage} from './pages/index.js'
-import {sleep} from './utils.js'
+import {mainPage} from './pages/page-main.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -27,6 +26,34 @@ class GamepadController extends ReactiveController {
 			this.gamepad = gamepad
 			const map = gamepad.mapping
 			const loadTime = Date.now()
+			const {
+				LEFT_STICK_UP: lup,
+				LEFT_STICK_DOWN: ldown,
+				LEFT_STICK_LEFT: lleft,
+				LEFT_STICK_RIGHT: lright,
+				LEFT_STICK_PRESS: lpress,
+				RIGHT_STICK_UP: rup,
+				RIGHT_STICK_DOWN: rdown,
+				RIGHT_STICK_LEFT: rleft,
+				RIGHT_STICK_RIGHT: rright,
+				RIGHT_STICK_PRESS: rpress,
+				LEFT_BUTTONS_TOP: dpadup,
+				LEFT_BUTTONS_BOTTOM: dpaddown,
+				LEFT_BUTTONS_LEFT: dpadleft,
+				LEFT_BUTTONS_RIGHT: dpadright,
+				RIGHT_BUTTONS_BOTTOM: a,
+				RIGHT_BUTTONS_RIGHT: b,
+				RIGHT_BUTTONS_LEFT: x,
+				RIGHT_BUTTONS_TOP: y,
+				L1: l1,
+				L2: l2,
+				R1: r1,
+				R2: r2,
+				MIDDLE_LEFT: back,
+				MIDDLE_RIGHT: start,
+				MIDDLE_BOTTOM: screenshot,
+				MIDDLE_TOP: guide,
+			} = map
 
 			let execute = true
 			window.addEventListener('chatgpt-selector-open', () => {
@@ -81,11 +108,13 @@ class GamepadController extends ReactiveController {
 				.after(() => {
 					downRepeater.stop()
 				})
-			gamepad.for(map.RIGHT_BUTTONS_LEFT).before(({mode}) => {
+			gamepad.for(x).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
 						mainPage.highlightWordUnderCursor()
 						break
+					case Mode.PRIMARY:
+						mainPage.selectAll()
 				}
 			})
 

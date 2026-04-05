@@ -25,9 +25,9 @@ export const router = new Router(async ({location, parts}) => {
 		store.page = parts[0] as Page
 	}
 
-	const params = new URLSearchParams(location.search)
-	// const input = params.get('input')
-	if (params.has('input')) {
-		store.input = params.get('input')!.replace(/\n{2,}/g, '\n')
-	}
+	// const params = new URLSearchParams(location.search)
+	// // const input = params.get('input')
+	// if (params.has('input')) {
+	// 	store.input = params.get('input')!.replace(/\n{2,}/g, '\n')
+	// }
 })
