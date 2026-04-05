@@ -50,7 +50,7 @@ export class PageMain extends PageElement {
 						<!---->`
 				: null}
 			<div
-				class="p-7 text-3xl leading-normal mb-48 max-w-4xl w-full mx-auto box-border"
+				class="p-7 text-3xl leading-normal mb-48 max-w-6xl w-full mx-auto box-border"
 			>
 				${lines.map((line, i) => {
 					return html`<!-- -->
