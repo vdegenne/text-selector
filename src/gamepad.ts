@@ -56,12 +56,15 @@ class GamepadController extends ReactiveController {
 			} = map
 
 			let execute = true
-			window.addEventListener('chatgpt-selector-open', () => {
-				execute = false
-			})
-			window.addEventListener('chatgpt-selector-close', () => {
-				execute = true
-			})
+
+			window.addEventListener(
+				'voice-recorder-open',
+				() => (gamepad.enabled = false),
+			)
+			window.addEventListener(
+				'voice-recorder-close',
+				() => (gamepad.enabled = true),
+			)
 
 			gamepad.for(map.LEFT_STICK_PRESS).before(({mode}) => {
 				switch (mode) {
