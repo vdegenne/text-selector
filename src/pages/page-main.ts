@@ -23,9 +23,10 @@ declare global {
 
 	.letter[highlight1] {
 		background-color: #caca00;
-		background-color: var(--md-sys-color-primary);
+		background-color: var(--md-sys-color-primary-container);
 		color: #ff0000;
 		color: #ab9a00;
+		color: var(--md-sys-color-on-primary-container);
 	}
 `)
 export class PageMain extends PageElement {
