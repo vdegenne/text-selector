@@ -181,8 +181,8 @@ export class PageMain extends PageElement {
 	openChatGPTSelector() {
 		const {highlightContent} = this.highlighter.getInfo()
 		if (highlightContent) {
-			window.location.href = chatGptMediatorUrl(highlightContent)
-			// chatGptMediatorOpen(highlightContent)
+			// window.location.href = chatGptMediatorUrl(highlightContent)
+			chatGptMediatorOpen(highlightContent)
 		}
 	}
 
