@@ -6,7 +6,7 @@ const repeatTimeoutMs = 300
 
 export const prevRepeater = new Repeater({
 	repeatTimeoutMs,
-	speedMs: 38,
+	speedMs: 30,
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
@@ -25,7 +25,7 @@ export const prevRepeater = new Repeater({
 
 export const nextRepeater = new Repeater({
 	repeatTimeoutMs,
-	speedMs: 38,
+	speedMs: 30,
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:

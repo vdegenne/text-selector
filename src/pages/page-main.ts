@@ -25,10 +25,12 @@ declare global {
 		background-color: #caca00;
 		background-color: var(--md-sys-color-primary-container);
 		background-color: var(--md-sys-color-secondary-container);
+		background-color: var(--md-sys-color-outline);
 		color: #ff0000;
 		color: #ab9a00;
 		color: var(--md-sys-color-on-primary-container);
 		color: var(--md-sys-color-on-secondary-container);
+		color: var(--md-sys-color-inverse-on-surface);
 	}
 `)
 export class PageMain extends PageElement {
