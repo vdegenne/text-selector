@@ -255,7 +255,7 @@ export function getWordBounds(
 	}
 
 	const isDelimiter = (c: string): boolean => {
-		return /[\s.,;:!?()[\]{}"']/u.test(c)
+		return /[\s.,;:!?()[\]{}"'\u2019]/u.test(c)
 	}
 
 	// Si on est sur un délimiteur → rien
