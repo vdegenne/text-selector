@@ -122,57 +122,37 @@ export class PageMain extends PageElement {
 		this.highlighter.highlight(0, store.input.length)
 	}
 
-	/**
-	 * @deprecated
-	 * TODO: a virer
-	 */
-	previousLine(selectMode = false) {
+	previousLine() {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 
-		const hasSelection = highlightIndexStart !== highlightIndexEnd
-
-		if (!selectMode && hasSelection) {
-			this.highlighter.highlight(highlightIndexEnd, highlightIndexEnd)
+		if (highlightIndexStart !== highlightIndexEnd) {
+			this.highlighter.highlight(highlightIndexStart, highlightIndexStart)
 			return
 		}
 
-		const anchor = highlightIndexEnd
+		const anchor = highlightIndexStart
 
 		const textInfo = getTextInfo(store.input, {
 			cursorPosition: anchor,
 		})
 
-		const {lines, currentLineIndex, previousLineIndex} = textInfo
+		const {lines, currentLineIndex} = textInfo
 
 		const currLine = lines[currentLineIndex]
-		const prevLine = lines[previousLineIndex]
+		const prevLine = lines[Math.max(0, currentLineIndex - 1)]
 
 		const col = anchor - currLine.firstCharIndex
 		const safeCol = Math.min(col, prevLine.length)
 
 		const target = prevLine.firstCharIndex + safeCol
 
-		if (!selectMode) {
-			this.highlighter.highlight(target, target)
-			return
-		}
-
-		const startTarget = Math.min(highlightIndexStart, target)
-		const endTarget = Math.max(highlightIndexStart, target)
-
-		this.highlighter.highlight(startTarget, endTarget)
+		this.highlighter.highlight(target, target)
 	}
 
-	/**
-	 * @deprecated
-	 * TODO: a virer
-	 */
-	nextLine(selectMode = false) {
+	nextLine() {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 
-		const hasSelection = highlightIndexStart !== highlightIndexEnd
-
-		if (!selectMode && hasSelection) {
+		if (highlightIndexStart !== highlightIndexEnd) {
 			this.highlighter.highlight(highlightIndexEnd, highlightIndexEnd)
 			return
 		}
@@ -183,28 +163,17 @@ export class PageMain extends PageElement {
 			cursorPosition: anchor,
 		})
 
-		const {lines, currentLineIndex, nextLineIndex} = textInfo
+		const {lines, currentLineIndex} = textInfo
 
 		const currLine = lines[currentLineIndex]
-		const nextLine = lines[nextLineIndex]
+		const nextLine = lines[Math.min(lines.length - 1, currentLineIndex + 1)]
 
 		const col = anchor - currLine.firstCharIndex
-
-		// clamp simple (important)
 		const safeCol = Math.min(col, nextLine.length)
 
 		const target = nextLine.firstCharIndex + safeCol
 
-		if (!selectMode) {
-			this.highlighter.highlight(target, target)
-			return
-		}
-
-		// 🔥 clé du fix : extension pure, pas logique de ligne
-		const startTarget = highlightIndexStart
-		const endTarget = target
-
-		this.highlighter.highlight(startTarget, endTarget)
+		this.highlighter.highlight(target, target)
 	}
 
 	moveSelectionStartToPreviousLine() {
@@ -266,7 +235,7 @@ export class PageMain extends PageElement {
 
 		const currLine = lines[currentLineIndex]
 
-		const lineEnd = currLine.firstCharIndex + currLine.length
+		const lineEnd = currLine.firstCharIndex + currLine.length - 1
 
 		const isAtLineEnd = highlightIndexEnd === lineEnd
 
@@ -281,7 +250,7 @@ export class PageMain extends PageElement {
 			return
 		}
 
-		this.highlighter.highlight(highlightIndexStart, target)
+		this.highlighter.highlight(highlightIndexStart, target - 1)
 	}
 
 	moveSelectionEndToNextLine() {
@@ -296,7 +265,7 @@ export class PageMain extends PageElement {
 		const currLine = lines[currentLineIndex]
 
 		const isAtLineEnd =
-			highlightIndexEnd === currLine.firstCharIndex + currLine.length
+			highlightIndexEnd === currLine.firstCharIndex + currLine.length - 1
 
 		let targetLineIndex = currentLineIndex
 
@@ -307,7 +276,7 @@ export class PageMain extends PageElement {
 		const targetLine = lines[targetLineIndex]
 		const target = targetLine.firstCharIndex + targetLine.length
 
-		this.highlighter.highlight(highlightIndexStart, target)
+		this.highlighter.highlight(highlightIndexStart, target - 1)
 	}
 
 	openFullScreener() {
