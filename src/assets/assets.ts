@@ -11,12 +11,17 @@ import {html} from 'lit'
 // 	AUDIO_SUCCESS.currentTime = 0
 // 	AUDIO_SUCCESS.play()
 // }
-import clickSrc from '/audio/click2.wav'
-const AUDIO_CLICK = new Audio(clickSrc)
-export function playClickAudio(volume = 0.6) {
-	AUDIO_CLICK.volume = volume
-	AUDIO_CLICK.currentTime = 0
-	AUDIO_CLICK.play()
+let clickAudio = null
+
+export function playClick() {
+	if (!clickAudio) {
+		clickAudio = new Audio('/audio/click2.wav')
+		clickAudio.volume = 0.6
+		clickAudio.preload = 'auto'
+	}
+
+	clickAudio.currentTime = 0
+	clickAudio.play()
 }
 
 // Use "?inline" in the url to inline the resource.
