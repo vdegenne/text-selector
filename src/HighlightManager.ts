@@ -1,6 +1,6 @@
 import {querySelectorAll} from 'html-vision'
-import {playClick} from './audio.js'
 import {sleep} from './utils.js'
+import {playClickAudio} from './assets/assets.js'
 
 // const query = document.querySelector;
 // const queryAll = document.querySelectorAll
@@ -241,6 +241,8 @@ export class HighLightManager {
 		if (highlightIndexStart === start && highlightIndexEnd === end) {
 			return true
 		}
+		// console.log(highlightIndexStart, highlightIndexEnd, start, end)
+		playClickAudio()
 		if (unhighlightAll) {
 			this.unhighlightAll(elements, cache)
 		}
@@ -267,29 +269,41 @@ export class HighLightManager {
 	}
 
 	previous(step = 1, cache = false) {
-		playClick()
 		const {elements, highlightIndexStart, highlightIndexEnd} =
 			this.getInfo(cache)
+
+		const len = elements.length
+		if (len === 0) {
+			this.highlight(-1, -1, true, cache)
+			return
+		}
+
 		let previousIndex =
 			highlightIndexStart !== highlightIndexEnd
 				? highlightIndexStart
 				: this.#options.loop
-					? (highlightIndexStart - step + elements.length) % elements.length
+					? (highlightIndexStart - step + len) % len
 					: Math.max(0, highlightIndexStart - step)
 
 		this.highlight(previousIndex, previousIndex, true, cache)
 	}
 
 	next(step = 1, cache = false) {
-		// playClick();
 		const {elements, highlightIndexStart, highlightIndexEnd} =
 			this.getInfo(cache)
+
+		const len = elements.length
+		if (len === 0) {
+			this.highlight(-1, -1, true, cache)
+			return
+		}
+
 		let nextIndex =
 			highlightIndexStart !== highlightIndexEnd
 				? highlightIndexEnd
 				: this.#options.loop
-					? (highlightIndexEnd + step) % elements.length
-					: Math.min(elements.length - 1, highlightIndexEnd + step)
+					? (highlightIndexEnd + step) % len
+					: Math.min(len - 1, highlightIndexEnd + step)
 
 		this.highlight(nextIndex, nextIndex, true, cache)
 	}
