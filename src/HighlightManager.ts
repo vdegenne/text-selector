@@ -1,6 +1,6 @@
 import {querySelectorAll} from 'html-vision'
 import {sleep} from './utils.js'
-import {playClickAudio} from './assets/assets.js'
+import {playClick} from './assets/assets.js'
 
 // const query = document.querySelector;
 // const queryAll = document.querySelectorAll
@@ -235,31 +235,37 @@ export class HighLightManager {
 		if (end === undefined) {
 			end = start
 		}
+
+		if (start > end) {
+			const tmp = start
+			start = end
+			end = tmp
+		}
+
 		this.#options.beforeHighlight?.()
+
 		const {elements, highlightIndexStart, highlightIndexEnd} =
 			this.getInfo(cache)
+
 		if (highlightIndexStart === start && highlightIndexEnd === end) {
 			return true
 		}
-		// console.log(highlightIndexStart, highlightIndexEnd, start, end)
-		playClickAudio()
+
+		playClick()
+
 		if (unhighlightAll) {
 			this.unhighlightAll(elements, cache)
 		}
 
 		const elementsToHighlight = elements.slice(start, end + 1)
+
 		if (elementsToHighlight.length === 0) {
 			return false
 		}
-		// scrollIfNeeded(elementsToHighlight[0], {
-		// 	behavior: 'auto',
-		// 	block: 'start',
-		// 	inline: 'start',
-		// });
+
 		elementsToHighlight.forEach((el) =>
 			el.setAttribute(`highlight${this.#id}`, ''),
 		)
-		// elements[index]?.setAttribute('highlight', '');
 
 		if (this.#options.onSelectionChange) {
 			this.#options.onSelectionChange(this.getInfo(false))

@@ -6,6 +6,10 @@ import {
 	downRepeater,
 	nextRepeater,
 	prevRepeater,
+	rightDownRepeater,
+	rightNextRepeater,
+	rightPrevRepeater,
+	rightUpRepeater,
 	upRepeater,
 } from './gamepad-repeaters.js'
 import {getMainPage} from './pages/index.js'
@@ -19,7 +23,7 @@ class GamepadController extends ReactiveController {
 		const minigp = new MiniGamepad({
 			// pollSleepMs: 900,
 			focusDeadTimeMs: 100,
-			axesThreshold: 0.2,
+			axesThreshold: 0.5,
 			debug: true,
 		})
 		minigp.onConnect(async (gamepad) => {
@@ -121,18 +125,38 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(map.RIGHT_STICK_LEFT).before(({mode}) => {
-				switch (mode) {
-					case Mode.NORMAL:
-						break
-				}
-			})
-			gamepad.for(map.RIGHT_STICK_RIGHT).before(({mode}) => {
-				switch (mode) {
-					case Mode.NORMAL:
-						break
-				}
-			})
+			gamepad
+				.for(map.RIGHT_STICK_LEFT)
+				.before(({mode}) => {
+					rightNextRepeater.start(mode)
+				})
+				.after(() => {
+					rightNextRepeater.stop()
+				})
+			gamepad
+				.for(map.RIGHT_STICK_RIGHT)
+				.before(({mode}) => {
+					rightPrevRepeater.start(mode)
+				})
+				.after(() => {
+					rightPrevRepeater.stop()
+				})
+			gamepad
+				.for(map.RIGHT_STICK_UP)
+				.before(({mode}) => {
+					rightUpRepeater.start(mode)
+				})
+				.after(() => {
+					rightUpRepeater.stop()
+				})
+			gamepad
+				.for(map.RIGHT_STICK_DOWN)
+				.before(({mode}) => {
+					rightDownRepeater.start(mode)
+				})
+				.after(() => {
+					rightDownRepeater.stop()
+				})
 
 			gamepad.for(map.RIGHT_BUTTONS_BOTTOM).before(async ({mode}) => {
 				switch (mode) {

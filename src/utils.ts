@@ -333,7 +333,7 @@ export function getTextInfo(
 	if (rawLines[rawLines.length - 1] === '') {
 		rawLines.pop()
 	}
-	let currentLine = 0
+	let currentLineIndex = 0
 
 	for (let i = 0; i < rawLines.length; i++) {
 		const line = rawLines[i]
@@ -348,7 +348,7 @@ export function getTextInfo(
 		// Si le curseur est dans cette ligne, on calcule l'index relatif
 		if (cursorPosition >= lineStart && cursorPosition <= lineEnd) {
 			lineInfo.cursorIndex = cursorPosition - lineStart
-			currentLine = i
+			currentLineIndex = i
 		}
 
 		lines.push(lineInfo)
@@ -356,13 +356,14 @@ export function getTextInfo(
 	}
 
 	const numberOfLines = lines.length
-	const previousLineIndex = (currentLine - 1 + numberOfLines) % numberOfLines
-	const nextLineIndex = (currentLine + 1) % numberOfLines
+	const previousLineIndex =
+		(currentLineIndex - 1 + numberOfLines) % numberOfLines
+	const nextLineIndex = (currentLineIndex + 1) % numberOfLines
 
 	return {
 		numberOfLines,
 		lines,
-		currentLineIndex: currentLine,
+		currentLineIndex,
 		previousLineIndex,
 		nextLineIndex,
 	}
@@ -404,4 +405,11 @@ export function getLineStartIndex(text: string, lineIndex: number): number {
 	}
 
 	return -1 // out of bounds
+}
+
+export function isInViewport(el: Element) {
+	return (
+		el.getBoundingClientRect().top >= 0 &&
+		el.getBoundingClientRect().bottom <= window.innerHeight
+	)
 }

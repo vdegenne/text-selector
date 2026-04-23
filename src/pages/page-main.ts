@@ -4,10 +4,15 @@ import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
 import {customElement, query} from 'lit/decorators.js'
 import toast from 'toastit'
-import {playClickAudio} from '../assets/assets.js'
+import {playClick} from '../assets/assets.js'
 import {HighLightManager} from '../HighlightManager.js'
 import {store} from '../store.js'
-import {copyToClipboard, getTextInfo, getWordBounds} from '../utils.js'
+import {
+	copyToClipboard,
+	getTextInfo,
+	getWordBounds,
+	isInViewport,
+} from '../utils.js'
 import {PageElement} from './PageElement.js'
 
 declare global {
@@ -37,18 +42,28 @@ declare global {
 export class PageMain extends PageElement {
 	@query('.letter[highlight1]') firstHighlightedLetter?: HTMLDivElement
 
+	firstTime = true
+
 	highlighter = new HighLightManager('.letter', {
 		onSelectionChange: async (info) => {
-			playClickAudio()
+			playClick()
 			store.startIndex = info.highlightIndexStart
 			store.endIndex = info.highlightIndexEnd
 
 			await this.updateComplete
-			this.firstHighlightedLetter?.scrollIntoView({
-				block: 'center',
-				inline: 'center',
-				behavior: 'smooth',
-			})
+			if (
+				this.firstHighlightedLetter &&
+				!isInViewport(this.firstHighlightedLetter)
+			) {
+				if (this.firstTime) {
+					this.firstHighlightedLetter.scrollIntoView({
+						block: 'center',
+						inline: 'center',
+						behavior: 'smooth',
+					})
+					this.firstTime = false
+				}
+			}
 		},
 	})
 
@@ -107,69 +122,192 @@ export class PageMain extends PageElement {
 		this.highlighter.highlight(0, store.input.length)
 	}
 
-	previousLine() {
-		const {highlightIndexStart} = this.highlighter.getInfo()
-		const {currentLineIndex, previousLineIndex, lines} = getTextInfo(
-			store.input,
-			{
-				cursorPosition: highlightIndexStart,
-			},
-		)
+	/**
+	 * @deprecated
+	 * TODO: a virer
+	 */
+	previousLine(selectMode = false) {
+		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+
+		const hasSelection = highlightIndexStart !== highlightIndexEnd
+
+		if (!selectMode && hasSelection) {
+			this.highlighter.highlight(highlightIndexEnd, highlightIndexEnd)
+			return
+		}
+
+		const anchor = highlightIndexEnd
+
+		const textInfo = getTextInfo(store.input, {
+			cursorPosition: anchor,
+		})
+
+		const {lines, currentLineIndex, previousLineIndex} = textInfo
+
 		const currLine = lines[currentLineIndex]
 		const prevLine = lines[previousLineIndex]
-		this.highlighter.highlight(
-			prevLine.firstCharIndex +
-				Math.min(prevLine.length - 1, currLine.cursorIndex ?? 9999999999),
-		)
-		// if (highlightIndexStart >= 0) {
-		// 	const {currentLineIndex} = getTextInfo(store.input, {
-		// 		cursorPosition: highlightIndexStart,
-		// 	})
-		// 	// const currentLineIndex = getLineIndexFromCharIndex(
-		// 	// 	store.input,
-		// 	// 	highlightIndexStart,
-		// 	// )
-		// 	if (currentLineIndex > 0) {
-		// 		const nextLineIndex = currentLineIndex - 1
-		// 		const nextLineFirstCharIndex = getLineStartIndex(
-		// 			store.input,
-		// 			nextLineIndex,
-		// 		)
-		// 		if (nextLineFirstCharIndex >= 0) {
-		// 			this.highlighter.highlight(nextLineFirstCharIndex)
-		// 		}
-		// 	}
-		// }
+
+		const col = anchor - currLine.firstCharIndex
+		const safeCol = Math.min(col, prevLine.length)
+
+		const target = prevLine.firstCharIndex + safeCol
+
+		if (!selectMode) {
+			this.highlighter.highlight(target, target)
+			return
+		}
+
+		const startTarget = Math.min(highlightIndexStart, target)
+		const endTarget = Math.max(highlightIndexStart, target)
+
+		this.highlighter.highlight(startTarget, endTarget)
 	}
 
-	nextLine() {
-		const {highlightIndexStart} = this.highlighter.getInfo()
-		const {currentLineIndex, nextLineIndex, lines} = getTextInfo(store.input, {
-			cursorPosition: highlightIndexStart,
+	/**
+	 * @deprecated
+	 * TODO: a virer
+	 */
+	nextLine(selectMode = false) {
+		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+
+		const hasSelection = highlightIndexStart !== highlightIndexEnd
+
+		if (!selectMode && hasSelection) {
+			this.highlighter.highlight(highlightIndexEnd, highlightIndexEnd)
+			return
+		}
+
+		const anchor = highlightIndexEnd
+
+		const textInfo = getTextInfo(store.input, {
+			cursorPosition: anchor,
 		})
+
+		const {lines, currentLineIndex, nextLineIndex} = textInfo
+
 		const currLine = lines[currentLineIndex]
 		const nextLine = lines[nextLineIndex]
-		this.highlighter.highlight(
-			nextLine.firstCharIndex +
-				Math.min(nextLine.length - 1, currLine.cursorIndex ?? 9999999999),
-		)
-		// if (highlightIndexStart >= 0) {
-		// 	const currentLineIndex = getLineIndexFromCharIndex(
-		// 		store.input,
-		// 		highlightIndexStart,
-		// 	)
-		// 	console.log(currentLineIndex)
-		// 	if (currentLineIndex >= 0) {
-		// 		const nextLineIndex = currentLineIndex + 1
-		// 		const nextLineFirstCharIndex = getLineStartIndex(
-		// 			store.input,
-		// 			nextLineIndex,
-		// 		)
-		// 		if (nextLineFirstCharIndex >= 0) {
-		// 			this.highlighter.highlight(nextLineFirstCharIndex)
-		// 		}
-		// 	}
-		// }
+
+		const col = anchor - currLine.firstCharIndex
+
+		// clamp simple (important)
+		const safeCol = Math.min(col, nextLine.length)
+
+		const target = nextLine.firstCharIndex + safeCol
+
+		if (!selectMode) {
+			this.highlighter.highlight(target, target)
+			return
+		}
+
+		// 🔥 clé du fix : extension pure, pas logique de ligne
+		const startTarget = highlightIndexStart
+		const endTarget = target
+
+		this.highlighter.highlight(startTarget, endTarget)
+	}
+
+	moveSelectionStartToPreviousLine() {
+		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+
+		const textInfo = getTextInfo(store.input, {
+			cursorPosition: highlightIndexStart,
+		})
+
+		const {lines, currentLineIndex} = textInfo
+
+		const currLine = lines[currentLineIndex]
+
+		const isAtLineStart = highlightIndexStart === currLine.firstCharIndex
+
+		const targetLineIndex = isAtLineStart
+			? Math.max(0, currentLineIndex - 1)
+			: currentLineIndex
+
+		const target = lines[targetLineIndex].firstCharIndex
+
+		this.highlighter.highlight(target, highlightIndexEnd)
+	}
+
+	moveSelectionStartToNextLine() {
+		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+
+		const textInfo = getTextInfo(store.input, {
+			cursorPosition: highlightIndexStart,
+		})
+
+		const {lines, currentLineIndex} = textInfo
+
+		const currLine = lines[currentLineIndex]
+
+		const isAtLineStart = highlightIndexStart === currLine.firstCharIndex
+
+		const targetLineIndex = isAtLineStart
+			? Math.min(lines.length - 1, currentLineIndex + 1)
+			: currentLineIndex
+
+		const target = lines[targetLineIndex].firstCharIndex
+
+		if (target > highlightIndexEnd) {
+			return
+		}
+
+		this.highlighter.highlight(target, highlightIndexEnd)
+	}
+
+	moveSelectionEndToPreviousLine() {
+		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+
+		const textInfo = getTextInfo(store.input, {
+			cursorPosition: highlightIndexEnd,
+		})
+
+		const {lines, currentLineIndex} = textInfo
+
+		const currLine = lines[currentLineIndex]
+
+		const lineEnd = currLine.firstCharIndex + currLine.length
+
+		const isAtLineEnd = highlightIndexEnd === lineEnd
+
+		const targetLineIndex = isAtLineEnd
+			? Math.max(0, currentLineIndex - 1)
+			: currentLineIndex
+
+		const targetLine = lines[targetLineIndex]
+		const target = targetLine.firstCharIndex + targetLine.length
+
+		if (target < highlightIndexStart) {
+			return
+		}
+
+		this.highlighter.highlight(highlightIndexStart, target)
+	}
+
+	moveSelectionEndToNextLine() {
+		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+
+		const textInfo = getTextInfo(store.input, {
+			cursorPosition: highlightIndexEnd,
+		})
+
+		const {lines, currentLineIndex} = textInfo
+
+		const currLine = lines[currentLineIndex]
+
+		const isAtLineEnd =
+			highlightIndexEnd === currLine.firstCharIndex + currLine.length
+
+		let targetLineIndex = currentLineIndex
+
+		if (isAtLineEnd) {
+			targetLineIndex = Math.min(lines.length - 1, currentLineIndex + 1)
+		}
+
+		const targetLine = lines[targetLineIndex]
+		const target = targetLine.firstCharIndex + targetLine.length
+
+		this.highlighter.highlight(highlightIndexStart, target)
 	}
 
 	openFullScreener() {
