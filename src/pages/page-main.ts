@@ -1,9 +1,10 @@
 import {withController} from '@snar/lit'
-import {chatGptMediatorOpen, chatGptMediatorUrl} from '@vdegenne/links'
+import {chatGptMediatorOpen} from '@vdegenne/links'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
 import {customElement, query} from 'lit/decorators.js'
 import toast from 'toastit'
+import {playClickAudio} from '../assets/assets.js'
 import {HighLightManager} from '../HighlightManager.js'
 import {store} from '../store.js'
 import {copyToClipboard, getTextInfo, getWordBounds} from '../utils.js'
@@ -38,6 +39,7 @@ export class PageMain extends PageElement {
 
 	highlighter = new HighLightManager('.letter', {
 		onSelectionChange: async (info) => {
+			playClickAudio()
 			store.startIndex = info.highlightIndexStart
 			store.endIndex = info.highlightIndexEnd
 

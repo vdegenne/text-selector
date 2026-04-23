@@ -11,13 +11,13 @@ import {html} from 'lit'
 // 	AUDIO_SUCCESS.currentTime = 0
 // 	AUDIO_SUCCESS.play()
 // }
-// import wrongSrc from '/audio/wrong.mp3'
-// const AUDIO_WRONG = new Audio(wrongSrc)
-// export function playWrongAudio(volume = 0.4) {
-// 	AUDIO_WRONG.volume = volume
-// 	AUDIO_WRONG.currentTime = 0
-// 	AUDIO_WRONG.play()
-// }
+import clickSrc from '/audio/click2.wav'
+const AUDIO_CLICK = new Audio(clickSrc)
+export function playClickAudio(volume = 0.6) {
+	AUDIO_CLICK.volume = volume
+	AUDIO_CLICK.currentTime = 0
+	AUDIO_CLICK.play()
+}
 
 // Use "?inline" in the url to inline the resource.
 // Note:
