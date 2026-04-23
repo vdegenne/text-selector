@@ -34,14 +34,21 @@ declare global {
 	}
 `)
 export class PageMain extends PageElement {
+	@query('.letter[highlight1]') firstHighlightedLetter?: HTMLDivElement
+
 	highlighter = new HighLightManager('.letter', {
-		onSelectionChange(info) {
+		onSelectionChange: async (info) => {
 			store.startIndex = info.highlightIndexStart
 			store.endIndex = info.highlightIndexEnd
+
+			await this.updateComplete
+			this.firstHighlightedLetter?.scrollIntoView({
+				block: 'center',
+				inline: 'center',
+				behavior: 'smooth',
+			})
 		},
 	})
-
-	@query('.letter[selected]') firstSelectedCharacter!: HTMLDivElement
 
 	render() {
 		const lines = store.input.split('\n').filter((l) => l)
