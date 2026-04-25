@@ -1,3 +1,4 @@
+import {speakEnglish, speakFrench, speakJapanese} from '@vdegenne/speech'
 import {withController} from '@snar/lit'
 import {chatGptMediatorOpen} from '@vdegenne/links'
 import {css, html} from 'lit'
@@ -331,6 +332,51 @@ export class PageMain extends PageElement {
 				`https://www.cnrtl.fr/definition/${encodeURIComponent(highlightContent)}`,
 				'_blank',
 			)
+		}
+	}
+
+	async speakSelection() {
+		const {highlightContent} = this.highlighter.getInfo()
+		if (!highlightContent) return
+
+		const text = highlightContent.trim()
+		if (!text) return
+
+		const {detect} = await import('tinyld')
+
+		function guessWithKeywords(t: string) {
+			const s = t.toLowerCase()
+
+			// FR
+			if (/[éèêàùç]/.test(s)) return 'fr'
+			if (/\b(le|la|les|un|une|des|est|et)\b/.test(s)) return 'fr'
+
+			// EN
+			if (/\b(a|an|the|and|is|are|this|that)\b/.test(s)) return 'en'
+
+			return null
+		}
+
+		let lang = detect(text, {only: ['en', 'fr', 'ja']})
+
+		if (!lang) {
+			lang = guessWithKeywords(text)
+		}
+
+		// fallback final assumé
+		if (!lang) lang = 'en'
+
+		toast(lang)
+
+		switch (lang) {
+			case 'fr':
+				speakFrench(text)
+				break
+			case 'ja':
+				speakJapanese(text)
+				break
+			default:
+				speakEnglish(text)
 		}
 	}
 }

@@ -180,7 +180,7 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(map.LEFT_BUTTONS_LEFT).before(({mode}) => {
+			gamepad.for(dpadleft).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
 						break
@@ -240,6 +240,14 @@ class GamepadController extends ReactiveController {
 				switch (mode) {
 					case Mode.NORMAL:
 						mainPage.openFullScreener()
+						break
+				}
+			})
+
+			gamepad.for(l1).before(({mode}) => {
+				switch (mode) {
+					case Mode.NORMAL:
+						mainPage.speakSelection()
 						break
 				}
 			})
