@@ -58,14 +58,14 @@ export class PageMain extends PageElement {
 				this.firstHighlightedLetter &&
 				!isInViewport(this.firstHighlightedLetter)
 			) {
-				if (this.firstTime) {
-					this.firstHighlightedLetter.scrollIntoView({
-						block: 'center',
-						inline: 'center',
-						behavior: 'smooth',
-					})
-					this.firstTime = false
-				}
+				// if (this.firstTime) {
+				this.firstHighlightedLetter.scrollIntoView({
+					block: 'center',
+					inline: 'center',
+					behavior: 'smooth',
+				})
+				this.firstTime = false
+				// }
 			}
 		},
 	})

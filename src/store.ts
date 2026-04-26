@@ -32,7 +32,8 @@ export class AppStore extends ReactiveController {
 			const oldInput = changed.get('input')
 			if (oldInput !== undefined && oldInput !== this.input) {
 				this.startIndex = 0
-				this.endIndex = this.input.length - 1
+				this.endIndex = 0
+				// this.endIndex = this.input.length - 1
 			}
 		}
 	}
