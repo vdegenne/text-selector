@@ -11,8 +11,10 @@ import {store} from '../store.js'
 import {
 	copyToClipboard,
 	getTextInfo,
+	getWordBoundaries,
 	getWordBounds,
 	isInViewport,
+	isWordChar,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
 
@@ -131,18 +133,16 @@ export class PageMain extends PageElement {
 			return
 		}
 
-		const anchor = highlightIndexStart
+		const cursorPosition = highlightIndexStart
 
-		const textInfo = getTextInfo(store.input, {
-			cursorPosition: anchor,
-		})
+		const textInfo = getTextInfo(store.input, {cursorPosition})
 
 		const {lines, currentLineIndex} = textInfo
 
 		const currLine = lines[currentLineIndex]
 		const prevLine = lines[Math.max(0, currentLineIndex - 1)]
 
-		const col = anchor - currLine.firstCharIndex
+		const col = cursorPosition - currLine.firstCharIndex
 		const safeCol = Math.min(col, prevLine.length)
 
 		const target = prevLine.firstCharIndex + safeCol
@@ -158,18 +158,16 @@ export class PageMain extends PageElement {
 			return
 		}
 
-		const anchor = highlightIndexEnd
+		const cursorPosition = highlightIndexEnd
 
-		const textInfo = getTextInfo(store.input, {
-			cursorPosition: anchor,
-		})
+		const textInfo = getTextInfo(store.input, {cursorPosition})
 
 		const {lines, currentLineIndex} = textInfo
 
 		const currLine = lines[currentLineIndex]
 		const nextLine = lines[Math.min(lines.length - 1, currentLineIndex + 1)]
 
-		const col = anchor - currLine.firstCharIndex
+		const col = cursorPosition - currLine.firstCharIndex
 		const safeCol = Math.min(col, nextLine.length)
 
 		const target = nextLine.firstCharIndex + safeCol
@@ -278,6 +276,104 @@ export class PageMain extends PageElement {
 		const target = targetLine.firstCharIndex + targetLine.length
 
 		this.highlighter.highlight(highlightIndexStart, target - 1)
+	}
+
+	increaseLeftWordSelection(): void {
+		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+		const text = store.input as string
+
+		let i = highlightIndexStart - 1
+
+		if (i < 0) return
+
+		// skip tout ce qui n'est pas un mot
+		while (i >= 0 && !isWordChar(text[i])) i--
+
+		if (i < 0) return
+
+		const {start} = getWordBoundaries(text, i)
+
+		this.highlighter.highlight(start, highlightIndexEnd)
+	}
+
+	decreaseLeftWordSelection(): void {
+		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+		const text = store.input as string
+
+		let i = highlightIndexStart
+
+		if (i >= highlightIndexEnd) return
+
+		// move right to exit current word if we're inside one
+		if (i < text.length && isWordChar(text[i])) {
+			while (i < text.length && isWordChar(text[i])) i++
+		}
+
+		// skip non-word chars (spaces, punctuation)
+		while (i < text.length && !isWordChar(text[i])) i++
+
+		if (i >= text.length) return
+
+		const {start} = getWordBoundaries(text, i)
+
+		// guard: do not cross end
+		if (start > highlightIndexEnd) {
+			this.highlighter.highlight(highlightIndexEnd, highlightIndexEnd)
+			return
+		}
+
+		this.highlighter.highlight(start, highlightIndexEnd)
+	}
+
+	increaseRightWordSelection(): void {
+		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+		const text = store.input as string
+
+		let i = highlightIndexEnd + 1
+
+		if (i >= text.length) return
+
+		// skip tout ce qui n'est pas un mot (espaces, ponctuation)
+		while (i < text.length && !isWordChar(text[i])) i++
+
+		if (i >= text.length) return
+
+		const {end} = getWordBoundaries(text, i)
+
+		this.highlighter.highlight(highlightIndexStart, end)
+	}
+
+	decreaseRightWordSelection(): void {
+		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+		const text = store.input as string
+
+		let i = highlightIndexEnd
+
+		if (i <= highlightIndexStart) return
+
+		// move left to exit current word if we're inside one
+		if (i >= 0 && isWordChar(text[i])) {
+			while (i >= 0 && isWordChar(text[i])) i--
+		}
+
+		// skip non-word chars (spaces, punctuation)
+		while (i >= 0 && !isWordChar(text[i])) i--
+
+		// if no word found, collapse to start
+		if (i < highlightIndexStart) {
+			this.highlighter.highlight(highlightIndexStart, highlightIndexStart)
+			return
+		}
+
+		const {end} = getWordBoundaries(text, i)
+
+		// guard: do not cross start
+		if (end < highlightIndexStart) {
+			this.highlighter.highlight(highlightIndexStart, highlightIndexStart)
+			return
+		}
+
+		this.highlighter.highlight(highlightIndexStart, end)
 	}
 
 	openFullScreener() {

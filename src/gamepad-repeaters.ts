@@ -1,10 +1,11 @@
 import {Mode} from '@vdegenne/mini-gamepad'
 import {Repeater} from '@vdegenne/mini-gamepad/repeater.js'
 import {mainPage} from './pages/page-main.js'
+import {store} from './store.js'
 
 const repeatTimeoutMs = 300
 
-export const prevRepeater = new Repeater({
+export const leftPrevRepeater = new Repeater({
 	repeatTimeoutMs,
 	speedMs: 30,
 	action(mode) {
@@ -15,15 +16,15 @@ export const prevRepeater = new Repeater({
 			case Mode.PRIMARY:
 				mainPage.highlighter.extendLeftHighlight()
 				break
-
 			case Mode.TERTIARY:
 				// mainPage.highlighter.reduceRightHighlight()
+				mainPage.increaseLeftWordSelection()
 				break
 		}
 	},
 })
 
-export const nextRepeater = new Repeater({
+export const leftNextRepeater = new Repeater({
 	repeatTimeoutMs,
 	speedMs: 30,
 	action(mode) {
@@ -36,6 +37,7 @@ export const nextRepeater = new Repeater({
 				mainPage.highlighter.reduceLeftHighlight()
 				break
 			case Mode.TERTIARY:
+				mainPage.decreaseLeftWordSelection()
 				break
 		}
 	},
@@ -81,15 +83,16 @@ export const rightPrevRepeater = new Repeater({
 	repeatTimeoutMs,
 	speedMs: 30,
 	action(mode) {
+		console.log(mode)
 		switch (mode) {
 			case Mode.NORMAL:
 				break
 			case Mode.PRIMARY:
-				mainPage.highlighter.extendRightHighlight()
+				// mainPage.highlighter.extendRightHighlight()
+				mainPage.highlighter.reduceRightHighlight()
 				break
-
 			case Mode.TERTIARY:
-				// mainPage.highlighter.reduceRightHighlight()
+				mainPage.decreaseRightWordSelection()
 				break
 		}
 	},
@@ -103,10 +106,12 @@ export const rightNextRepeater = new Repeater({
 			case Mode.NORMAL:
 				break
 			case Mode.PRIMARY:
-				// mainPage.highlighter.extendRightHighlight()
-				mainPage.highlighter.reduceRightHighlight()
+				mainPage.highlighter.extendRightHighlight()
 				break
+
 			case Mode.TERTIARY:
+				// mainPage.highlighter.reduceRightHighlight()
+				mainPage.increaseRightWordSelection()
 				break
 		}
 	},

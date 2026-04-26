@@ -413,3 +413,31 @@ export function isInViewport(el: Element) {
 		el.getBoundingClientRect().bottom <= window.innerHeight
 	)
 }
+
+export function isWordChar(c: string): boolean {
+	return /\w/.test(c)
+}
+
+export function getWordBoundaries(
+	text: string,
+	index: number,
+): {start: number; end: number} {
+	let start = index
+	let end = index
+
+	while (start > 0 && isWordChar(text[start - 1])) {
+		start--
+	}
+
+	while (end < text.length && isWordChar(text[end])) {
+		end++
+	}
+
+	if (end > start) {
+		end--
+	} else {
+		end = start
+	}
+
+	return {start, end}
+}

@@ -4,11 +4,11 @@ import {MGamepad, MiniGamepad, Mode} from '@vdegenne/mini-gamepad'
 import {state} from 'lit/decorators.js'
 import {
 	downRepeater,
-	nextRepeater,
-	prevRepeater,
+	leftNextRepeater,
+	leftPrevRepeater,
 	rightDownRepeater,
-	rightNextRepeater,
 	rightPrevRepeater,
+	rightNextRepeater,
 	rightUpRepeater,
 	upRepeater,
 } from './gamepad-repeaters.js'
@@ -82,21 +82,21 @@ class GamepadController extends ReactiveController {
 			})
 
 			gamepad
-				.for(map.LEFT_STICK_LEFT)
+				.for(lleft)
 				.before(({mode}) => {
-					prevRepeater.start(mode)
+					leftPrevRepeater.start(mode)
 				})
 				.after(() => {
-					prevRepeater.stop()
+					leftPrevRepeater.stop()
 				})
 
 			gamepad
-				.for(map.LEFT_STICK_RIGHT)
+				.for(lright)
 				.before(({mode}) => {
-					nextRepeater.start(mode)
+					leftNextRepeater.start(mode)
 				})
 				.after(() => {
-					nextRepeater.stop()
+					leftNextRepeater.stop()
 				})
 
 			gamepad
@@ -126,20 +126,20 @@ class GamepadController extends ReactiveController {
 			})
 
 			gamepad
-				.for(map.RIGHT_STICK_LEFT)
-				.before(({mode}) => {
-					rightNextRepeater.start(mode)
-				})
-				.after(() => {
-					rightNextRepeater.stop()
-				})
-			gamepad
-				.for(map.RIGHT_STICK_RIGHT)
+				.for(rleft)
 				.before(({mode}) => {
 					rightPrevRepeater.start(mode)
 				})
 				.after(() => {
 					rightPrevRepeater.stop()
+				})
+			gamepad
+				.for(rright)
+				.before(({mode}) => {
+					rightNextRepeater.start(mode)
+				})
+				.after(() => {
+					rightNextRepeater.stop()
 				})
 			gamepad
 				.for(map.RIGHT_STICK_UP)
