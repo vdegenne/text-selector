@@ -441,3 +441,38 @@ export function getWordBoundaries(
 
 	return {start, end}
 }
+
+export function isVisible(el: HTMLElement): boolean {
+	const rect = el.getBoundingClientRect()
+	const viewHeight = window.innerHeight || document.documentElement.clientHeight
+	const viewWidth = window.innerWidth || document.documentElement.clientWidth
+
+	return (
+		rect.bottom > 0 &&
+		rect.right > 0 &&
+		rect.top < viewHeight &&
+		rect.left < viewWidth
+	)
+}
+
+export function getFirstVisibleElement(
+	elements: HTMLElement[],
+): HTMLElement | null {
+	for (let i = 0; i < elements.length; i++) {
+		if (isVisible(elements[i])) {
+			return elements[i]
+		}
+	}
+	return null
+}
+
+export function getLastVisibleElement(
+	elements: HTMLElement[],
+): HTMLElement | null {
+	for (let i = elements.length - 1; i >= 0; i--) {
+		if (isVisible(elements[i])) {
+			return elements[i]
+		}
+	}
+	return null
+}

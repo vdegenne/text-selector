@@ -11,7 +11,8 @@ export const leftPrevRepeater = new Repeater({
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
-				mainPage.highlighter.previous()
+				// mainPage.highlighter.previous()
+				mainPage.previous()
 				break
 			case Mode.PRIMARY:
 				mainPage.highlighter.extendLeftHighlight()
@@ -30,7 +31,8 @@ export const leftNextRepeater = new Repeater({
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
-				mainPage.highlighter.next()
+				// mainPage.highlighter.next()
+				mainPage.next()
 				break
 			case Mode.PRIMARY:
 				// mainPage.highlighter.extendRightHighlight()

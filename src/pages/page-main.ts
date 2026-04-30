@@ -3,17 +3,20 @@ import {withController} from '@snar/lit'
 import {chatGptMediatorOpen} from '@vdegenne/links'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
-import {customElement, query} from 'lit/decorators.js'
+import {customElement, query, queryAll} from 'lit/decorators.js'
 import toast from 'toastit'
 import {playClick} from '../assets/assets.js'
 import {HighLightManager} from '../HighlightManager.js'
 import {store} from '../store.js'
 import {
 	copyToClipboard,
+	getFirstVisibleElement,
+	getLastVisibleElement,
 	getTextInfo,
 	getWordBoundaries,
 	getWordBounds,
 	isInViewport,
+	isVisible,
 	isWordChar,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
@@ -43,6 +46,7 @@ declare global {
 	}
 `)
 export class PageMain extends PageElement {
+	@queryAll('.letter') letterElements!: HTMLElement[]
 	@query('.letter[highlight1]') firstHighlightedLetter?: HTMLDivElement
 
 	firstTime = true
@@ -56,13 +60,13 @@ export class PageMain extends PageElement {
 			await this.updateComplete
 			if (
 				this.firstHighlightedLetter &&
-				!isInViewport(this.firstHighlightedLetter)
+				!isVisible(this.firstHighlightedLetter)
 			) {
 				// if (this.firstTime) {
 				this.firstHighlightedLetter.scrollIntoView({
 					block: 'center',
 					inline: 'center',
-					behavior: 'smooth',
+					behavior: this.firstTime ? 'smooth' : 'instant',
 				})
 				this.firstTime = false
 				// }
@@ -87,7 +91,7 @@ export class PageMain extends PageElement {
 				${lines.map((line, i) => {
 					return html`<!-- -->
 						<div
-							class="flex items-center gap-5 py-2"
+							class="flex items-center gap-5 py-1"
 							style="border-bottom: 1px solid var(--md-sys-color-outline-variant)"
 						>
 							<span class="text-(--md-sys-color-outline) text-sm">#${i}</span>
@@ -125,17 +129,59 @@ export class PageMain extends PageElement {
 		this.highlighter.highlight(0, store.input.length)
 	}
 
+	previous() {
+		const {highlightElement} = this.highlighter.getInfo()
+
+		if (!isVisible(highlightElement)) {
+			const letterElements = [...this.letterElements]
+			const lastVisibleElement = getLastVisibleElement(letterElements)
+			const index = letterElements.indexOf(lastVisibleElement)
+			this.highlighter.highlight(index - 1)
+			return
+		}
+
+		this.highlighter.previous()
+	}
+
+	next() {
+		const {highlightElements} = this.highlighter.getInfo()
+
+		const last = highlightElements.pop()
+
+		if (!isVisible(last)) {
+			const letterElements = [...this.letterElements]
+			const firstVisibleElement = getFirstVisibleElement(letterElements)
+			const index = letterElements.indexOf(firstVisibleElement)
+			this.highlighter.highlight(index)
+			return
+		}
+
+		this.highlighter.next()
+	}
+
 	previousLine() {
-		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+		const {highlightIndexStart, highlightIndexEnd, highlightElement} =
+			this.highlighter.getInfo()
+		const cursorPosition = highlightIndexStart
+		const textInfo = getTextInfo(store.input, {cursorPosition})
+
+		if (!isVisible(highlightElement)) {
+			const letterElements = [...this.letterElements]
+			const lastVisibleElement = getLastVisibleElement(letterElements)
+			const index = letterElements.indexOf(lastVisibleElement)
+			const line = textInfo.lines.find(
+				(l) =>
+					index >= l.firstCharIndex && index <= l.firstCharIndex + l.length,
+			)
+			this.highlighter.highlight(line.firstCharIndex)
+			return
+		}
 
 		if (highlightIndexStart !== highlightIndexEnd) {
 			this.highlighter.highlight(highlightIndexStart, highlightIndexStart)
 			return
 		}
 
-		const cursorPosition = highlightIndexStart
-
-		const textInfo = getTextInfo(store.input, {cursorPosition})
 		const {lines, currentLineIndex} = textInfo
 
 		const currLine = lines[currentLineIndex]
@@ -154,7 +200,16 @@ export class PageMain extends PageElement {
 	}
 
 	nextLine() {
-		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+		const {highlightIndexStart, highlightIndexEnd, highlightElement} =
+			this.highlighter.getInfo()
+
+		if (!isVisible(highlightElement)) {
+			const letterElements = [...this.letterElements]
+			const firstVisibleElement = getFirstVisibleElement(letterElements)
+			const index = letterElements.indexOf(firstVisibleElement)
+			this.highlighter.highlight(index)
+			return
+		}
 
 		if (highlightIndexStart !== highlightIndexEnd) {
 			this.highlighter.highlight(highlightIndexEnd, highlightIndexEnd)
