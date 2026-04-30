@@ -136,11 +136,14 @@ export class PageMain extends PageElement {
 		const cursorPosition = highlightIndexStart
 
 		const textInfo = getTextInfo(store.input, {cursorPosition})
-
 		const {lines, currentLineIndex} = textInfo
 
 		const currLine = lines[currentLineIndex]
-		const prevLine = lines[Math.max(0, currentLineIndex - 1)]
+
+		const prevIndex =
+			currentLineIndex === 0 ? lines.length - 1 : currentLineIndex - 1
+
+		const prevLine = lines[prevIndex]
 
 		const col = cursorPosition - currLine.firstCharIndex
 		const safeCol = Math.min(col, prevLine.length)
@@ -161,11 +164,14 @@ export class PageMain extends PageElement {
 		const cursorPosition = highlightIndexEnd
 
 		const textInfo = getTextInfo(store.input, {cursorPosition})
-
 		const {lines, currentLineIndex} = textInfo
 
 		const currLine = lines[currentLineIndex]
-		const nextLine = lines[Math.min(lines.length - 1, currentLineIndex + 1)]
+
+		const nextIndex =
+			currentLineIndex === lines.length - 1 ? 0 : currentLineIndex + 1
+
+		const nextLine = lines[nextIndex]
 
 		const col = cursorPosition - currLine.firstCharIndex
 		const safeCol = Math.min(col, nextLine.length)

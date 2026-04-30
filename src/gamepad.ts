@@ -1,5 +1,10 @@
 import {ReactiveController} from '@snar/lit'
-import {googleImagesOpen, lazyMapOpen} from '@vdegenne/links'
+import {
+	googleImagesOpen,
+	lazyMapOpen,
+	youtubeOpen,
+	youtubeSearchOpen,
+} from '@vdegenne/links'
 import {MGamepad, MiniGamepad, Mode} from '@vdegenne/mini-gamepad'
 import {state} from 'lit/decorators.js'
 import {
@@ -249,6 +254,15 @@ class GamepadController extends ReactiveController {
 					case Mode.NORMAL:
 						mainPage.speakSelection()
 						break
+
+					case Mode.PRIMARY:
+						const {highlightContent} = mainPage.highlighter.getInfo()
+						if (highlightContent) {
+							youtubeSearchOpen(`${highlightContent} prononciation`)
+						}
+						break
+					case Mode.SECONDARY:
+					case Mode.TERTIARY:
 				}
 			})
 		})
