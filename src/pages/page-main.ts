@@ -87,7 +87,7 @@ export class PageMain extends PageElement {
 				${lines.map((line, i) => {
 					return html`<!-- -->
 						<div
-							class="flex items-center gap-5 py-3"
+							class="flex items-center gap-5 py-2"
 							style="border-bottom: 1px solid var(--md-sys-color-outline-variant)"
 						>
 							<span class="text-(--md-sys-color-outline) text-sm">#${i}</span>
