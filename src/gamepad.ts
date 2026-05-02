@@ -1,7 +1,9 @@
 import {ReactiveController} from '@snar/lit'
 import {
 	googleImagesOpen,
+	googleImagesUrl,
 	lazyMapOpen,
+	lazyMapUrl,
 	youtubeOpen,
 	youtubeSearchOpen,
 } from '@vdegenne/links'
@@ -216,15 +218,23 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(map.LEFT_BUTTONS_BOTTOM).before(({mode}) => {
+			gamepad.for(dpaddown).before(({mode}) => {
 				const {highlightContent} = mainPage.highlighter.getInfo()
 				if (highlightContent) {
 					switch (mode) {
 						case Mode.NORMAL:
-							googleImagesOpen(highlightContent)
+							if (mainPage.getHighlightedLettersRatio() > 0.95) {
+								window.location.href = googleImagesUrl(highlightContent)
+							} else {
+								googleImagesOpen(highlightContent)
+							}
 							break
 						case Mode.PRIMARY:
-							lazyMapOpen(highlightContent)
+							if (mainPage.getHighlightedLettersRatio() > 0.95) {
+								window.location.href = lazyMapUrl(highlightContent)
+							} else {
+								lazyMapOpen(highlightContent)
+							}
 							break
 					}
 				}

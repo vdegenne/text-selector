@@ -1,6 +1,6 @@
-import {speakEnglish, speakFrench, speakJapanese} from '@vdegenne/speech'
 import {withController} from '@snar/lit'
-import {chatGptMediatorOpen} from '@vdegenne/links'
+import {chatGptMediatorOpen, chatGptMediatorUrl} from '@vdegenne/links'
+import {speakEnglish, speakFrench, speakJapanese} from '@vdegenne/speech'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
 import {customElement, query, queryAll} from 'lit/decorators.js'
@@ -15,7 +15,6 @@ import {
 	getTextInfo,
 	getWordBoundaries,
 	getWordBounds,
-	isInViewport,
 	isVisible,
 	isWordChar,
 } from '../utils.js'
@@ -48,6 +47,12 @@ declare global {
 export class PageMain extends PageElement {
 	@queryAll('.letter') letterElements!: HTMLElement[]
 	@query('.letter[highlight1]') firstHighlightedLetter?: HTMLDivElement
+
+	getHighlightedLettersRatio() {
+		const letters = [...this.letterElements]
+		const highlightLetters = letters.filter((l) => l.hasAttribute('highlight1'))
+		return highlightLetters.length / letters.length
+	}
 
 	firstTime = true
 
@@ -455,8 +460,11 @@ export class PageMain extends PageElement {
 	openChatGPTSelector() {
 		const {highlightContent} = this.highlighter.getInfo()
 		if (highlightContent) {
-			// window.location.href = chatGptMediatorUrl(highlightContent)
-			chatGptMediatorOpen(highlightContent)
+			if (this.getHighlightedLettersRatio() > 0.95) {
+				window.location.href = chatGptMediatorUrl(highlightContent)
+			} else {
+				chatGptMediatorOpen(highlightContent)
+			}
 		}
 	}
 
@@ -485,10 +493,12 @@ export class PageMain extends PageElement {
 	openCNRTL() {
 		const {highlightContent} = this.highlighter.getInfo()
 		if (highlightContent) {
-			window.open(
-				`https://www.cnrtl.fr/definition/${encodeURIComponent(highlightContent)}`,
-				'_blank',
-			)
+			const url = `https://www.cnrtl.fr/definition/${encodeURIComponent(highlightContent)}`
+			if (this.getHighlightedLettersRatio() > 0.95) {
+				window.location.href = url
+			} else {
+				window.open(url, '_blank')
+			}
 		}
 	}
 
