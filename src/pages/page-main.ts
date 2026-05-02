@@ -123,7 +123,7 @@ export class PageMain extends PageElement {
 
 	highlightWordUnderCursor() {
 		const info = this.highlighter.getInfo()
-		const {start, end} = getWordBounds(
+		const {start, end} = getWordBoundaries(
 			store.input.replaceAll('\n', ' '),
 			info.highlightIndexStart,
 		)
