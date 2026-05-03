@@ -30,6 +30,9 @@ declare global {
 @withController(store)
 @withStyles(css`
 	:host {
+		font-family: 'Playfair Display'; /* why not */
+		font-family: BJCree; /* BOF */
+		font-family: Merriweather; /* not bad at all */
 	}
 
 	.letter[highlight1] {
@@ -37,11 +40,13 @@ declare global {
 		background-color: var(--md-sys-color-primary-container);
 		background-color: var(--md-sys-color-secondary-container);
 		background-color: var(--md-sys-color-outline);
+		background-color: var(--md-sys-color-secondary);
 		color: #ff0000;
 		color: #ab9a00;
 		color: var(--md-sys-color-on-primary-container);
 		color: var(--md-sys-color-on-secondary-container);
 		color: var(--md-sys-color-inverse-on-surface);
+		color: var(--md-sys-color-on-secondary);
 	}
 `)
 export class PageMain extends PageElement {
@@ -96,10 +101,12 @@ export class PageMain extends PageElement {
 				${lines.map((line, i) => {
 					return html`<!-- -->
 						<div
-							class="flex items-center gap-5 py-1"
-							style="border-bottom: 1px solid var(--md-sys-color-outline-variant)"
+							class="flex items-center gap-5 py-2"
+							style="border-bottom: 1px dashed var(--md-sys-color-outline)"
 						>
-							<span class="text-(--md-sys-color-outline) text-sm">#${i}</span>
+							<span class="text-(--md-sys-color-outline) opacity-30 text-sm"
+								>#${i}</span
+							>
 							<div>
 								${line.split('').map((letter) => {
 									return html`<!-- --><span class="letter">${letter}</span
