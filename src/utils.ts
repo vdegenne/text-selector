@@ -416,7 +416,7 @@ export function isInViewport(el: Element) {
 
 export function isWordChar(c: string): boolean {
 	// Unicode letters, marks, and numbers
-	return /[\p{L}\p{M}\p{N}_]/u.test(c)
+	return /[\p{L}\p{M}\p{N}_-]/u.test(c)
 }
 
 export function getWordBoundaries(

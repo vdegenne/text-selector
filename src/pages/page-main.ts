@@ -183,8 +183,8 @@ export class PageMain extends PageElement {
 		}
 
 		if (highlightIndexStart !== highlightIndexEnd) {
-			this.highlighter.highlight(highlightIndexStart, highlightIndexStart)
-			return
+			// this.highlighter.highlight(highlightIndexStart, highlightIndexStart)
+			// return
 		}
 
 		const {lines, currentLineIndex} = textInfo
@@ -217,8 +217,8 @@ export class PageMain extends PageElement {
 		}
 
 		if (highlightIndexStart !== highlightIndexEnd) {
-			this.highlighter.highlight(highlightIndexEnd, highlightIndexEnd)
-			return
+			// this.highlighter.highlight(highlightIndexEnd, highlightIndexEnd)
+			// return
 		}
 
 		const cursorPosition = highlightIndexEnd
