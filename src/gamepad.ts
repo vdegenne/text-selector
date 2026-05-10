@@ -125,6 +125,10 @@ class GamepadController extends ReactiveController {
 			gamepad.for(x).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
+						leftNextRepeater.stop()
+						leftPrevRepeater.stop()
+						// rightNextRepeater.stop()
+						// rightPrevRepeater.stop()
 						mainPage.highlightWordUnderCursor()
 						break
 					case Mode.PRIMARY:
