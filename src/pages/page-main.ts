@@ -204,7 +204,7 @@ export class PageMain extends PageElement {
 		const prevLine = lines[prevIndex]
 
 		const col = cursorPosition - currLine.firstCharIndex
-		const safeCol = Math.min(col, prevLine.length)
+		const safeCol = Math.min(col, prevLine.length - 1)
 
 		const target = prevLine.firstCharIndex + safeCol
 
@@ -241,7 +241,7 @@ export class PageMain extends PageElement {
 		const nextLine = lines[nextIndex]
 
 		const col = cursorPosition - currLine.firstCharIndex
-		const safeCol = Math.min(col, nextLine.length)
+		const safeCol = Math.min(col, nextLine.length - 1)
 
 		const target = nextLine.firstCharIndex + safeCol
 
