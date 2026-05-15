@@ -3,18 +3,22 @@ import {FormBuilder} from '@vdegenne/forms/FormBuilder.js'
 import {saveToLocalStorage} from 'snar-save-to-local-storage'
 import {availablePages} from './constants.js'
 import {Page} from './pages/index.js'
+import {generateHash} from './utils.js'
+import toast from 'toastit'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
 	@state() page: Page = 'main'
+
 	@state() input = ''
+	@state() inputHash = ''
 
 	@state() startIndex = 0
 	@state() endIndex = 0
 
 	F = new FormBuilder(this)
 
-	protected updated(changed: PropertyValues<this>) {
+	protected async updated(changed: PropertyValues<this>) {
 		// const {hash, router} = await import('./router.js')
 		if (changed.has('page')) {
 			// import('./router.js').then(({router}) => {
@@ -35,6 +39,11 @@ export class AppStore extends ReactiveController {
 				this.endIndex = 0
 				// this.endIndex = this.input.length - 1
 			}
+
+			generateHash(this.input).then((hash) => {
+				this.inputHash = hash
+				toast(hash)
+			})
 		}
 	}
 
