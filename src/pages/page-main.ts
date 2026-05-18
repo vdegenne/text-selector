@@ -1,5 +1,10 @@
+import {hasSomeJapanese} from 'asian-regexps'
 import {withController} from '@snar/lit'
-import {chatGptMediatorOpen, chatGptMediatorUrl} from '@vdegenne/links'
+import {
+	chatGptMediatorOpen,
+	chatGptMediatorUrl,
+	jishoUrl,
+} from '@vdegenne/links'
 import {speakEnglish, speakFrench, speakJapanese} from '@vdegenne/speech'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
@@ -497,10 +502,15 @@ export class PageMain extends PageElement {
 		}
 	}
 
-	openCNRTL() {
+	openCNRTLOrJisho() {
 		const {highlightContent} = this.highlighter.getInfo()
 		if (highlightContent) {
-			const url = `https://www.cnrtl.fr/definition/${encodeURIComponent(highlightContent)}`
+			let url: string
+			if (hasSomeJapanese(highlightContent)) {
+				url = jishoUrl(highlightContent)
+			} else {
+				url = `https://www.cnrtl.fr/definition/${encodeURIComponent(highlightContent)}`
+			}
 			if (this.getHighlightedLettersRatio() > 0.95) {
 				window.location.href = url
 			} else {

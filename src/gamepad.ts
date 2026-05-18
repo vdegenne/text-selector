@@ -4,8 +4,6 @@ import {
 	googleImagesUrl,
 	lazyMapOpen,
 	lazyMapUrl,
-	youtubeOpen,
-	youtubeSearchOpen,
 } from '@vdegenne/links'
 import {MGamepad, MiniGamepad, Mode} from '@vdegenne/mini-gamepad'
 import {state} from 'lit/decorators.js'
@@ -14,8 +12,8 @@ import {
 	leftNextRepeater,
 	leftPrevRepeater,
 	rightDownRepeater,
-	rightPrevRepeater,
 	rightNextRepeater,
+	rightPrevRepeater,
 	rightUpRepeater,
 	upRepeater,
 } from './gamepad-repeaters.js'
