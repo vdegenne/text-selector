@@ -203,10 +203,10 @@ class GamepadController extends ReactiveController {
 						break
 				}
 			})
-			gamepad.for(map.LEFT_BUTTONS_RIGHT).before(({mode}) => {
+			gamepad.for(dpadright).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
-						getMainPage()?.openCNRTL()
+						getMainPage()?.openCNRTLOrJisho()
 						break
 				}
 			})

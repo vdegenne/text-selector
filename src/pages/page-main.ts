@@ -3,6 +3,7 @@ import {withController} from '@snar/lit'
 import {
 	chatGptMediatorOpen,
 	chatGptMediatorUrl,
+	cnrtlUrl,
 	jishoUrl,
 } from '@vdegenne/links'
 import {speakEnglish, speakFrench, speakJapanese} from '@vdegenne/speech'
@@ -509,7 +510,8 @@ export class PageMain extends PageElement {
 			if (hasSomeJapanese(highlightContent)) {
 				url = jishoUrl(highlightContent)
 			} else {
-				url = `https://www.cnrtl.fr/definition/${encodeURIComponent(highlightContent)}`
+				// url = `https://www.cnrtl.fr/definition/${encodeURIComponent(highlightContent)}`
+				url = cnrtlUrl(highlightContent)
 			}
 			if (this.getHighlightedLettersRatio() > 0.95) {
 				window.location.href = url
