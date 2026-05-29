@@ -16,6 +16,8 @@ export class AppStore extends ReactiveController {
 	@state() startIndex = 0
 	@state() endIndex = 0
 
+	@state() verticalPadding = 1
+
 	F = new FormBuilder(this)
 
 	protected async updated(changed: PropertyValues<this>) {

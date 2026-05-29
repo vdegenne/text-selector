@@ -1,4 +1,3 @@
-import {hasSomeJapanese} from 'asian-regexps'
 import {withController} from '@snar/lit'
 import {
 	chatGptMediatorOpen,
@@ -7,6 +6,7 @@ import {
 	jishoUrl,
 } from '@vdegenne/links'
 import {speakEnglish, speakFrench, speakJapanese} from '@vdegenne/speech'
+import {hasSomeJapanese} from 'asian-regexps'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
 import {customElement, query, queryAll} from 'lit/decorators.js'
@@ -20,7 +20,6 @@ import {
 	getLastVisibleElement,
 	getTextInfo,
 	getWordBoundaries,
-	getWordBounds,
 	isVisible,
 	isWordChar,
 } from '../utils.js'
@@ -102,12 +101,12 @@ export class PageMain extends PageElement {
 						<!---->`
 				: null}
 			<div
-				class="p-7 text-3xl leading-normal mb-48 max-w-6xl w-full mx-auto box-border"
+				class="p-7 text-3xl leading-normal mb-48 -max-w-7xl w-full mx-auto box-border"
 			>
 				${lines.map((line, i) => {
 					return html`<!-- -->
 						<div
-							class="flex items-center gap-5 py-2"
+							class="flex items-center gap-5 py-1"
 							style="border-bottom: 1px dashed var(--md-sys-color-outline)"
 						>
 							<span class="text-(--md-sys-color-outline) opacity-30 text-sm"
