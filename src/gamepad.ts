@@ -4,6 +4,7 @@ import {
 	googleImagesUrl,
 	lazyMapOpen,
 	lazyMapUrl,
+	weblioOpen,
 } from '@vdegenne/links'
 import {MGamepad, MiniGamepad, Mode} from '@vdegenne/mini-gamepad'
 import {state} from 'lit/decorators.js'
@@ -19,6 +20,7 @@ import {
 } from './gamepad-repeaters.js'
 import {getMainPage} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
+import {hasSomeJapanese} from 'asian-regexps'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -192,6 +194,12 @@ class GamepadController extends ReactiveController {
 			gamepad.for(dpadleft).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
+						const content = getMainPage()?.getContent()
+						if (content) {
+							if (hasSomeJapanese(content)) {
+								weblioOpen(content)
+							}
+						}
 						break
 					case Mode.PRIMARY:
 						// Trick to avoid trigger this event on page open

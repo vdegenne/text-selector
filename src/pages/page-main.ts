@@ -502,6 +502,13 @@ export class PageMain extends PageElement {
 		}
 	}
 
+	getContent() {
+		const {highlightContent} = this.highlighter.getInfo()
+		if (highlightContent) {
+			return highlightContent
+		}
+	}
+
 	openCNRTLOrJisho() {
 		const {highlightContent} = this.highlighter.getInfo()
 		if (highlightContent) {
