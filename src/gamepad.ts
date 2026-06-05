@@ -7,6 +7,7 @@ import {
 	weblioOpen,
 } from '@vdegenne/links'
 import {MGamepad, MiniGamepad, Mode} from '@vdegenne/mini-gamepad'
+import {hasSomeJapanese} from 'asian-regexps'
 import {state} from 'lit/decorators.js'
 import {
 	downRepeater,
@@ -20,7 +21,7 @@ import {
 } from './gamepad-repeaters.js'
 import {getMainPage} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
-import {hasSomeJapanese} from 'asian-regexps'
+import {sleep} from './utils.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -34,6 +35,7 @@ class GamepadController extends ReactiveController {
 			debug: true,
 		})
 		minigp.onConnect(async (gamepad) => {
+			await sleep(100)
 			this.gamepad = gamepad
 			const map = gamepad.mapping
 			const loadTime = Date.now()
