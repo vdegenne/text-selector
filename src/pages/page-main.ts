@@ -5,7 +5,12 @@ import {
 	cnrtlUrl,
 	jishoUrl,
 } from '@vdegenne/links'
-import {speakEnglish, speakFrench, speakJapanese} from '@vdegenne/speech'
+import {
+	playJapanese,
+	speakEnglish,
+	speakFrench,
+	speakJapanese,
+} from '@vdegenne/speech'
 import {hasSomeJapanese} from 'asian-regexps'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
@@ -534,7 +539,14 @@ export class PageMain extends PageElement {
 		const text = highlightContent.trim()
 		if (!text) return
 
-		const {detect} = await import('tinyld')
+		let lang: string | undefined
+
+		if (hasSomeJapanese(text)) {
+			lang = 'ja'
+		} else {
+			const {detect} = await import('tinyld')
+			lang = detect(text, {only: ['en', 'fr']})
+		}
 
 		function guessWithKeywords(t: string) {
 			const s = t.toLowerCase()
@@ -548,8 +560,6 @@ export class PageMain extends PageElement {
 
 			return null
 		}
-
-		let lang = detect(text, {only: ['en', 'fr', 'ja']})
 
 		if (!lang) {
 			lang = guessWithKeywords(text)
@@ -565,7 +575,8 @@ export class PageMain extends PageElement {
 				speakFrench(text)
 				break
 			case 'ja':
-				speakJapanese(text)
+				// speakJapanese(text)
+				playJapanese(text)
 				break
 			default:
 				speakEnglish(text)
