@@ -65,20 +65,21 @@ export class AppStore extends ReactiveController {
 
 		if (location.hash.slice(1)) {
 			// Defer to make sure the initial update has finished updating the indexes if the input is new.
-			sleep(100).then(() => {
-				const hash = decodeURIComponent(location.hash.slice(1))
-				const found = this.input.indexOf(hash)
-				if (found > -1) {
-					this.startIndex = found
-					this.endIndex = found + hash.length - 1
-					// window.location.hash = ''
-					window.history.replaceState(
-						null,
-						document.title,
-						window.location.pathname + window.location.search,
-					)
-				}
-			})
+			// sleep(100).then(() => {
+			const hash = decodeURIComponent(location.hash.slice(1))
+			const found = this.input.indexOf(hash)
+			if (found > -1) {
+				this.startIndex = found
+				this.endIndex = found + hash.length - 1
+				mainPage.highlighter.highlight(this.startIndex, this.endIndex)
+				// window.location.hash = ''
+				window.history.replaceState(
+					null,
+					document.title,
+					window.location.pathname + window.location.search,
+				)
+			}
+			// })
 		}
 	}
 }
