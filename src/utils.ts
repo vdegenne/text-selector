@@ -280,6 +280,7 @@ export function getWordBounds(
 }
 
 interface LineInfo {
+	line: string
 	/**
 	 * Index of the first character of this line relative to the whole text
 	 */
@@ -343,6 +344,7 @@ export function getTextInfo(
 		const lineInfo: LineInfo = {
 			firstCharIndex: lineStart,
 			length: line.length,
+			line,
 		}
 
 		// Si le curseur est dans cette ligne, on calcule l'index relatif

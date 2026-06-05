@@ -182,10 +182,6 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(map.L1).before(({mode}) => {
-				if (mode === Mode.NORMAL) {
-				}
-			})
 			gamepad.for(map.R1).before(({mode}) => {
 				if (mode === Mode.NORMAL) {
 				}

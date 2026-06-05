@@ -5,12 +5,7 @@ import {
 	cnrtlUrl,
 	jishoUrl,
 } from '@vdegenne/links'
-import {
-	playJapanese,
-	speakEnglish,
-	speakFrench,
-	speakJapanese,
-} from '@vdegenne/speech'
+import {playJapanese, speakEnglish, speakFrench} from '@vdegenne/speech'
 import {hasSomeJapanese} from 'asian-regexps'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
@@ -179,6 +174,11 @@ export class PageMain extends PageElement {
 		}
 
 		this.highlighter.next()
+	}
+
+	getTextInfo() {
+		const {highlightIndexStart} = this.highlighter.getInfo()
+		return getTextInfo(store.input, {cursorPosition: highlightIndexStart})
 	}
 
 	previousLine() {

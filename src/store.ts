@@ -5,6 +5,7 @@ import {availablePages} from './constants.js'
 import {Page} from './pages/index.js'
 import {generateHash} from './utils.js'
 import toast from 'toastit'
+import {mainPage} from './pages/page-main.js'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -37,6 +38,7 @@ export class AppStore extends ReactiveController {
 		if (changed.has('input')) {
 			const oldInput = changed.get('input')
 			if (oldInput !== undefined && oldInput !== this.input) {
+				// TODO: Create a hash map for index history
 				this.startIndex = 0
 				this.endIndex = 0
 				// this.endIndex = this.input.length - 1
@@ -59,6 +61,21 @@ export class AppStore extends ReactiveController {
 			}
 			// // store.input = params.get('input')!.replace(/\n{2,}/g, '\n')
 			// console.log(params.get('input'), this.input)
+		}
+
+		const hash = location.hash.slice(1)
+		if (hash) {
+			const found = this.input.indexOf(hash)
+			if (found > -1) {
+				this.startIndex = found
+				this.endIndex = found + hash.length - 1
+				// window.location.hash = ''
+				window.history.replaceState(
+					null,
+					document.title,
+					window.location.pathname + window.location.search,
+				)
+			}
 		}
 	}
 }
