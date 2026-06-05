@@ -63,8 +63,8 @@ export class AppStore extends ReactiveController {
 			// console.log(params.get('input'), this.input)
 		}
 
-		const hash = location.hash.slice(1)
-		if (hash) {
+		if (location.hash.slice(1)) {
+			const hash = decodeURIComponent(location.hash.slice(1))
 			const found = this.input.indexOf(hash)
 			if (found > -1) {
 				this.startIndex = found
