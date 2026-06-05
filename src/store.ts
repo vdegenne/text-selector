@@ -3,7 +3,7 @@ import {FormBuilder} from '@vdegenne/forms/FormBuilder.js'
 import {saveToLocalStorage} from 'snar-save-to-local-storage'
 import {availablePages} from './constants.js'
 import {Page} from './pages/index.js'
-import {generateHash} from './utils.js'
+import {generateHash, sleep} from './utils.js'
 import toast from 'toastit'
 import {mainPage} from './pages/page-main.js'
 
@@ -64,18 +64,21 @@ export class AppStore extends ReactiveController {
 		}
 
 		if (location.hash.slice(1)) {
-			const hash = decodeURIComponent(location.hash.slice(1))
-			const found = this.input.indexOf(hash)
-			if (found > -1) {
-				this.startIndex = found
-				this.endIndex = found + hash.length - 1
-				// window.location.hash = ''
-				window.history.replaceState(
-					null,
-					document.title,
-					window.location.pathname + window.location.search,
-				)
-			}
+			// Defer to make sure the initial update has finished updating the indexes if the input is new.
+			sleep(100).then(() => {
+				const hash = decodeURIComponent(location.hash.slice(1))
+				const found = this.input.indexOf(hash)
+				if (found > -1) {
+					this.startIndex = found
+					this.endIndex = found + hash.length - 1
+					// window.location.hash = ''
+					window.history.replaceState(
+						null,
+						document.title,
+						window.location.pathname + window.location.search,
+					)
+				}
+			})
 		}
 	}
 }
