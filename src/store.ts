@@ -65,7 +65,7 @@ export class AppStore extends ReactiveController {
 
 		if (location.hash.slice(1)) {
 			// Defer to make sure the initial update has finished updating the indexes if the input is new.
-			sleep(100).then(() => {
+			sleep(50).then(() => {
 				const hash = decodeURIComponent(location.hash.slice(1))
 				const found = this.input.indexOf(hash)
 				if (found > -1) {

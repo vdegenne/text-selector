@@ -21,7 +21,6 @@ import {
 } from './gamepad-repeaters.js'
 import {getMainPage} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
-import {sleep} from './utils.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -35,7 +34,6 @@ class GamepadController extends ReactiveController {
 			debug: true,
 		})
 		minigp.onConnect(async (gamepad) => {
-			await sleep(50)
 			this.gamepad = gamepad
 			const map = gamepad.mapping
 			const loadTime = Date.now()
