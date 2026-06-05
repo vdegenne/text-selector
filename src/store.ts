@@ -69,7 +69,6 @@ export class AppStore extends ReactiveController {
 				const hash = decodeURIComponent(location.hash.slice(1))
 				const found = this.input.indexOf(hash)
 				if (found > -1) {
-					toast(found)
 					this.startIndex = found
 					this.endIndex = found + hash.length - 1
 					mainPage.highlighter.highlight(this.startIndex, this.endIndex)
