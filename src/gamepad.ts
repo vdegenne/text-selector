@@ -35,7 +35,7 @@ class GamepadController extends ReactiveController {
 			debug: true,
 		})
 		minigp.onConnect(async (gamepad) => {
-			await sleep(100)
+			await sleep(50)
 			this.gamepad = gamepad
 			const map = gamepad.mapping
 			const loadTime = Date.now()
