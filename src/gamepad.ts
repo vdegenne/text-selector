@@ -2,6 +2,7 @@ import {ReactiveController} from '@snar/lit'
 import {
 	googleImagesOpen,
 	googleImagesUrl,
+	googleTranslateOpen,
 	lazyMapOpen,
 	lazyMapUrl,
 	weblioOpen,
@@ -215,9 +216,13 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(map.LEFT_BUTTONS_TOP).before(({mode}) => {
+			gamepad.for(dpadup).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
+						const {highlightContent} = mainPage.highlighter.getInfo()
+						if (highlightContent) {
+							googleTranslateOpen(highlightContent)
+						}
 						break
 					case Mode.PRIMARY:
 						break
