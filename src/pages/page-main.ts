@@ -46,12 +46,14 @@ declare global {
 		background-color: var(--md-sys-color-secondary-container);
 		background-color: var(--md-sys-color-outline);
 		background-color: var(--md-sys-color-secondary);
+		background-color: var(--md-sys-color-outline);
 		color: #ff0000;
 		color: #ab9a00;
 		color: var(--md-sys-color-on-primary-container);
 		color: var(--md-sys-color-on-secondary-container);
 		color: var(--md-sys-color-inverse-on-surface);
 		color: var(--md-sys-color-on-secondary);
+		color: var(--md-sys-color-on-surface);
 	}
 `)
 export class PageMain extends PageElement {
