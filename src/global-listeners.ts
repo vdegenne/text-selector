@@ -1,6 +1,5 @@
 import {cquerySelector} from 'html-vision'
-import {DEV} from './constants.js'
-import {getThemeStore, openSettingsDialog} from './imports.js'
+import {openSettingsDialog} from './imports.js'
 
 const inputNames = ['INPUT', 'TEXTAREA', 'MD-FILLED-TEXT-FIELD']
 export function eventIsFromInput(event: Event) {
@@ -38,4 +37,6 @@ window.addEventListener('keypress', async (event: KeyboardEvent) => {
 	}
 })
 
-export {}
+window.addEventListener('blur', () => {
+	repeat
+})

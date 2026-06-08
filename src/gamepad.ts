@@ -79,6 +79,15 @@ class GamepadController extends ReactiveController {
 				'voice-recorder-close',
 				() => (gamepad.enabled = true),
 			)
+			// Make sure we stop all repeaters when we leave the page.
+			window.addEventListener('blur', () => {
+				leftPrevRepeater.stop()
+				leftNextRepeater.stop()
+				rightPrevRepeater.stop()
+				rightNextRepeater.stop()
+				rightUpRepeater.stop()
+				rightDownRepeater.stop()
+			})
 
 			gamepad.for(map.LEFT_STICK_PRESS).before(({mode}) => {
 				switch (mode) {
