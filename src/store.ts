@@ -19,6 +19,8 @@ export class AppStore extends ReactiveController {
 
 	@state() verticalPadding = 1
 
+	@state() mostHighlightedOpenInSameTab = false
+
 	F = new FormBuilder(this)
 
 	protected async updated(changed: PropertyValues<this>) {

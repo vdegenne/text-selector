@@ -66,6 +66,11 @@ export class PageMain extends PageElement {
 		return highlightLetters.length / letters.length
 	}
 
+	isMostHighlighted() {
+		// TODO: tweak this value if needed
+		return this.getHighlightedLettersRatio() > 0.95
+	}
+
 	firstTime = true
 
 	highlighter = new HighLightManager('.letter', {
@@ -476,17 +481,6 @@ export class PageMain extends PageElement {
 		}
 	}
 
-	openChatGPTSelector() {
-		const {highlightContent} = this.highlighter.getInfo()
-		if (highlightContent) {
-			if (this.getHighlightedLettersRatio() > 0.95) {
-				window.location.href = chatGptMediatorUrl(highlightContent)
-			} else {
-				chatGptMediatorOpen(highlightContent)
-			}
-		}
-	}
-
 	addCurrentSelectionToJpSynDex() {
 		const {highlightContent} = this.highlighter.getInfo()
 		if (highlightContent) {
@@ -516,6 +510,17 @@ export class PageMain extends PageElement {
 		}
 	}
 
+	openChatGPTSelector() {
+		const {highlightContent} = this.highlighter.getInfo()
+		if (highlightContent) {
+			if (store.mostHighlightedOpenInSameTab && this.isMostHighlighted()) {
+				window.location.href = chatGptMediatorUrl(highlightContent)
+			} else {
+				chatGptMediatorOpen(highlightContent)
+			}
+		}
+	}
+
 	openCNRTLOrJisho() {
 		const {highlightContent} = this.highlighter.getInfo()
 		if (highlightContent) {
@@ -526,7 +531,7 @@ export class PageMain extends PageElement {
 				// url = `https://www.cnrtl.fr/definition/${encodeURIComponent(highlightContent)}`
 				url = cnrtlUrl(highlightContent)
 			}
-			if (this.getHighlightedLettersRatio() > 0.95) {
+			if (store.mostHighlightedOpenInSameTab && this.isMostHighlighted()) {
 				window.location.href = url
 			} else {
 				window.open(url, '_blank')

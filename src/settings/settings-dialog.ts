@@ -34,6 +34,12 @@ export class SettingsDialog extends LitElement {
 				</header>
 
 				<form slot="content" method="dialog" id="form" class="">
+					<card-element headline="general">
+						${store.F.SWITCH(
+							'Open in same tab on most highlighted',
+							'mostHighlightedOpenInSameTab',
+						)}
+					</card-element>
 					<card-element headline="theme">
 						${renderThemeElements()}
 					</card-element>
