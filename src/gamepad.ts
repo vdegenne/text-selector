@@ -22,6 +22,7 @@ import {
 } from './gamepad-repeaters.js'
 import {getMainPage} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
+import {store} from './store.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -35,6 +36,7 @@ class GamepadController extends ReactiveController {
 			debug: true,
 		})
 		minigp.onConnect(async (gamepad) => {
+			const initDate = Date.now()
 			this.gamepad = gamepad
 			const map = gamepad.mapping
 			const loadTime = Date.now()
@@ -123,7 +125,13 @@ class GamepadController extends ReactiveController {
 				.after(() => {
 					downRepeater.stop()
 				})
+
 			gamepad.for(x).before(({mode}) => {
+				// To avoid running this on page call
+				if (Date.now() - initDate < 100) {
+					return
+				}
+
 				switch (mode) {
 					case Mode.NORMAL:
 						leftNextRepeater.stop()
@@ -191,7 +199,7 @@ class GamepadController extends ReactiveController {
 			gamepad.for(dpadleft).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
-						const content = getMainPage()?.getContent()
+						const content = mainPage.getContent()
 						if (content) {
 							if (hasSomeJapanese(content)) {
 								weblioOpen(content)
@@ -211,7 +219,7 @@ class GamepadController extends ReactiveController {
 			gamepad.for(dpadright).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
-						getMainPage()?.openCNRTLOrJisho()
+						mainPage.openCNRTLOrJisho()
 						break
 				}
 			})
@@ -234,14 +242,20 @@ class GamepadController extends ReactiveController {
 				if (highlightContent) {
 					switch (mode) {
 						case Mode.NORMAL:
-							if (mainPage.getHighlightedLettersRatio() > 0.95) {
+							if (
+								store.mostHighlightedOpenInSameTab &&
+								mainPage.isMostHighlighted()
+							) {
 								window.location.href = googleImagesUrl(highlightContent)
 							} else {
 								googleImagesOpen(highlightContent)
 							}
 							break
 						case Mode.PRIMARY:
-							if (mainPage.getHighlightedLettersRatio() > 0.95) {
+							if (
+								store.mostHighlightedOpenInSameTab &&
+								mainPage.isMostHighlighted()
+							) {
 								window.location.href = lazyMapUrl(highlightContent)
 							} else {
 								lazyMapOpen(highlightContent)
