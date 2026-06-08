@@ -46,7 +46,7 @@ declare global {
 		background-color: var(--md-sys-color-secondary-container);
 		background-color: var(--md-sys-color-outline);
 		background-color: var(--md-sys-color-secondary);
-		background-color: var(--md-sys-color-outline);
+		background-color: var(--md-sys-color-outline-variant);
 		color: #ff0000;
 		color: #ab9a00;
 		color: var(--md-sys-color-on-primary-container);
