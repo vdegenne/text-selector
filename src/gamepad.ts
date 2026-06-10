@@ -23,6 +23,7 @@ import {
 import {getMainPage} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {store} from './store.js'
+import {japsyndexOpen} from './utils.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -234,14 +235,15 @@ class GamepadController extends ReactiveController {
 			})
 
 			gamepad.for(dpadup).before(({mode}) => {
+				const {highlightContent} = mainPage.highlighter.getInfo()
+				if (!highlightContent) return
+
 				switch (mode) {
 					case Mode.NORMAL:
-						const {highlightContent} = mainPage.highlighter.getInfo()
-						if (highlightContent) {
-							googleTranslateOpen(highlightContent)
-						}
+						googleTranslateOpen(highlightContent)
 						break
 					case Mode.PRIMARY:
+						japsyndexOpen(highlightContent)
 						break
 				}
 			})
