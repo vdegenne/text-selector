@@ -481,6 +481,6 @@ export function getLastVisibleElement(
 }
 
 export function japsyndexOpen(input: string) {
-	window.open(`http://localhost:5180/${input}`, '_blank')
+	window.open(`http://localhost:5180/?q=${input}`, '_blank')
 	// window.open(`http://localhost:3015/${input}`, '_blank');
 }
