@@ -1,4 +1,5 @@
 import type {MdDialog} from '@material/web/all.js'
+import '@material/web/slider/slider.js'
 import {withController} from '@snar/lit'
 import {customElement} from 'custom-element-decorator'
 import {html, LitElement} from 'lit'
@@ -34,6 +35,13 @@ export class SettingsDialog extends LitElement {
 				</header>
 
 				<form slot="content" method="dialog" id="form" class="">
+					<card-element headline="display">
+						${store.F.SLIDER('Font size (px)', 'fontSizePx', {
+							min: 12,
+							max: 100,
+							step: 1,
+						})}
+					</card-element>
 					<card-element headline="general">
 						${store.F.SWITCH(
 							'Open in same tab on most highlighted',

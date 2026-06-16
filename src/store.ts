@@ -1,11 +1,11 @@
 import {PropertyValues, ReactiveController, state} from '@snar/lit'
 import {FormBuilder} from '@vdegenne/forms/FormBuilder.js'
 import {saveToLocalStorage} from 'snar-save-to-local-storage'
+import toast from 'toastit'
 import {availablePages} from './constants.js'
 import {Page} from './pages/index.js'
-import {generateHash, sleep} from './utils.js'
-import toast from 'toastit'
 import {mainPage} from './pages/page-main.js'
+import {generateHash, sleep} from './utils.js'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -17,6 +17,7 @@ export class AppStore extends ReactiveController {
 	@state() startIndex = 0
 	@state() endIndex = 0
 
+	@state() fontSizePx = 12
 	@state() verticalPadding = 1
 
 	@state() mostHighlightedOpenInSameTab = false

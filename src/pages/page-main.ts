@@ -55,6 +55,10 @@ declare global {
 		color: var(--md-sys-color-on-surface);
 		color: var(--md-sys-color-on-primary);
 	}
+
+	[jp] .letter {
+		font-family: 'Noto Serif JP';
+	}
 `)
 export class PageMain extends PageElement {
 	@queryAll('.letter') letterElements!: HTMLElement[]
@@ -98,6 +102,9 @@ export class PageMain extends PageElement {
 
 	render() {
 		const lines = store.input.split('\n').filter((l) => l)
+		const isJp = hasSomeJapanese(store.input ?? '')
+		toast(isJp)
+
 		return html`<!---->
 			${!store.input
 				? html`<!---->
@@ -115,8 +122,11 @@ export class PageMain extends PageElement {
 						<div
 							class="flex items-center gap-5 py-1"
 							style="border-bottom: 1px dashed var(--md-sys-color-outline)"
+							?jp=${isJp}
 						>
-							<span class="text-(--md-sys-color-outline) opacity-30 text-sm"
+							<span
+								class="text-(--md-sys-color-outline) opacity-30"
+								style="font-size:${store.fontSizePx}"
 								>#${i}</span
 							>
 							<div>
