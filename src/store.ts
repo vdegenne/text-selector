@@ -18,6 +18,8 @@ export class AppStore extends ReactiveController {
 	@state() endIndex = 0
 
 	@state() fontSizePx = 12
+	@state() fontWeight = 100
+
 	@state() verticalPadding = 1
 
 	@state() mostHighlightedOpenInSameTab = false
@@ -51,6 +53,13 @@ export class AppStore extends ReactiveController {
 				this.inputHash = hash
 				toast(hash)
 			})
+		}
+
+		if (changed.has('fontSizePx')) {
+			mainPage.style.setProperty('--font-size-px', `${this.fontSizePx}px`)
+		}
+		if (changed.has('fontWeight')) {
+			mainPage.style.setProperty('--font-weight', this.fontWeight + '')
 		}
 	}
 

@@ -37,8 +37,13 @@ export class SettingsDialog extends LitElement {
 				<form slot="content" method="dialog" id="form" class="">
 					<card-element headline="display">
 						${store.F.SLIDER('Font size (px)', 'fontSizePx', {
-							min: 12,
+							min: 8,
 							max: 100,
+							step: 1,
+						})}
+						${store.F.SLIDER('Font weight', 'fontWeight', {
+							min: 100,
+							max: 900,
 							step: 1,
 						})}
 					</card-element>

@@ -38,6 +38,8 @@ declare global {
 		font-family: 'Playfair Display'; /* why not */
 		font-family: BJCree; /* BOF */
 		font-family: Merriweather; /* not bad at all */
+		font-size: var(--font-size-px);
+		font-weight: var(--font-weight);
 	}
 
 	.letter[highlight1] {
@@ -103,7 +105,6 @@ export class PageMain extends PageElement {
 	render() {
 		const lines = store.input.split('\n').filter((l) => l)
 		const isJp = hasSomeJapanese(store.input ?? '')
-		toast(isJp)
 
 		return html`<!---->
 			${!store.input
@@ -115,7 +116,7 @@ export class PageMain extends PageElement {
 						<!---->`
 				: null}
 			<div
-				class="p-7 text-3xl leading-normal mb-48 -max-w-7xl w-full mx-auto box-border"
+				class="p-7 leading-normal mb-48 -max-w-7xl w-full mx-auto box-border"
 			>
 				${lines.map((line, i) => {
 					return html`<!-- -->
@@ -124,9 +125,7 @@ export class PageMain extends PageElement {
 							style="border-bottom: 1px dashed var(--md-sys-color-outline)"
 							?jp=${isJp}
 						>
-							<span
-								class="text-(--md-sys-color-outline) opacity-30"
-								style="font-size:${store.fontSizePx}"
+							<span class="text-(--md-sys-color-outline) opacity-30"
 								>#${i}</span
 							>
 							<div>
