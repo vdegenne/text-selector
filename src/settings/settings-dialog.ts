@@ -6,6 +6,7 @@ import {html, LitElement} from 'lit'
 import {withStyles} from 'lit-with-styles'
 import {query, state} from 'lit/decorators.js'
 import '../card-element.js'
+import {gamepadCtrl} from '../gamepad.js'
 import '../material/dialog-patch.js'
 import '../material/item-patch.js'
 import {store} from '../store.js'
@@ -25,8 +26,18 @@ export class SettingsDialog extends LitElement {
 	render() {
 		return html`
 			<md-dialog
-				?open=${this.open}
-				@closed=${() => (this.open = false)}
+				?open="${this.open}"
+				@open="${() => {
+					try {
+						gamepadCtrl.gamepad.enabled = false
+					} catch {}
+				}}"
+				@close="${() => {
+					try {
+						gamepadCtrl.gamepad.enabled = true
+					} catch {}
+				}}"
+				@closed="${() => (this.open = false)}"
 				style="max-width:min(100vw - 18px, 500px);width:100%"
 			>
 				<header slot="headline" class="select-none">
@@ -44,7 +55,7 @@ export class SettingsDialog extends LitElement {
 						${store.F.SLIDER('Font weight', 'fontWeight', {
 							min: 100,
 							max: 900,
-							step: 1,
+							step: 50,
 						})}
 					</card-element>
 					<card-element headline="general">
