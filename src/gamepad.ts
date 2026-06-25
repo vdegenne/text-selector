@@ -5,6 +5,7 @@ import {
 	googleTranslateOpen,
 	lazyMapOpen,
 	lazyMapUrl,
+	siteDexOpen,
 	weblioOpen,
 } from '@vdegenne/links'
 import {MGamepad, MiniGamepad, Mode} from '@vdegenne/mini-gamepad'
@@ -305,9 +306,7 @@ class GamepadController extends ReactiveController {
 						const {highlightContent} = mainPage.highlighter.getInfo()
 						if (highlightContent) {
 							// youtubeSearchOpen(`${highlightContent} prononciation`)
-							window.open(
-								`http://192.168.1.161:42115/?input=${highlightContent}`,
-							)
+							siteDexOpen(highlightContent)
 						}
 						break
 					case Mode.SECONDARY:
