@@ -46,16 +46,16 @@ declare global {
 		background-color: #caca00;
 		background-color: var(--md-sys-color-secondary-container);
 		background-color: var(--md-sys-color-outline);
-		background-color: var(--md-sys-color-primary-container);
 		background-color: var(--md-sys-color-outline-variant);
 		background-color: var(--md-sys-color-primary);
+		background-color: var(--md-sys-color-primary-container);
 		color: #ff0000;
 		color: #ab9a00;
 		color: var(--md-sys-color-on-secondary-container);
 		color: var(--md-sys-color-inverse-on-surface);
-		color: var(--md-sys-color-on-primary-container);
 		color: var(--md-sys-color-on-surface);
 		color: var(--md-sys-color-on-primary);
+		color: var(--md-sys-color-on-primary-container);
 	}
 
 	[jp] .letter {
