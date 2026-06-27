@@ -241,7 +241,7 @@ class GamepadController extends ReactiveController {
 
 				switch (mode) {
 					case Mode.NORMAL:
-						googleTranslateOpen(highlightContent)
+						googleTranslateOpen(highlightContent, 'french')
 						break
 					case Mode.PRIMARY:
 						japsyndexOpen(highlightContent)
