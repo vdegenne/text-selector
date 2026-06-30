@@ -15,8 +15,8 @@ let clickAudio = null
 
 export function playClick() {
 	if (!clickAudio) {
-		clickAudio = new Audio('./audio/click2.wav?inline')
-		clickAudio.volume = 0.3
+		clickAudio = new Audio('./audio/click3.wav?inline')
+		clickAudio.volume = 0.5
 		clickAudio.preload = 'auto'
 	}
 
