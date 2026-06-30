@@ -17,12 +17,14 @@ export class AppStore extends ReactiveController {
 	@state() startIndex = 0
 	@state() endIndex = 0
 
-	@state() fontSizePx = 12
-	@state() fontWeight = 100
+	@state() fontSizePx = 31
+	@state() fontWeight = 500
 
 	@state() verticalPadding = 1
 
 	@state() mostHighlightedOpenInSameTab = false
+
+	@state() audioVolume = 0.5
 
 	F = new FormBuilder(this)
 

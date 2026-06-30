@@ -58,12 +58,22 @@ export class SettingsDialog extends LitElement {
 							step: 50,
 						})}
 					</card-element>
-					<card-element headline="general">
+
+					<card-element headline="behavior">
 						${store.F.SWITCH(
 							'Open in same tab on most highlighted',
 							'mostHighlightedOpenInSameTab',
 						)}
 					</card-element>
+
+					<card-element headline="audio">
+						${store.F.SLIDER('Audio volume', 'audioVolume', {
+							min: 0,
+							max: 1,
+							step: 0.1,
+						})}
+					</card-element>
+
 					<card-element headline="theme">
 						${renderThemeElements()}
 					</card-element>

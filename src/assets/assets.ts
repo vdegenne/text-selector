@@ -1,4 +1,5 @@
 import {html} from 'lit'
+import {store} from '../store.js'
 
 /** Export individual assets for helping tree-shaking */
 // export {default as MY_IMAGE} from './img/my-image.png?inline';
@@ -16,7 +17,7 @@ let clickAudio = null
 export function playClick() {
 	if (!clickAudio) {
 		clickAudio = new Audio('./audio/click3.wav?inline')
-		clickAudio.volume = 0.5
+		clickAudio.volume = store.audioVolume
 		clickAudio.preload = 'auto'
 	}
 
