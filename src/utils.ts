@@ -484,3 +484,18 @@ export function japsyndexOpen(input: string) {
 	window.open(`http://localhost:5180/?q=${input}`, '_blank')
 	// window.open(`http://localhost:3015/${input}`, '_blank');
 }
+
+export function isValidUrl(text: string): boolean {
+	if (typeof text !== 'string') return false
+
+	const trimmed = text.trim()
+
+	if (trimmed.length === 0) return false
+
+	try {
+		const url = new URL(trimmed)
+		return url.protocol === 'http:' || url.protocol === 'https:'
+	} catch {
+		return false
+	}
+}

@@ -24,7 +24,7 @@ import {
 import {getMainPage} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {store} from './store.js'
-import {japsyndexOpen} from './utils.js'
+import {isValidUrl, japsyndexOpen} from './utils.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -197,8 +197,14 @@ class GamepadController extends ReactiveController {
 						break
 				}
 			})
-			gamepad.for(map.RIGHT_BUTTONS_RIGHT).before(({mode}) => {
-				if (mode === Mode.NORMAL) {
+			gamepad.for(b).before(({mode}) => {
+				switch (mode) {
+					case Mode.NORMAL:
+						const content = mainPage.getContent()
+						if (content && isValidUrl(content)) {
+							window.open(content, '_blank')
+						}
+						break
 				}
 			})
 
