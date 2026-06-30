@@ -225,7 +225,7 @@ class GamepadController extends ReactiveController {
 						break
 					case Mode.PRIMARY:
 						// Trick to avoid trigger this event on page open
-						if (Date.now() - loadTime > 100) {
+						if (Date.now() - loadTime > 80) {
 							mainPage.openChatGPTSelector()
 						}
 						break
