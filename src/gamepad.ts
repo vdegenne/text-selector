@@ -224,10 +224,7 @@ class GamepadController extends ReactiveController {
 									'_blank',
 								)
 							} else if (content.startsWith('$')) {
-								window.open(
-									`https://x.com/hashtag/${encodeURIComponent(content)}`,
-									'_blank',
-								)
+								window.open(`https://x.com/hashtag/${content}`, '_blank')
 							}
 						}
 						break
