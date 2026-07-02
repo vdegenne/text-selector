@@ -24,7 +24,8 @@ import {
 import {getMainPage} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {store} from './store.js'
-import {isValidUrl, japsyndexOpen} from './utils.js'
+import {copyToClipboard, isValidUrl, japsyndexOpen} from './utils.js'
+import toast from 'toastit'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -91,13 +92,21 @@ class GamepadController extends ReactiveController {
 				rightDownRepeater.stop()
 			})
 
-			gamepad.for(map.LEFT_STICK_PRESS).before(({mode}) => {
+			gamepad.for(lpress).before(({mode}) => {
 				switch (mode) {
 					case Mode.PRIMARY:
 						getMainPage()?.addCurrentSelectionToJpSynDex()
 						break
 					case Mode.SECONDARY:
 						getMainPage()?.copySelectionToClipBoard()
+						break
+					case Mode.TERTIARY:
+						const content = mainPage.getContent()
+						if (content) {
+							const input = `[${content}]`
+							copyToClipboard(input)
+							toast(input)
+						}
 						break
 				}
 			})
