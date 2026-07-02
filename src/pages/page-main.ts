@@ -163,7 +163,7 @@ export class PageMain extends PageElement {
 				${lines.map((line, i) => {
 					return html`<!-- -->
 						<div
-							class="flex items-center gap-5 py-1"
+							class="flex items-center gap-5 py-1 text-[initial]"
 							style="border-bottom: 1px dashed var(--md-sys-color-outline)"
 							?jp=${isJp}
 						>
