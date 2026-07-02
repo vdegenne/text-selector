@@ -210,8 +210,12 @@ class GamepadController extends ReactiveController {
 				switch (mode) {
 					case Mode.NORMAL:
 						const content = mainPage.getContent()
-						if (content && isValidUrl(content)) {
-							window.open(content, '_blank')
+						if (content) {
+							if (isValidUrl(content)) {
+								window.open(content, '_blank')
+							} else if (content.startsWith('@')) {
+								window.open(`https://x.com/${content.slice(1)}`, '_blank')
+							}
 						}
 						break
 				}
