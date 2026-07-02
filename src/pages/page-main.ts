@@ -138,6 +138,8 @@ export class PageMain extends PageElement {
 					.catch(() => {
 						this.special = false
 					})
+			} else {
+				this.special = false
 			}
 		},
 	})
