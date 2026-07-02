@@ -128,7 +128,7 @@ export class PageMain extends PageElement {
 			}
 
 			const {highlightContent} = info
-			if (highlightContent.length) {
+			if (highlightContent.length < 15) {
 				jpsyndexAPI
 					.get(`/search/${highlightContent}` as '/search/:word')
 					.then(({response}) => {
