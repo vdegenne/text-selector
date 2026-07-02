@@ -6,6 +6,8 @@ import {availablePages} from './constants.js'
 import {Page} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {generateHash, sleep} from './utils.js'
+import {clickAudio} from './assets/assets.js'
+import {click} from 'html-vision'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -24,7 +26,7 @@ export class AppStore extends ReactiveController {
 
 	@state() mostHighlightedOpenInSameTab = false
 
-	@state() audioVolume = 0.5
+	@state() audioVolume = 0.3
 
 	F = new FormBuilder(this)
 
@@ -62,6 +64,12 @@ export class AppStore extends ReactiveController {
 		}
 		if (changed.has('fontWeight')) {
 			mainPage.style.setProperty('--font-weight', this.fontWeight + '')
+		}
+
+		if (changed.has('audioVolume')) {
+			if (clickAudio) {
+				clickAudio.volume = this.audioVolume
+			}
 		}
 	}
 

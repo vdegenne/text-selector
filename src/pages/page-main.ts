@@ -1,3 +1,4 @@
+import * as jpsyndex from '@vdegenne/jpsyndex'
 import {withController} from '@snar/lit'
 import {
 	chatGptMediatorOpen,
@@ -9,7 +10,7 @@ import {playJapanese, speakEnglish, speakFrench} from '@vdegenne/speech'
 import {hasSomeJapanese} from 'asian-regexps'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
-import {customElement, query, queryAll} from 'lit/decorators.js'
+import {customElement, property, query, queryAll} from 'lit/decorators.js'
 import toast from 'toastit'
 import {playClick} from '../assets/assets.js'
 import {HighLightManager} from '../HighlightManager.js'
@@ -30,6 +31,8 @@ declare global {
 		'page-main': PageMain
 	}
 }
+
+const jpsyndexAPI = jpsyndex.getApi()
 
 @customElement('page-main')
 @withController(store)
@@ -58,11 +61,35 @@ declare global {
 		color: var(--md-sys-color-on-primary-container);
 	}
 
+	:host([special]) .letter[highlight1] {
+		background-color: var(--md-sys-color-tertiary-container);
+		color: var(--md-sys-color-on-tertiary-container);
+	}
+
+	/* SINGLE highlighted element */
+	.letter[highlight1]:not(:has(~ .letter[highlight1])):not(
+			.letter[highlight1] ~ .letter[highlight1]
+		) {
+		border-radius: 5px;
+	}
+
+	/* FIRST in a group */
+	.letter[highlight1]:not(.letter[highlight1] ~ .letter[highlight1]) {
+		border-radius: 5px 0 0 5px;
+	}
+
+	/* LAST in a group */
+	.letter[highlight1]:not(:has(~ .letter[highlight1])) {
+		border-radius: 0 5px 5px 0;
+	}
+
 	[jp] .letter {
 		font-family: 'Noto Serif JP';
 	}
 `)
 export class PageMain extends PageElement {
+	@property({type: Boolean, reflect: true}) special = false
+
 	@queryAll('.letter') letterElements!: HTMLElement[]
 	@query('.letter[highlight1]') firstHighlightedLetter?: HTMLDivElement
 
@@ -98,6 +125,19 @@ export class PageMain extends PageElement {
 				})
 				this.firstTime = false
 				// }
+			}
+
+			const {highlightContent} = info
+			if (highlightContent.length) {
+				jpsyndexAPI
+					.get(`/search/${highlightContent}` as '/search/:word')
+					.then(({response}) => {
+						if (!response.ok) throw 0
+						this.special = true
+					})
+					.catch(() => {
+						this.special = false
+					})
 			}
 		},
 	})

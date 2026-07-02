@@ -12,8 +12,8 @@ import {store} from '../store.js'
 // 	AUDIO_SUCCESS.currentTime = 0
 // 	AUDIO_SUCCESS.play()
 // }
-let clickAudio = null
 
+export let clickAudio: HTMLAudioElement | null = null
 export function playClick() {
 	if (!clickAudio) {
 		clickAudio = new Audio('./audio/click3.wav?inline')
