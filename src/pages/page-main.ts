@@ -163,11 +163,12 @@ export class PageMain extends PageElement {
 				${lines.map((line, i) => {
 					return html`<!-- -->
 						<div
-							class="flex items-center gap-5 py-1 text-[initial]"
+							class="flex items-center gap-5 py-1"
 							style="border-bottom: 1px dashed var(--md-sys-color-outline)"
 							?jp=${isJp}
 						>
-							<span class="text-(--md-sys-color-outline) opacity-30"
+							<span
+								class="text-(--md-sys-color-outline) opacity-30 text-[initial]"
 								>#${i}</span
 							>
 							<div>
