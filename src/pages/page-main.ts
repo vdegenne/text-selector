@@ -1,3 +1,4 @@
+import {tts, TTS_MODELS} from '@vdegenne/tts-server'
 import * as jpsyndex from '@vdegenne/jpsyndex'
 import {withController} from '@snar/lit'
 import {
@@ -149,14 +150,16 @@ export class PageMain extends PageElement {
 		const isJp = hasSomeJapanese(store.input ?? '')
 
 		return html`<!---->
-			${!store.input
-				? html`<!---->
-						<div class="m-12">
-							Use ?input=${'<your-text>'} in the url (then use your controller
-							to navigate)
-						</div>
-						<!---->`
-				: null}
+			${
+				!store.input
+					? html`<!---->
+							<div class="m-12">
+								Use ?input=${'<your-text>'} in the url (then use your controller
+								to navigate)
+							</div>
+							<!---->`
+					: null
+			}
 			<div
 				class="p-7 leading-normal mb-48 -max-w-7xl w-full mx-auto box-border"
 			>
@@ -177,9 +180,11 @@ export class PageMain extends PageElement {
 									return html`<!-- --><span class="letter">${letter}</span
 										><!-- -->`
 								})}
-								${i !== lines.length - 1
-									? html`<span class="letter"></span>`
-									: null}
+								${
+									i !== lines.length - 1
+										? html`<span class="letter"></span>`
+										: null
+								}
 							</div>
 						</div>
 						<!-- -->`
@@ -636,7 +641,22 @@ export class PageMain extends PageElement {
 				break
 			case 'ja':
 				// speakJapanese(text)
-				playJapanese(text)
+				try {
+					await playJapanese(text, {fallbackToSpeechSynthesis: false})
+				} catch {
+					try {
+						// Couldn't play real japanese audio, fallback to tts if possible
+						const audio = tts({
+							text,
+							languageCode: 'ja-JP',
+							model: TTS_MODELS.GEMINI_2_5_FLASH_LITE_TTS,
+							voice: 'Aoede',
+						})
+						await audio.play()
+					} catch {
+						toast('No TTS found.')
+					}
+				}
 				break
 			default:
 				speakEnglish(text)
