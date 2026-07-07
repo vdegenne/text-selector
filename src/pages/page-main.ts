@@ -649,7 +649,7 @@ export class PageMain extends PageElement {
 						const audio = tts({
 							text,
 							languageCode: 'ja-JP',
-							model: TTS_MODELS.GEMINI_2_5_FLASH_LITE_TTS,
+							model: TTS_MODELS.GEMINI_2_5_FLASH_TTS,
 							voice: 'Achernar',
 						})
 						await audio.play()
