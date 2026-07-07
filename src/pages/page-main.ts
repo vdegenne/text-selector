@@ -650,7 +650,7 @@ export class PageMain extends PageElement {
 							text,
 							languageCode: 'ja-JP',
 							model: TTS_MODELS.GEMINI_2_5_FLASH_LITE_TTS,
-							voice: 'Aoede',
+							voice: 'Achernar',
 						})
 						await audio.play()
 					} catch {
