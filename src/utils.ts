@@ -416,6 +416,17 @@ export function isInViewport(el: Element) {
 	)
 }
 
+export function getCharType(
+	c: string,
+): 'hiragana' | 'katakana' | 'kanji' | 'roman' | 'number' | 'other' {
+	if (/[\u3040-\u309F]/u.test(c)) return 'hiragana'
+	if (/[\u30A0-\u30FF\u31F0-\u31FF]/u.test(c)) return 'katakana'
+	if (/[\u4E00-\u9FFF\u3400-\u4DBF]/u.test(c)) return 'kanji'
+	if (/[A-Za-z]/u.test(c)) return 'roman'
+	if (/[\p{N}]/u.test(c)) return 'number'
+	return 'other'
+}
+
 export function isWordChar(c: string): boolean {
 	// Unicode letters, marks, and numbers
 	return /[\p{L}\p{M}\p{N}_-]/u.test(c)
@@ -428,11 +439,25 @@ export function getWordBoundaries(
 	let start = index
 	let end = index
 
+	const initialType = getCharType(text[index])
+
 	while (start > 0 && isWordChar(text[start - 1])) {
+		const type = getCharType(text[start - 1])
+
+		if (type !== 'other' && initialType !== 'other' && type !== initialType) {
+			break
+		}
+
 		start--
 	}
 
 	while (end < text.length && isWordChar(text[end])) {
+		const type = getCharType(text[end])
+
+		if (type !== 'other' && initialType !== 'other' && type !== initialType) {
+			break
+		}
+
 		end++
 	}
 
