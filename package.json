@@ -101,7 +101,7 @@
     "@vdegenne/rollup-plugin-minify-html": "^1.0.6",
     "@vdegenne/router": "^0.1.8",
     "@vdegenne/speech": "^0.5.4",
-    "@vdegenne/tts-server": "^0.1.33",
+    "@vdegenne/tts-server": "^0.1.37",
     "@vite-pwa/assets-generator": "^1.0.2",
     "asian-regexps": "^5.1.0",
     "custom-element-decorator": "^0.6.0",

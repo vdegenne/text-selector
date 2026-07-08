@@ -649,8 +649,9 @@ export class PageMain extends PageElement {
 						const audio = tts({
 							text,
 							languageCode: 'ja-JP',
-							model: TTS_MODELS.GEMINI_2_5_FLASH_TTS,
-							voice: 'Achernar',
+							model: TTS_MODELS.GEMINI_3_1_FLASH_TTS,
+							// model: TTS_MODELS.GEMINI_2_5_FLASH_TTS,
+							voice: 'random',
 						})
 						await audio.play()
 					} catch {
