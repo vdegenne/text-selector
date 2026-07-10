@@ -148,7 +148,9 @@ class GamepadController extends ReactiveController {
 
 			gamepad.for(x).before(({mode}) => {
 				// To avoid running this on page call
-				if (Date.now() - initDate < 100) {
+				// TODO: this is annoying should prob find another method
+				//	Maybe check the after event.
+				if (Date.now() - initDate < 70) {
 					return
 				}
 
@@ -158,7 +160,7 @@ class GamepadController extends ReactiveController {
 						leftPrevRepeater.stop()
 						// rightNextRepeater.stop()
 						// rightPrevRepeater.stop()
-						mainPage.highlightWordUnderCursor()
+						mainPage.expandHighlight()
 						break
 					case Mode.PRIMARY:
 						mainPage.selectAll()

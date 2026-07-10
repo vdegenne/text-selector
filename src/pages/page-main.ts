@@ -21,11 +21,14 @@ import {
 	getFirstVisibleElement,
 	getLastVisibleElement,
 	getTextInfo,
-	getWordBoundaries,
 	isVisible,
-	isWordChar,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
+import {
+	getLineBoundaries,
+	getWordBoundaries,
+	isWordChar,
+} from '../text-logic.js'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -198,13 +201,37 @@ export class PageMain extends PageElement {
 		this.highlighter.highlight(store.startIndex, store.endIndex)
 	}
 
-	highlightWordUnderCursor() {
+	expandHighlight() {
 		const info = this.highlighter.getInfo()
-		const {start, end} = getWordBoundaries(
-			store.input.replaceAll('\n', ' '),
-			info.highlightIndexStart,
-		)
-		this.highlighter.highlight(start, end)
+		// TODO: should uncomment the replaceAll below back?
+		const text = store.input //.replaceAll('\n', ' ')
+		// const index = info.highlightIndexStart
+
+		let {highlightIndexStart: start, highlightIndexEnd: end} = info
+
+		let next = getWordBoundaries(text, start, end)
+
+		if (next.start === start && next.end === end) {
+			// Nothing changed, try extending
+			next = getWordBoundaries(text, start, end, {
+				ignoreTypeBoundaries: true,
+			})
+		}
+
+		if (next.start === start && next.end === end) {
+			// Still nothing changed, select the line
+			next = getLineBoundaries(text, start, end)
+		}
+
+		if (next.start === start && next.end === end) {
+			// Still nothing changed, select all text
+			next = {
+				start: 0,
+				end: text.length - 1,
+			}
+		}
+
+		this.highlighter.highlight(next.start, next.end)
 	}
 
 	selectAll() {
