@@ -1,6 +1,5 @@
-import {tts, TTS_MODELS} from '@vdegenne/tts-server'
-import * as jpsyndex from '@vdegenne/jpsyndex'
 import {withController} from '@snar/lit'
+import * as jpsyndex from '@vdegenne/jpsyndex'
 import {
 	chatGptMediatorOpen,
 	chatGptMediatorUrl,
@@ -8,6 +7,7 @@ import {
 	jishoUrl,
 } from '@vdegenne/links'
 import {playJapanese, speakEnglish, speakFrench} from '@vdegenne/speech'
+import {tts, TTS_MODELS} from '@vdegenne/tts-server'
 import {hasSomeJapanese} from 'asian-regexps'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
@@ -17,6 +17,12 @@ import {playClick} from '../assets/assets.js'
 import {HighLightManager} from '../HighlightManager.js'
 import {store} from '../store.js'
 import {
+	getLineBoundaries,
+	getSpecialBoundaries,
+	getWordBoundaries,
+	isWordChar,
+} from '../text-logic.js'
+import {
 	copyToClipboard,
 	getFirstVisibleElement,
 	getLastVisibleElement,
@@ -24,11 +30,6 @@ import {
 	isVisible,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
-import {
-	getLineBoundaries,
-	getWordBoundaries,
-	isWordChar,
-} from '../text-logic.js'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -205,11 +206,19 @@ export class PageMain extends PageElement {
 		const info = this.highlighter.getInfo()
 		// TODO: should uncomment the replaceAll below back?
 		const text = store.input //.replaceAll('\n', ' ')
-		// const index = info.highlightIndexStart
 
-		let {highlightIndexStart: start, highlightIndexEnd: end} = info
+		const start = info.highlightIndexStart
+		const end = info.highlightIndexEnd
 
-		let next = getWordBoundaries(text, start, end)
+		let next = getSpecialBoundaries(text, start)
+
+		if (next && next.start === start && next.end === end) {
+			next = null
+		}
+
+		if (!next) {
+			next = getWordBoundaries(text, start, end)
+		}
 
 		if (next.start === start && next.end === end) {
 			// Nothing changed, try extending

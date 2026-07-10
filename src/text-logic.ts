@@ -103,3 +103,34 @@ export function getLineBoundaries(
 
 	return {start: startIndex, end: endIndex}
 }
+
+export function getSpecialBoundaries(
+	text: string,
+	index: number,
+): {start: number; end: number} | null {
+	const patterns = [
+		// URLs
+		/(https?:\/\/[^\s]+)/u,
+
+		// Hashtags
+		/(#[\p{L}\p{N}_-]+)/u,
+
+		// Mentions
+		/(@[\p{L}\p{N}_-]+)/u,
+	]
+
+	for (const pattern of patterns) {
+		const regex = new RegExp(pattern.source, 'gu')
+
+		for (const match of text.matchAll(regex)) {
+			const start = match.index!
+			const end = start + match[0].length - 1
+
+			if (index >= start && index <= end) {
+				return {start, end}
+			}
+		}
+	}
+
+	return null
+}
