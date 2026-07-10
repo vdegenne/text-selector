@@ -117,6 +117,9 @@ export function getSpecialBoundaries(
 
 		// Mentions
 		/(@[\p{L}\p{N}_-]+)/u,
+
+		// Dollar tags
+		/(\$[\p{L}\p{N}_-]+)/u,
 	]
 
 	for (const pattern of patterns) {
