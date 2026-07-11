@@ -5,12 +5,15 @@ import {
 	googleTranslateOpen,
 	lazyMapOpen,
 	lazyMapUrl,
+	lensHistoryOpen,
+	lensHistoryUrl,
 	siteDexOpen,
 	weblioOpen,
 } from '@vdegenne/links'
 import {MGamepad, MiniGamepad, Mode} from '@vdegenne/mini-gamepad'
 import {hasSomeJapanese} from 'asian-regexps'
 import {state} from 'lit/decorators.js'
+import toast from 'toastit'
 import {
 	downRepeater,
 	leftNextRepeater,
@@ -25,7 +28,6 @@ import {getMainPage} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {store} from './store.js'
 import {copyToClipboard, isValidUrl, japsyndexOpen} from './utils.js'
-import toast from 'toastit'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -299,9 +301,11 @@ class GamepadController extends ReactiveController {
 								store.mostHighlightedOpenInSameTab &&
 								mainPage.isMostHighlighted()
 							) {
-								window.location.href = lazyMapUrl(highlightContent)
+								// window.location.href = lazyMapUrl(highlightContent)
+								window.location.href = lensHistoryUrl(highlightContent)
 							} else {
-								lazyMapOpen(highlightContent)
+								// lazyMapOpen(highlightContent)
+								lensHistoryOpen(highlightContent)
 							}
 							break
 					}
