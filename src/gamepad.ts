@@ -305,7 +305,7 @@ class GamepadController extends ReactiveController {
 								window.location.href = lensHistoryUrl(highlightContent)
 							} else {
 								// lazyMapOpen(highlightContent)
-								lensHistoryOpen(highlightContent)
+								lensHistoryOpen(highlightContent, true)
 							}
 							break
 					}
