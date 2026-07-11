@@ -153,6 +153,7 @@ export class PageMain extends PageElement {
 					})
 					.catch(() => {
 						this.special = false
+						this.feedback = ''
 					})
 			} else {
 				this.special = false
