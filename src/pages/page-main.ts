@@ -179,7 +179,7 @@ export class PageMain extends PageElement {
 								style="font-size: initial"
 								>#${i}</span
 							>
-							<div class="flex flex-wrap">
+							<div class="break-all">
 								${line.split('').map((letter) => {
 									return html`<!-- --><span class="letter">${letter}</span
 										><!-- -->`
