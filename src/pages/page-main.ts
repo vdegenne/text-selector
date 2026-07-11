@@ -50,6 +50,11 @@ const jpsyndexAPI = jpsyndex.getApi()
 		font-weight: var(--font-weight);
 	}
 
+	.letter {
+		display: flex-inline;
+		flex-wrap: wrap;
+	}
+
 	.letter[highlight1] {
 		background-color: #caca00;
 		background-color: var(--md-sys-color-secondary-container);
