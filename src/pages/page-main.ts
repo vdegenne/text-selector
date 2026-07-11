@@ -50,11 +50,6 @@ const jpsyndexAPI = jpsyndex.getApi()
 		font-weight: var(--font-weight);
 	}
 
-	.letter {
-		display: flex-inline;
-		flex-wrap: wrap;
-	}
-
 	.letter[highlight1] {
 		background-color: #caca00;
 		background-color: var(--md-sys-color-secondary-container);
@@ -184,7 +179,7 @@ export class PageMain extends PageElement {
 								style="font-size: initial"
 								>#${i}</span
 							>
-							<div>
+							<div class="flex flex-wrap">
 								${line.split('').map((letter) => {
 									return html`<!-- --><span class="letter">${letter}</span
 										><!-- -->`
