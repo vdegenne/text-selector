@@ -9,9 +9,15 @@ import {
 import {playJapanese, speakEnglish, speakFrench} from '@vdegenne/speech'
 import {tts, TTS_MODELS} from '@vdegenne/tts-server'
 import {hasSomeJapanese} from 'asian-regexps'
-import {css, html} from 'lit'
+import {css, html, TemplateResult} from 'lit'
 import {withStyles} from 'lit-with-styles'
-import {customElement, property, query, queryAll} from 'lit/decorators.js'
+import {
+	customElement,
+	property,
+	query,
+	queryAll,
+	state,
+} from 'lit/decorators.js'
 import toast from 'toastit'
 import {playClick} from '../assets/assets.js'
 import {HighLightManager} from '../HighlightManager.js'
@@ -95,6 +101,8 @@ const jpsyndexAPI = jpsyndex.getApi()
 export class PageMain extends PageElement {
 	@property({type: Boolean, reflect: true}) special = false
 
+	@state() feedback: any = ''
+
 	@queryAll('.letter') letterElements!: HTMLElement[]
 	@query('.letter[highlight1]') firstHighlightedLetter?: HTMLDivElement
 
@@ -136,9 +144,12 @@ export class PageMain extends PageElement {
 			if (highlightContent.length < 15) {
 				jpsyndexAPI
 					.get(`/search/${highlightContent}` as '/search/:word')
-					.then(({response}) => {
+					.then(async ({response}) => {
 						if (!response.ok) throw 0
 						this.special = true
+						this.feedback = (await response.text())
+							.split('/')
+							.map((word) => html`<span>${word}</span>`)
 					})
 					.catch(() => {
 						this.special = false
@@ -193,6 +204,13 @@ export class PageMain extends PageElement {
 						</div>
 						<!-- -->`
 				})}
+			</div>
+
+			<div
+				id="feedback"
+				class="fixed bottom-3 left-5 text-lg flex items-center gap-2 *:even:text-(--md-sys-color-outline) font-[roboto]"
+			>
+				${this.feedback}
 			</div>
 			<!----> `
 	}

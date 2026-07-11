@@ -36,7 +36,3 @@ window.addEventListener('keypress', async (event: KeyboardEvent) => {
 			break
 	}
 })
-
-window.addEventListener('blur', () => {
-	repeat
-})
