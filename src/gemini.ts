@@ -66,5 +66,5 @@ export async function askGemini(
 		},
 	})
 
-	return response.text
+	return JSON.parse(response.text)
 }

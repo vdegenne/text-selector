@@ -1,5 +1,8 @@
+// import '@material/web/textfield/outlined-text-field.js';
 import type {MdDialog} from '@material/web/all.js'
+import '@material/web/iconbutton/icon-button.js'
 import '@material/web/slider/slider.js'
+import '@material/web/textfield/filled-text-field.js'
 import {withController} from '@snar/lit'
 import {customElement} from 'custom-element-decorator'
 import {html, LitElement} from 'lit'
@@ -46,6 +49,17 @@ export class SettingsDialog extends LitElement {
 				</header>
 
 				<form slot="content" method="dialog" id="form" class="">
+					<card-element headline="global">
+						${store.F.SWITCH(
+							'Open in same tab on most highlighted',
+							'mostHighlightedOpenInSameTab',
+						)}
+						${store.F.TEXTFIELD('Gemini API Key', 'geminiApiKey', {
+							supportingText:
+								'You can use the keybind `t` to call gemini on the content.',
+						})}
+					</card-element>
+
 					<card-element headline="display">
 						${store.F.SLIDER('Font size (px)', 'fontSizePx', {
 							min: 8,
@@ -57,13 +71,6 @@ export class SettingsDialog extends LitElement {
 							max: 900,
 							step: 50,
 						})}
-					</card-element>
-
-					<card-element headline="behavior">
-						${store.F.SWITCH(
-							'Open in same tab on most highlighted',
-							'mostHighlightedOpenInSameTab',
-						)}
 					</card-element>
 
 					<card-element headline="audio">
