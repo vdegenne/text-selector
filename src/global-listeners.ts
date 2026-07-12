@@ -1,4 +1,5 @@
 import {cquerySelector} from 'html-vision'
+import {askGemini} from './gemini.js'
 import {openSettingsDialog} from './imports.js'
 
 const inputNames = ['INPUT', 'TEXTAREA', 'MD-FILLED-TEXT-FIELD']
@@ -33,6 +34,16 @@ window.addEventListener('keypress', async (event: KeyboardEvent) => {
 			break
 		case 's':
 			openSettingsDialog()
+			break
+
+		case 't':
+			const response = await askGemini(
+				'590さんでエイムビジョン買っても流石におもんない？？？',
+				{
+					apiKey: '<INSERT_YOUR_GEMINI_API_KEY_HERE>',
+				},
+			)
+			console.log(response)
 			break
 	}
 })
