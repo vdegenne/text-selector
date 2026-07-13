@@ -3,6 +3,7 @@ import {
 	googleImagesOpen,
 	googleImagesUrl,
 	googleTranslateOpen,
+	japaneseSentenceBreakerOpen,
 	lazyMapOpen,
 	lazyMapUrl,
 	lensHistoryOpen,
@@ -264,6 +265,14 @@ class GamepadController extends ReactiveController {
 				switch (mode) {
 					case Mode.NORMAL:
 						mainPage.openCNRTLOrJisho()
+						break
+					case Mode.PRIMARY:
+						{
+							const {highlightContent} = mainPage.highlighter.getInfo()
+							if (highlightContent) {
+								japaneseSentenceBreakerOpen(highlightContent)
+							}
+						}
 						break
 				}
 			})
