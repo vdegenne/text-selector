@@ -1,1 +1,0 @@
-import{C as e,u as t,y as n}from"./directive-MTUVcoFA.js";import{g as r,h as i,m as a,n as o,r as s}from"./index-DBA2HbeG.js";var c=class extends o{render(){return n`404 NOT FOUND`}};c=a([t(`page-404`),r(s),i(e``)],c);export{c as Page404};
