@@ -95,7 +95,7 @@ const jpsyndexAPI = jpsyndex.getApi()
 	}
 
 	[jp] .letter {
-		font-family: 'Noto Serif JP';
+		font-family: Roboto, 'Noto Serif JP';
 	}
 `)
 export class PageMain extends PageElement {
