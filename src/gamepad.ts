@@ -4,8 +4,6 @@ import {
 	googleImagesUrl,
 	googleTranslateOpen,
 	japaneseSentenceBreakerOpen,
-	lazyMapOpen,
-	lazyMapUrl,
 	lensHistoryOpen,
 	lensHistoryUrl,
 	siteDexOpen,
@@ -27,6 +25,7 @@ import {
 } from './gamepad-repeaters.js'
 import {getMainPage} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
+import {translateSelection} from './server/functions.js'
 import {store} from './store.js'
 import {copyToClipboard, isValidUrl, japsyndexOpen} from './utils.js'
 
@@ -283,10 +282,13 @@ class GamepadController extends ReactiveController {
 
 				switch (mode) {
 					case Mode.NORMAL:
-						googleTranslateOpen(highlightContent, 'french')
+						translateSelection()
 						break
 					case Mode.PRIMARY:
 						japsyndexOpen(highlightContent)
+						break
+					case Mode.TERTIARY:
+						googleTranslateOpen(highlightContent, 'french')
 						break
 				}
 			})

@@ -16,6 +16,8 @@ import {store} from '../store.js'
 import {renderThemeElements} from '../styles/theme-elements.js'
 import {themeStore} from '../styles/themeStore.js'
 import styles from './settings-dialog.css?inline'
+import {copyToClipboard} from '../utils.js'
+import toast from 'toastit'
 
 @customElement({name: 'settings-dialog', inject: true})
 @withStyles(styles)
@@ -23,6 +25,8 @@ import styles from './settings-dialog.css?inline'
 @withController(store)
 export class SettingsDialog extends LitElement {
 	@state() open = false
+
+	@state() passwordHidden = true
 
 	@query('md-dialog') dialog!: MdDialog
 
@@ -54,10 +58,45 @@ export class SettingsDialog extends LitElement {
 							'Open in same tab on most highlighted',
 							'mostHighlightedOpenInSameTab',
 						)}
-						${store.F.TEXTFIELD('Gemini API Key', 'geminiApiKey', {
-							supportingText:
-								'You can use the keybind `t` to call gemini on the content.',
-						})}
+
+						<card-element headline="Gemini API key">
+							<md-filled-text-field
+								value="${store.geminiApiKey}"
+								type="${this.passwordHidden ? 'password' : 'text'}"
+								@change="${(event: Event) => {
+									store.geminiApiKey = (event.target as any).value
+								}}"
+							>
+								<div slot="trailing-icon">
+									<md-icon-button
+										toggle
+										form=""
+										@click="${() => {
+											this.passwordHidden = !this.passwordHidden
+										}}"
+										@change="${(event: Event) => {
+											event.stopPropagation()
+										}}"
+									>
+										<md-icon>visibility_off</md-icon>
+										<md-icon slot="selected">visibility</md-icon>
+									</md-icon-button>
+
+									<md-icon-button
+										form=""
+										@click="${() => {
+											copyToClipboard(store.geminiApiKey)
+											toast('API key copied')
+										}}"
+										@change="${(event: Event) => {
+											event.stopPropagation()
+										}}"
+									>
+										<md-icon>content_copy</md-icon>
+									</md-icon-button>
+								</div>
+							</md-filled-text-field>
+						</card-element>
 					</card-element>
 
 					<card-element headline="display">

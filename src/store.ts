@@ -2,11 +2,11 @@ import {PropertyValues, ReactiveController, state} from '@snar/lit'
 import {FormBuilder} from '@vdegenne/forms/FormBuilder.js'
 import {saveToLocalStorage} from 'snar-save-to-local-storage'
 import toast from 'toastit'
+import {clickAudio} from './assets/assets.js'
 import {availablePages} from './constants.js'
 import {Page} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {generateHash, sleep} from './utils.js'
-import {clickAudio} from './assets/assets.js'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
