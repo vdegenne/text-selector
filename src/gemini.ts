@@ -76,8 +76,8 @@ export async function geminiTranslate(
 	const ai = new GoogleGenAI({apiKey: options.apiKey})
 
 	const response = await ai.models.generateContent({
-		// model: 'gemini-3.1-flash-lite',
-		model: 'gemini-flash-lite-latest',
+		model: 'gemini-3.1-flash-lite',
+		// model: 'gemini-flash-lite-latest',
 		config: {
 			thinkingConfig: {
 				thinkingLevel: ThinkingLevel.MINIMAL,

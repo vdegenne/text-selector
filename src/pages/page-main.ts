@@ -688,7 +688,7 @@ export class PageMain extends PageElement {
 		// fallback final assumé
 		if (!lang) lang = 'en'
 
-		toast(lang)
+		// toast(lang)
 
 		switch (lang) {
 			case 'fr':
