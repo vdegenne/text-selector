@@ -29,6 +29,8 @@ export class AppStore extends ReactiveController {
 
 	@state() geminiApiKey = ''
 
+	@state() breakSentences = false
+
 	F = new FormBuilder(this)
 
 	protected async updated(changed: PropertyValues<this>) {
@@ -75,17 +77,20 @@ export class AppStore extends ReactiveController {
 	}
 
 	firstUpdated() {
-		const params = new URLSearchParams(location.search)
-		// const input = params.get('input')
-		if (params.has('input')) {
-			const input = params.get('input')!.replace(/\n{2,}/g, '\n')
-			if (input !== this.input) {
-				this.input = input
-			}
-			// // store.input = params.get('input')!.replace(/\n{2,}/g, '\n')
-			// console.log(params.get('input'), this.input)
-		}
+		// const params = new URLSearchParams(location.search)
+		// // const input = params.get('input')
+		// if (params.has('input')) {
+		// 	const input = params.get('input')!.replace(/\n{2,}/g, '\n')
+		// 	if (input !== this.input) {
+		// 		this.input = input
+		// 	}
+		// 	// // store.input = params.get('input')!.replace(/\n{2,}/g, '\n')
+		// 	// console.log(params.get('input'), this.input)
+		// }
 
+		/*
+		 * Initial highlight (based on the hash)
+		 */
 		if (location.hash.slice(1)) {
 			// Defer to make sure the initial update has finished updating the indexes if the input is new.
 			sleep(50).then(() => {

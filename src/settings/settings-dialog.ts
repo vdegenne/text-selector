@@ -8,6 +8,7 @@ import {customElement} from 'custom-element-decorator'
 import {html, LitElement} from 'lit'
 import {withStyles} from 'lit-with-styles'
 import {query, state} from 'lit/decorators.js'
+import toast from 'toastit'
 import '../card-element.js'
 import {gamepadCtrl} from '../gamepad.js'
 import '../material/dialog-patch.js'
@@ -15,9 +16,8 @@ import '../material/item-patch.js'
 import {store} from '../store.js'
 import {renderThemeElements} from '../styles/theme-elements.js'
 import {themeStore} from '../styles/themeStore.js'
-import styles from './settings-dialog.css?inline'
 import {copyToClipboard} from '../utils.js'
-import toast from 'toastit'
+import styles from './settings-dialog.css?inline'
 
 @customElement({name: 'settings-dialog', inject: true})
 @withStyles(styles)
@@ -54,49 +54,50 @@ export class SettingsDialog extends LitElement {
 
 				<form slot="content" method="dialog" id="form" class="">
 					<card-element headline="global">
+						${store.F.SWITCH('Break sentences', 'breakSentences', {supportingText: 'If enabled, will add new lines between sentence punctuations.'})}
 						${store.F.SWITCH(
 							'Open in same tab on most highlighted',
 							'mostHighlightedOpenInSameTab',
 						)}
+					</card-element>
 
-						<card-element headline="Gemini API key">
-							<md-filled-text-field
-								value="${store.geminiApiKey}"
-								type="${this.passwordHidden ? 'password' : 'text'}"
-								@change="${(event: Event) => {
-									store.geminiApiKey = (event.target as any).value
-								}}"
-							>
-								<div slot="trailing-icon">
-									<md-icon-button
-										toggle
-										form=""
-										@click="${() => {
-											this.passwordHidden = !this.passwordHidden
-										}}"
-										@change="${(event: Event) => {
-											event.stopPropagation()
-										}}"
-									>
-										<md-icon>visibility_off</md-icon>
-										<md-icon slot="selected">visibility</md-icon>
-									</md-icon-button>
+					<card-element headline="Gemini API key">
+						<md-filled-text-field
+							value="${store.geminiApiKey}"
+							type="${this.passwordHidden ? 'password' : 'text'}"
+							@change="${(event: Event) => {
+								store.geminiApiKey = (event.target as any).value
+							}}"
+						>
+							<div slot="trailing-icon">
+								<md-icon-button
+									toggle
+									form=""
+									@click="${() => {
+										this.passwordHidden = !this.passwordHidden
+									}}"
+									@change="${(event: Event) => {
+										event.stopPropagation()
+									}}"
+								>
+									<md-icon>visibility_off</md-icon>
+									<md-icon slot="selected">visibility</md-icon>
+								</md-icon-button>
 
-									<md-icon-button
-										form=""
-										@click="${() => {
-											copyToClipboard(store.geminiApiKey)
-											toast('API key copied')
-										}}"
-										@change="${(event: Event) => {
-											event.stopPropagation()
-										}}"
-									>
-										<md-icon>content_copy</md-icon>
-									</md-icon-button>
-								</div>
-							</md-filled-text-field>
-						</card-element>
+								<md-icon-button
+									form=""
+									@click="${() => {
+										copyToClipboard(store.geminiApiKey)
+										toast('API key copied')
+									}}"
+									@change="${(event: Event) => {
+										event.stopPropagation()
+									}}"
+								>
+									<md-icon>content_copy</md-icon>
+								</md-icon-button>
+							</div>
+						</md-filled-text-field>
 					</card-element>
 
 					<card-element headline="display">
