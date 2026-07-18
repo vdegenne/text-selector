@@ -26,11 +26,8 @@ export const router = new Router(async ({location, parts}) => {
 		store.page = parts[0] as Page
 	}
 
-	const params = new URLSearchParams(location.search)
+	// const params = new URLSearchParams(location.search)
 
-	const input = params.get('input')!.replace(/\n{2,}/g, '\n')
-	// if (input !== store.input) {
-	console.log('hum')
-	store.input = store.breakSentences ? breakSentence(input) : input
-	// }
+	// See below for initialization logic
+	store.firstUpdated
 })

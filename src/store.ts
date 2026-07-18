@@ -7,6 +7,7 @@ import {availablePages} from './constants.js'
 import {Page} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {generateHash, sleep} from './utils.js'
+import {breakSentence} from './functions.js'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -34,34 +35,13 @@ export class AppStore extends ReactiveController {
 	F = new FormBuilder(this)
 
 	protected async updated(changed: PropertyValues<this>) {
-		const page = availablePages.includes(this.page) ? this.page : '404'
 		let pagePromise = Promise.resolve()
 
 		if (changed.has('page')) {
+			const page = availablePages.includes(this.page) ? this.page : '404'
 			pagePromise = import(`./pages/page-${page}.ts`)
 				// .then(() => console.log(`Page ${page} loaded.`))
 				.catch(() => {})
-		}
-
-		if (location.hash.slice(1) && page === 'main') {
-			await pagePromise
-			await mainPage.updateComplete
-			// Defer to make sure the initial update has finished updating the indexes if the input is new.
-			sleep(50).then(() => {
-				const hash = decodeURIComponent(location.hash.slice(1))
-				const found = this.input.indexOf(hash)
-				if (found > -1) {
-					this.startIndex = found
-					this.endIndex = found + hash.length - 1
-					mainPage.highlighter.highlight(this.startIndex, this.endIndex)
-					// window.location.hash = ''
-					window.history.replaceState(
-						null,
-						document.title,
-						window.location.pathname + window.location.search,
-					)
-				}
-			})
 		}
 
 		if (changed.has('input')) {
@@ -94,21 +74,36 @@ export class AppStore extends ReactiveController {
 	}
 
 	async firstUpdated() {
-		// const params = new URLSearchParams(location.search)
-		// // const input = params.get('input')
-		// if (params.has('input')) {
-		// 	const input = params.get('input')!.replace(/\n{2,}/g, '\n')
-		// 	if (input !== this.input) {
-		// 		this.input = input
-		// 	}
-		// 	// // store.input = params.get('input')!.replace(/\n{2,}/g, '\n')
-		// 	// console.log(params.get('input'), this.input)
-		// }
+		const params = new URLSearchParams(location.search)
+		if (params.has('input')) {
+			const inputParam = params.get('input')!.replace(/\n{2,}/g, '\n')
+			const input = this.breakSentences ? breakSentence(inputParam) : inputParam
+			if (input !== this.input) {
+				this.input = input
+			}
+		}
 
 		/*
 		 * Initial highlight (based on the hash)
 		 */
-		console.log('alo?')
+		if (location.hash.slice(1) && this.page === 'main') {
+			// Defer to make sure the initial update has finished updating the indexes if the input is new.
+			sleep(50).then(() => {
+				const hash = decodeURIComponent(location.hash.slice(1))
+				const found = this.input.indexOf(hash)
+				if (found > -1) {
+					this.startIndex = found
+					this.endIndex = found + hash.length - 1
+					mainPage.highlighter.highlight(this.startIndex, this.endIndex)
+					// window.location.hash = ''
+					window.history.replaceState(
+						null,
+						document.title,
+						window.location.pathname + window.location.search,
+					)
+				}
+			})
+		}
 	}
 }
 
