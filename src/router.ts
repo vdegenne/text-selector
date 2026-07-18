@@ -30,6 +30,7 @@ export const router = new Router(async ({location, parts}) => {
 
 	const input = params.get('input')!.replace(/\n{2,}/g, '\n')
 	// if (input !== store.input) {
+	console.log('hum')
 	store.input = store.breakSentences ? breakSentence(input) : input
 	// }
 })

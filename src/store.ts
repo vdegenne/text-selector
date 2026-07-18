@@ -34,6 +34,7 @@ export class AppStore extends ReactiveController {
 	F = new FormBuilder(this)
 
 	protected async updated(changed: PropertyValues<this>) {
+		console.log('updated')
 		// const {hash, router} = await import('./router.js')
 		if (changed.has('page')) {
 			// import('./router.js').then(({router}) => {
@@ -91,7 +92,7 @@ export class AppStore extends ReactiveController {
 		/*
 		 * Initial highlight (based on the hash)
 		 */
-		await mainPage.updateComplete
+		console.log('alo?')
 		if (location.hash.slice(1)) {
 			// Defer to make sure the initial update has finished updating the indexes if the input is new.
 			sleep(50).then(() => {
