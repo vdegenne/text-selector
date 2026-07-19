@@ -36,6 +36,7 @@ import {
 	isVisible,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
+import {splitLetters} from '../functions.js'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -192,7 +193,7 @@ export class PageMain extends PageElement {
 								>#${i}</span
 							>
 							<div class="break-all">
-								${line.split('').map((letter) => {
+								${splitLetters(line).map((letter) => {
 									return html`<!-- --><span class="letter">${letter}</span
 										><!-- -->`
 								})}

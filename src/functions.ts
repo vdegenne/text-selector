@@ -1,3 +1,11 @@
+const graphemeSegmenter = new Intl.Segmenter(undefined, {
+	granularity: 'grapheme',
+})
+
+export function splitLetters(text: string): string[] {
+	return [...graphemeSegmenter.segment(text)].map(({segment}) => segment)
+}
+
 export function wrapText(text: string, width: number): string {
 	const segmenter = new Intl.Segmenter(undefined, {
 		granularity: 'grapheme',
