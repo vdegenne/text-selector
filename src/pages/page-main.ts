@@ -9,7 +9,7 @@ import {
 import {playJapanese, speakEnglish, speakFrench} from '@vdegenne/speech'
 import {tts, TTS_MODELS} from '@vdegenne/tts-server'
 import {hasSomeJapanese} from 'asian-regexps'
-import {css, html, TemplateResult} from 'lit'
+import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
 import {
 	customElement,
@@ -25,18 +25,18 @@ import {store} from '../store.js'
 import {
 	getLineBoundaries,
 	getSpecialBoundaries,
+	getTextInfo,
 	getWordBoundaries,
 	isWordChar,
+	splitLetters,
 } from '../text-logic.js'
 import {
 	copyToClipboard,
 	getFirstVisibleElement,
 	getLastVisibleElement,
-	getTextInfo,
 	isVisible,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
-import {splitLetters} from '../functions.js'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -226,6 +226,8 @@ export class PageMain extends PageElement {
 		const info = this.highlighter.getInfo()
 		// TODO: should uncomment the replaceAll below back?
 		const text = store.input //.replaceAll('\n', ' ')
+		// TODO: should use the caache
+		const letters = splitLetters(store.input)
 
 		const start = info.highlightIndexStart
 		const end = info.highlightIndexEnd
@@ -237,19 +239,19 @@ export class PageMain extends PageElement {
 		}
 
 		if (!next) {
-			next = getWordBoundaries(text, start, end)
+			next = getWordBoundaries(letters, start, end)
 		}
 
 		if (next.start === start && next.end === end) {
 			// Nothing changed, try extending
-			next = getWordBoundaries(text, start, end, {
+			next = getWordBoundaries(letters, start, end, {
 				ignoreTypeBoundaries: true,
 			})
 		}
 
 		if (next.start === start && next.end === end) {
 			// Still nothing changed, select the line
-			next = getLineBoundaries(text, start, end)
+			next = getLineBoundaries(letters, start, end)
 		}
 
 		if (next.start === start && next.end === end) {
@@ -297,16 +299,22 @@ export class PageMain extends PageElement {
 		this.highlighter.next()
 	}
 
-	getTextInfo() {
-		const {highlightIndexStart} = this.highlighter.getInfo()
-		return getTextInfo(store.input, {cursorPosition: highlightIndexStart})
+	getTextInfo(cursorPosition?: number) {
+		if (!cursorPosition) {
+			;({highlightIndexStart: cursorPosition} = this.highlighter.getInfo())
+		}
+
+		// TODO: make letters cache from store
+		const letters = splitLetters(store.input)
+		return getTextInfo(letters, {cursorPosition})
 	}
 
 	previousLine() {
 		const {highlightIndexStart, highlightIndexEnd, highlightElement} =
 			this.highlighter.getInfo()
 		const cursorPosition = highlightIndexStart
-		const textInfo = getTextInfo(store.input, {cursorPosition})
+		// const textInfo = getTextInfo(store.input, {cursorPosition})
+		const textInfo = this.getTextInfo()
 
 		if (!isVisible(highlightElement)) {
 			const letterElements = [...this.letterElements]
@@ -361,7 +369,7 @@ export class PageMain extends PageElement {
 
 		const cursorPosition = highlightIndexEnd
 
-		const textInfo = getTextInfo(store.input, {cursorPosition})
+		const textInfo = this.getTextInfo(cursorPosition)
 		const {lines, currentLineIndex} = textInfo
 
 		const currLine = lines[currentLineIndex]
@@ -382,9 +390,7 @@ export class PageMain extends PageElement {
 	moveSelectionStartToPreviousLine() {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 
-		const textInfo = getTextInfo(store.input, {
-			cursorPosition: highlightIndexStart,
-		})
+		const textInfo = this.getTextInfo()
 
 		const {lines, currentLineIndex} = textInfo
 
@@ -404,9 +410,7 @@ export class PageMain extends PageElement {
 	moveSelectionStartToNextLine() {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 
-		const textInfo = getTextInfo(store.input, {
-			cursorPosition: highlightIndexStart,
-		})
+		const textInfo = this.getTextInfo()
 
 		const {lines, currentLineIndex} = textInfo
 
@@ -430,9 +434,7 @@ export class PageMain extends PageElement {
 	moveSelectionEndToPreviousLine() {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 
-		const textInfo = getTextInfo(store.input, {
-			cursorPosition: highlightIndexEnd,
-		})
+		const textInfo = this.getTextInfo(highlightIndexEnd)
 
 		const {lines, currentLineIndex} = textInfo
 
@@ -459,9 +461,7 @@ export class PageMain extends PageElement {
 	moveSelectionEndToNextLine() {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 
-		const textInfo = getTextInfo(store.input, {
-			cursorPosition: highlightIndexEnd,
-		})
+		const textInfo = this.getTextInfo(highlightIndexEnd)
 
 		const {lines, currentLineIndex} = textInfo
 
@@ -485,6 +485,8 @@ export class PageMain extends PageElement {
 	increaseLeftWordSelection(): void {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 		const text = store.input as string
+		// TODO: change this to cache
+		const letters = splitLetters(text)
 
 		let i = highlightIndexStart - 1
 
@@ -495,7 +497,7 @@ export class PageMain extends PageElement {
 
 		if (i < 0) return
 
-		const {start} = getWordBoundaries(text, i)
+		const {start} = getWordBoundaries(letters, i)
 
 		this.highlighter.highlight(start, highlightIndexEnd)
 	}
@@ -503,6 +505,8 @@ export class PageMain extends PageElement {
 	decreaseLeftWordSelection(): void {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 		const text = store.input as string
+		// TODO: change this to cache
+		const letters = splitLetters(text)
 
 		let i = highlightIndexStart
 
@@ -518,7 +522,7 @@ export class PageMain extends PageElement {
 
 		if (i >= text.length) return
 
-		const {start} = getWordBoundaries(text, i)
+		const {start} = getWordBoundaries(letters, i)
 
 		// guard: do not cross end
 		if (start > highlightIndexEnd) {
@@ -532,6 +536,8 @@ export class PageMain extends PageElement {
 	increaseRightWordSelection(): void {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 		const text = store.input as string
+		// TODO: change this to cache
+		const letters = splitLetters(text)
 
 		let i = highlightIndexEnd + 1
 
@@ -542,7 +548,7 @@ export class PageMain extends PageElement {
 
 		if (i >= text.length) return
 
-		const {end} = getWordBoundaries(text, i)
+		const {end} = getWordBoundaries(letters, i)
 
 		this.highlighter.highlight(highlightIndexStart, end)
 	}
@@ -550,6 +556,8 @@ export class PageMain extends PageElement {
 	decreaseRightWordSelection(): void {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 		const text = store.input as string
+		// TODO: change this to cache
+		const letters = splitLetters(text)
 
 		let i = highlightIndexEnd
 
@@ -569,7 +577,7 @@ export class PageMain extends PageElement {
 			return
 		}
 
-		const {end} = getWordBoundaries(text, i)
+		const {end} = getWordBoundaries(letters, i)
 
 		// guard: do not cross start
 		if (end < highlightIndexStart) {

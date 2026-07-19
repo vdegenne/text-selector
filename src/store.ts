@@ -7,7 +7,7 @@ import {availablePages} from './constants.js'
 import {Page} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {generateHash, sleep} from './utils.js'
-import {breakSentence} from './functions.js'
+import {breakSentence} from './text-logic.js'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
