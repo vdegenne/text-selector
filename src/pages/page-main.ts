@@ -188,7 +188,7 @@ export class PageMain extends PageElement {
 							?jp=${isJp}
 						>
 							<span
-								class="text-(--md-sys-color-outline) opacity-30"
+								class="text-(--md-sys-color-outline) opacity-70"
 								style="font-size: initial"
 								>#${i}</span
 							>
