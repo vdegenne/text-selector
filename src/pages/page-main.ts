@@ -137,9 +137,9 @@ export class PageMain extends PageElement {
 					inline: 'center',
 					behavior: this.firstTime ? 'smooth' : 'instant',
 				})
-				this.firstTime = false
 				// }
 			}
+			this.firstTime = false
 
 			const {highlightContent} = info
 			if (highlightContent.length < 15) {
