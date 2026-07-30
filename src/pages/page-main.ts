@@ -151,7 +151,7 @@ export class PageMain extends PageElement {
 						if (!response.ok) throw 0
 						this.special = true
 						this.feedback = (await response.text())
-							.split('/')
+							.split(/[/,]/)
 							.map((word) => html`<span>${word}</span>`)
 					})
 					.catch(() => {
