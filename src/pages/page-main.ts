@@ -76,6 +76,8 @@ const jpsyndexAPI = jpsyndex.getApi()
 	:host([special]) .letter[highlight1] {
 		background-color: var(--md-sys-color-tertiary-container);
 		color: var(--md-sys-color-on-tertiary-container);
+		background-color: var(--md-sys-color-secondary-container);
+		color: var(--md-sys-color-on-secondary-container);
 	}
 
 	/* SINGLE highlighted element */
