@@ -1,1 +1,0 @@
-import{a as e}from"./directive-BNm-5aLg.js";var t;function n(n){return(r,i)=>e(r,i,{get(){return(this.renderRoot??(t??=document.createDocumentFragment())).querySelectorAll(n)}})}export{n as t};
