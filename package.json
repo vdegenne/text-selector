@@ -119,7 +119,7 @@
     "tinyld": "^1.3.4",
     "toastit": "^2.2.5",
     "typescript": "^7.0.2",
-    "vite": "^8.2.0",
+    "vite": "^7.3.6",
     "vite-plugin-mdicon2svg": "^0.2.3",
     "vite-plugin-pwa": "^1.3.0",
     "vscode-ui-connector": "^0.2.4",
