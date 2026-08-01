@@ -233,7 +233,9 @@ export function wrapText(text: string, width: number): string {
 
 export function breakSentence(text: string): string {
 	return text
-		.split(/(?<=[。．.!！?？;；、,])(?![。．.!！?？;；、,])/)
+		.split(
+			/(?<=[。．!！?？;；、,]|(?<!https?:\/\/[^\s]*?)\.)(?![。．.!！?？;；、,])/,
+		)
 		.map((sentence) => sentence.trim())
 		.filter(Boolean)
 		.join('\n')
