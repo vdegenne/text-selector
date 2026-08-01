@@ -232,11 +232,19 @@ export function wrapText(text: string, width: number): string {
 }
 
 export function breakSentence(text: string): string {
-	return text
-		.split(
-			/(?<=[。．!！?？;；、,]|(?<!https?:\/\/[^\s]*?)\.)(?![。．.!！?？;；、,])/,
-		)
+	const urls: string[] = []
+
+	const protectedText = text.replace(/\bhttps?:\/\/[^\s]+/g, (url) => {
+		urls.push(url)
+		return `\u0000${urls.length - 1}\u0000`
+	})
+
+	return protectedText
+		.split(/(?<=[。．.!！?？;；、,])(?![。．.!！?？;；、,])/)
 		.map((sentence) => sentence.trim())
+		.map((sentence) =>
+			sentence.replace(/\u0000(\d+)\u0000/g, (_, i) => urls[Number(i)]),
+		)
 		.filter(Boolean)
 		.join('\n')
 }
