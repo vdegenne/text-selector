@@ -359,6 +359,17 @@ class GamepadController extends ReactiveController {
 					case Mode.TERTIARY:
 				}
 			})
+
+			gamepad.for(y).before(({mode}) => {
+				switch (mode) {
+					case Mode.PRIMARY:
+						const {highlightContent} = mainPage.highlighter.getInfo()
+						if (highlightContent) {
+							store.toggleFavorite(highlightContent)
+						}
+						break
+				}
+			})
 		})
 	}
 }

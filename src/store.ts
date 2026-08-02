@@ -32,6 +32,19 @@ export class AppStore extends ReactiveController {
 
 	@state() breakSentences = false
 
+	@state() favorites: string[] = []
+	toggleFavorite(item: string) {
+		if (this.favorites.includes(item)) {
+			this.favorites.splice(this.favorites.indexOf(item), 1)
+			toast('Removed from favorites')
+		} else {
+			this.favorites.push(item)
+			toast('Added to favorites')
+		}
+
+		this.favorites = [...this.favorites]
+	}
+
 	F = new FormBuilder(this)
 
 	protected async updated(changed: PropertyValues<this>) {
