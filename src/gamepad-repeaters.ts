@@ -3,11 +3,9 @@ import {Repeater} from '@vdegenne/mini-gamepad/repeater.js'
 import {mainPage} from './pages/page-main.js'
 import {store} from './store.js'
 
-const repeatTimeoutMs = 300
-
 export const leftPrevRepeater = new Repeater({
-	repeatTimeoutMs,
-	speedMs: 30,
+	initialDelayMs: store.repeaterInitialDelayMs,
+	intervalMs: store.repeaterIntervalMs,
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
@@ -26,8 +24,8 @@ export const leftPrevRepeater = new Repeater({
 })
 
 export const leftNextRepeater = new Repeater({
-	repeatTimeoutMs,
-	speedMs: 30,
+	initialDelayMs: store.repeaterInitialDelayMs,
+	intervalMs: store.repeaterIntervalMs,
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
@@ -46,8 +44,8 @@ export const leftNextRepeater = new Repeater({
 })
 
 export const upRepeater = new Repeater({
-	repeatTimeoutMs,
-	speedMs: 60,
+	initialDelayMs: store.repeaterInitialDelayMs,
+	intervalMs: store.repeaterIntervalMs, // was 60
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
@@ -62,8 +60,8 @@ export const upRepeater = new Repeater({
 })
 
 export const downRepeater = new Repeater({
-	repeatTimeoutMs,
-	speedMs: 60,
+	initialDelayMs: store.repeaterInitialDelayMs,
+	intervalMs: store.repeaterIntervalMs, // was 60
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
@@ -82,8 +80,8 @@ export const downRepeater = new Repeater({
  */
 
 export const rightPrevRepeater = new Repeater({
-	repeatTimeoutMs,
-	speedMs: 30,
+	initialDelayMs: store.repeaterInitialDelayMs,
+	intervalMs: store.repeaterIntervalMs,
 	action(mode) {
 		console.log(mode)
 		switch (mode) {
@@ -101,8 +99,8 @@ export const rightPrevRepeater = new Repeater({
 })
 
 export const rightNextRepeater = new Repeater({
-	repeatTimeoutMs,
-	speedMs: 30,
+	initialDelayMs: store.repeaterInitialDelayMs,
+	intervalMs: store.repeaterIntervalMs,
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
@@ -120,8 +118,8 @@ export const rightNextRepeater = new Repeater({
 })
 
 export const rightUpRepeater = new Repeater({
-	repeatTimeoutMs,
-	speedMs: 60,
+	initialDelayMs: store.repeaterInitialDelayMs,
+	intervalMs: store.repeaterIntervalMs, // was 60
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
@@ -135,8 +133,8 @@ export const rightUpRepeater = new Repeater({
 })
 
 export const rightDownRepeater = new Repeater({
-	repeatTimeoutMs,
-	speedMs: 60,
+	initialDelayMs: store.repeaterInitialDelayMs,
+	intervalMs: store.repeaterIntervalMs, // was 60
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:

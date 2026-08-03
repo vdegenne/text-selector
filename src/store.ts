@@ -1,15 +1,22 @@
-import {Debouncer} from '@vdegenne/debouncer'
 import {PropertyValues, ReactiveController, state} from '@snar/lit'
 import {FormBuilder} from '@vdegenne/forms/FormBuilder.js'
 import {saveToLocalStorage} from 'snar-save-to-local-storage'
 import toast from 'toastit'
 import {clickAudio} from './assets/assets.js'
 import {availablePages} from './constants.js'
+import {
+	leftNextRepeater,
+	leftPrevRepeater,
+	rightDownRepeater,
+	rightNextRepeater,
+	rightPrevRepeater,
+	rightUpRepeater,
+} from './gamepad-repeaters.js'
+import {indexesHistory} from './indexesHistory.js'
 import {Page} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {breakSentence} from './text-logic.js'
-import {generateHash, sleep} from './utils.js'
-import {indexesHistory} from './indexesHistory.js'
+import {generateHash} from './utils.js'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -33,6 +40,9 @@ export class AppStore extends ReactiveController {
 	@state() geminiApiKey = ''
 
 	@state() breakSentences = false
+
+	@state() repeaterInitialDelayMs = 300
+	@state() repeaterIntervalMs = 30
 
 	@state() favorites: string[] = []
 	toggleFavorite(item: string) {
@@ -127,6 +137,35 @@ export class AppStore extends ReactiveController {
 			if (clickAudio) {
 				clickAudio.volume = this.audioVolume
 			}
+		}
+
+		if (
+			changed.has('repeaterInitialDelayMs') ||
+			changed.has('repeaterIntervalMs')
+		) {
+			console.log('BOOM')
+			const {
+				leftPrevRepeater,
+				leftNextRepeater,
+				rightPrevRepeater,
+				rightNextRepeater,
+				rightUpRepeater,
+				rightDownRepeater,
+			} = await import('./gamepad-repeaters.js')
+			leftPrevRepeater.options.initialDelayMs = this.repeaterInitialDelayMs
+			leftPrevRepeater.options.intervalMs = this.repeaterIntervalMs
+			leftNextRepeater.options.initialDelayMs = this.repeaterInitialDelayMs
+			leftNextRepeater.options.intervalMs = this.repeaterIntervalMs
+
+			rightPrevRepeater.options.initialDelayMs = this.repeaterInitialDelayMs
+			rightPrevRepeater.options.intervalMs = this.repeaterIntervalMs
+			rightNextRepeater.options.initialDelayMs = this.repeaterInitialDelayMs
+			rightNextRepeater.options.intervalMs = this.repeaterIntervalMs
+
+			rightUpRepeater.options.initialDelayMs = this.repeaterInitialDelayMs
+			rightUpRepeater.options.intervalMs = this.repeaterIntervalMs
+			rightDownRepeater.options.initialDelayMs = this.repeaterInitialDelayMs
+			rightDownRepeater.options.intervalMs = this.repeaterIntervalMs
 		}
 	}
 

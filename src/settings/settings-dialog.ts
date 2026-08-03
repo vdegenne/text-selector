@@ -100,6 +100,25 @@ export class SettingsDialog extends LitElement {
 						</md-filled-text-field>
 					</card-element>
 
+					<card-element headline="Gamepad">
+						${store.F.SLIDER(
+							'Repeater initial delay (ms)',
+							'repeaterInitialDelayMs',
+							{
+								min: 100,
+								max: 1000,
+								step: 10,
+								timeoutMs: 200,
+								ticks: true,
+							},
+						)}
+						${store.F.SLIDER('Repeater interval (ms)', 'repeaterIntervalMs', {
+							min: 10,
+							max: 500,
+							timeoutMs: 200,
+						})}
+					</card-element>
+
 					<card-element headline="display">
 						${store.F.SLIDER('Font size (px)', 'fontSizePx', {
 							min: 8,
