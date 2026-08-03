@@ -132,7 +132,8 @@ export class PageMain extends PageElement {
 			block: 'center',
 			behavior: 'instant',
 		},
-		onSelectionChange(info) {
+		// keep the arrow form to avoid breaking "this"
+		onSelectionChange: (info) => {
 			playClick()
 			// store.startIndex = info.highlightIndexStart
 			// store.endIndex = info.highlightIndexEnd
@@ -168,6 +169,7 @@ export class PageMain extends PageElement {
 					.then(async ({response}) => {
 						if (!response.ok) throw 0
 						this.special = true
+						console.log(this)
 						this.feedback = (await response.text())
 							.split(/[/,]/)
 							.map((word) => html`<span>${word}</span>`)
@@ -208,7 +210,7 @@ export class PageMain extends PageElement {
 							?jp=${isJp}
 						>
 							<span
-								class="text-(--md-sys-color-outline) opacity-70"
+								class="text-(--md-sys-color-outline) opacity-70 font-[roboto]"
 								style="font-size: initial"
 								>#${i}</span
 							>

@@ -106,7 +106,7 @@ export class SettingsDialog extends LitElement {
 							'repeaterInitialDelayMs',
 							{
 								min: 100,
-								max: 1000,
+								max: 500,
 								step: 10,
 								timeoutMs: 200,
 								ticks: true,
