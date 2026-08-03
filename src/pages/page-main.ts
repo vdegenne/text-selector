@@ -39,6 +39,7 @@ import {
 	sleep,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
+import {indexesHistory} from '../indexesHistory.js'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -133,14 +134,14 @@ export class PageMain extends PageElement {
 		},
 		onSelectionChange(info) {
 			playClick()
-			store.startIndex = info.highlightIndexStart
-			store.endIndex = info.highlightIndexEnd
+			// store.startIndex = info.highlightIndexStart
+			// store.endIndex = info.highlightIndexEnd
 			console.log(
 				'SELECTION CHANGED',
 				info.highlightIndexStart,
 				info.highlightIndexEnd,
 			)
-			store.saveHighlightIndexes.debounce(
+			indexesHistory.saveHighlightIndexes.debounce(
 				info.highlightIndexStart,
 				info.highlightIndexEnd,
 			)
@@ -238,7 +239,7 @@ export class PageMain extends PageElement {
 
 	async firstUpdated() {
 		// await sleep(2000)
-		const [start, end] = (await store.getHighlightIndexes()) ?? [0, 0]
+		const [start, end] = (await indexesHistory.getHighlightIndexes()) ?? [0, 0]
 		console.log('HIGHLIGHT FROM MAIN PAGE FIRST UPDATE', start, end)
 		this.highlighter.highlight(start, end)
 	}

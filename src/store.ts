@@ -9,6 +9,7 @@ import {Page} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {breakSentence} from './text-logic.js'
 import {generateHash, sleep} from './utils.js'
+import {indexesHistory} from './indexesHistory.js'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -53,35 +54,33 @@ export class AppStore extends ReactiveController {
 		}
 		return this.#inputHash
 	}
-	@state() highlightIndexesHistory: {[hash: string]: [number, number]} = {}
-	saveHighlightIndexes = new Debouncer(
-		async (start: number, end: number) => {
-			const hash = await this.getInputHash()
-			const history = this.highlightIndexesHistory[hash]
-
-			if (!history || history[0] !== start || history[1] !== end) {
-				console.log(`SAVING INDEXES (${start} / ${end})`)
-
-				this.highlightIndexesHistory[hash] = [start, end]
-
-				const entries = Object.entries(this.highlightIndexesHistory)
-				if (entries.length > 100) {
-					const excess = entries.length - 100
-
-					for (let i = 0; i < excess; i++) {
-						delete this.highlightIndexesHistory[entries[i][0]]
-					}
-				}
-
-				this.highlightIndexesHistory = {...this.highlightIndexesHistory}
-			}
-		},
-		500,
-		{throwOnCancel: false},
-	)
-	async getHighlightIndexes() {
-		return this.highlightIndexesHistory[await this.getInputHash()]
-	}
+	// highlightIndexesHistory: {[hash: string]: [number, number]} = {}
+	// saveHighlightIndexes = new Debouncer(
+	// 	async (start: number, end: number) => {
+	// 		const hash = await this.getInputHash()
+	// 		const history = this.highlightIndexesHistory[hash]
+	//
+	// 		if (!history || history[0] !== start || history[1] !== end) {
+	// 			console.log(`SAVING INDEXES (${start} / ${end})`)
+	//
+	// 			this.highlightIndexesHistory[hash] = [start, end]
+	//
+	// 			const entries = Object.entries(this.highlightIndexesHistory)
+	// 			if (entries.length > 100) {
+	// 				const excess = entries.length - 100
+	//
+	// 				for (let i = 0; i < excess; i++) {
+	// 					delete this.highlightIndexesHistory[entries[i][0]]
+	// 				}
+	// 			}
+	// 		}
+	// 	},
+	// 	500,
+	// 	{throwOnCancel: false},
+	// )
+	// async getHighlightIndexes() {
+	// 	return this.highlightIndexesHistory[await this.getInputHash()]
+	// }
 
 	F = new FormBuilder(this)
 
@@ -96,13 +95,9 @@ export class AppStore extends ReactiveController {
 		}
 
 		if (changed.has('input')) {
+			// We generate a new hash for external consumers
 			this.getInputHash({refresh: true}).then((hash) => {
 				console.log('HASH GENERATED', hash)
-				const [start, end] = this.highlightIndexesHistory[hash] ?? [0, 0]
-				console.log('INDEXES RETRIEVED FROM HISTORY', start, end)
-				// this.startIndex = start
-				// this.endIndex = end
-				// toast(`${start} / ${end}`)
 			})
 
 			// const oldInput = changed.get('input')
@@ -159,7 +154,7 @@ export class AppStore extends ReactiveController {
 				// this.endIndex = found + hash.length - 1
 				const start = found
 				const end = found + hash.length - 1
-				this.saveHighlightIndexes.call(found, end)
+				indexesHistory.saveHighlightIndexes.call(start, end)
 				console.log(
 					'INTIAL HIGHLIGHT LOCATIONS FOUND IN THE HASH',
 					hash,
