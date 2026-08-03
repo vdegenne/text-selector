@@ -102,7 +102,7 @@ export class AppStore extends ReactiveController {
 				console.log('INDEXES RETRIEVED FROM HISTORY', start, end)
 				// this.startIndex = start
 				// this.endIndex = end
-				toast(`${start} / ${end}`)
+				// toast(`${start} / ${end}`)
 			})
 
 			// const oldInput = changed.get('input')
