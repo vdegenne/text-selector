@@ -1,6 +1,5 @@
 import {Hash, Router} from '@vdegenne/router'
 // import {Page} from './pages/index.js'
-import {breakSentence} from './functions.js'
 import {Page} from './pages/index.js'
 import {store} from './store.js'
 // import {Logger} from '@vdegenne/debug'

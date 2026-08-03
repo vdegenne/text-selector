@@ -93,6 +93,7 @@
     "@vdegenne/about-dialog": "^0.4.2",
     "@vdegenne/debouncer": "^1.0.17",
     "@vdegenne/forms": "^0.1.72",
+    "@vdegenne/highlight-manager": "^0.1.28",
     "@vdegenne/jpsyndex": "^1.0.9",
     "@vdegenne/links": "^1.8.23",
     "@vdegenne/lit-debug": "^0.1.2",

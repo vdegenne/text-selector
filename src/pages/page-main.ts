@@ -20,7 +20,8 @@ import {
 } from 'lit/decorators.js'
 import toast from 'toastit'
 import {playClick} from '../assets/assets.js'
-import {HighLightManager} from '../HighlightManager.js'
+// import {HighLightManager} from '../HighlightManager.js'
+import {HighLightManager} from '@vdegenne/highlight-manager'
 import {store} from '../store.js'
 import {
 	getLineBoundaries,
@@ -35,6 +36,7 @@ import {
 	getFirstVisibleElement,
 	getLastVisibleElement,
 	isVisible,
+	sleep,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
 
@@ -120,28 +122,43 @@ export class PageMain extends PageElement {
 		return this.getHighlightedLettersRatio() > 0.95
 	}
 
-	firstTime = true
+	// firstTime = true
 
 	highlighter = new HighLightManager('.letter', {
-		onSelectionChange: async (info) => {
+		fastTravel: false,
+		scrollStrategy: {
+			if: (is) => !is('partially-visible'),
+			block: 'center',
+			behavior: 'instant',
+		},
+		onSelectionChange(info) {
 			playClick()
 			store.startIndex = info.highlightIndexStart
 			store.endIndex = info.highlightIndexEnd
+			console.log(
+				'SELECTION CHANGED',
+				info.highlightIndexStart,
+				info.highlightIndexEnd,
+			)
+			store.saveHighlightIndexes.debounce(
+				info.highlightIndexStart,
+				info.highlightIndexEnd,
+			)
 
-			await this.updateComplete
-			if (
-				this.firstHighlightedLetter &&
-				!isVisible(this.firstHighlightedLetter)
-			) {
-				// if (this.firstTime) {
-				this.firstHighlightedLetter.scrollIntoView({
-					block: 'center',
-					inline: 'center',
-					behavior: this.firstTime ? 'smooth' : 'instant',
-				})
-				// }
-			}
-			this.firstTime = false
+			// await this.updateComplete
+			// if (
+			// 	this.firstHighlightedLetter &&
+			// 	!isVisible(this.firstHighlightedLetter)
+			// ) {
+			// 	// if (this.firstTime) {
+			// 	// this.firstHighlightedLetter.scrollIntoView({
+			// 	// 	block: 'center',
+			// 	// 	inline: 'center',
+			// 	// 	behavior: this.firstTime ? 'smooth' : 'instant',
+			// 	// })
+			// 	// }
+			// }
+			// this.firstTime = false
 
 			const {highlightContent} = info
 			if (highlightContent.length < 15) {
@@ -219,9 +236,11 @@ export class PageMain extends PageElement {
 			<!----> `
 	}
 
-	firstUpdated() {
-		console.log(store.startIndex, store.endIndex)
-		this.highlighter.highlight(store.startIndex, store.endIndex)
+	async firstUpdated() {
+		// await sleep(2000)
+		const [start, end] = (await store.getHighlightIndexes()) ?? [0, 0]
+		console.log('HIGHLIGHT FROM MAIN PAGE FIRST UPDATE', start, end)
+		this.highlighter.highlight(start, end)
 	}
 
 	expandHighlight() {

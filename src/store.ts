@@ -1,3 +1,4 @@
+import {Debouncer} from '@vdegenne/debouncer'
 import {PropertyValues, ReactiveController, state} from '@snar/lit'
 import {FormBuilder} from '@vdegenne/forms/FormBuilder.js'
 import {saveToLocalStorage} from 'snar-save-to-local-storage'
@@ -6,8 +7,8 @@ import {clickAudio} from './assets/assets.js'
 import {availablePages} from './constants.js'
 import {Page} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
-import {generateHash, sleep} from './utils.js'
 import {breakSentence} from './text-logic.js'
+import {generateHash, sleep} from './utils.js'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -16,8 +17,8 @@ export class AppStore extends ReactiveController {
 	@state() input = ''
 	@state() inputHash = ''
 
-	@state() startIndex = 0
-	@state() endIndex = 0
+	// @state() startIndex = 0
+	// @state() endIndex = 0
 
 	@state() fontSizePx = 31
 	@state() fontWeight = 500
@@ -45,6 +46,43 @@ export class AppStore extends ReactiveController {
 		this.favorites = [...this.favorites]
 	}
 
+	#inputHash: string | undefined
+	async getInputHash(options?: {refresh?: boolean}) {
+		if (!this.#inputHash || options?.refresh) {
+			return (this.#inputHash = await generateHash(this.input))
+		}
+		return this.#inputHash
+	}
+	@state() highlightIndexesHistory: {[hash: string]: [number, number]} = {}
+	saveHighlightIndexes = new Debouncer(
+		async (start: number, end: number) => {
+			const hash = await this.getInputHash()
+			const history = this.highlightIndexesHistory[hash]
+
+			if (!history || history[0] !== start || history[1] !== end) {
+				console.log(`SAVING INDEXES (${start} / ${end})`)
+
+				this.highlightIndexesHistory[hash] = [start, end]
+
+				const entries = Object.entries(this.highlightIndexesHistory)
+				if (entries.length > 100) {
+					const excess = entries.length - 100
+
+					for (let i = 0; i < excess; i++) {
+						delete this.highlightIndexesHistory[entries[i][0]]
+					}
+				}
+
+				this.highlightIndexesHistory = {...this.highlightIndexesHistory}
+			}
+		},
+		500,
+		{throwOnCancel: false},
+	)
+	async getHighlightIndexes() {
+		return this.highlightIndexesHistory[await this.getInputHash()]
+	}
+
 	F = new FormBuilder(this)
 
 	protected async updated(changed: PropertyValues<this>) {
@@ -58,18 +96,29 @@ export class AppStore extends ReactiveController {
 		}
 
 		if (changed.has('input')) {
-			const oldInput = changed.get('input')
-			if (oldInput !== undefined && oldInput !== this.input) {
-				// TODO: Create a hash map for index history
-				this.startIndex = 0
-				this.endIndex = 0
-				// this.endIndex = this.input.length - 1
-			}
-
-			generateHash(this.input).then((hash) => {
-				this.inputHash = hash
-				toast(hash)
+			this.getInputHash({refresh: true}).then((hash) => {
+				console.log('HASH GENERATED', hash)
+				const [start, end] = this.highlightIndexesHistory[hash] ?? [0, 0]
+				console.log('INDEXES RETRIEVED FROM HISTORY', start, end)
+				// this.startIndex = start
+				// this.endIndex = end
+				toast(`${start} / ${end}`)
 			})
+
+			// const oldInput = changed.get('input')
+			// if (oldInput !== undefined && oldInput !== this.input) {
+			// 	// TODO: Create a hash map for index history
+			// 	// Take the values from the history
+			// 	this.startIndex = 0
+			// 	this.endIndex = 0
+			// 	// this.endIndex = this.input.length - 1
+			// }
+
+			// generateHash(this.input).then((hash) => {
+			// 	this.inputHash = hash
+			// 	this.#inputHash
+			// 	toast(hash)
+			// })
 		}
 
 		if (changed.has('fontSizePx')) {
@@ -101,21 +150,31 @@ export class AppStore extends ReactiveController {
 		 */
 		if (location.hash.slice(1) && this.page === 'main') {
 			// Defer to make sure the initial update has finished updating the indexes if the input is new.
-			sleep(50).then(() => {
-				const hash = decodeURIComponent(location.hash.slice(1))
-				const found = this.input.indexOf(hash)
-				if (found > -1) {
-					this.startIndex = found
-					this.endIndex = found + hash.length - 1
-					mainPage.highlighter.highlight(this.startIndex, this.endIndex)
-					// window.location.hash = ''
-					window.history.replaceState(
-						null,
-						document.title,
-						window.location.pathname + window.location.search,
-					)
-				}
-			})
+			await this.updateComplete
+			// sleep(100).then(() => {
+			const hash = decodeURIComponent(location.hash.slice(1))
+			const found = this.input.indexOf(hash)
+			if (found > -1) {
+				// this.startIndex = found
+				// this.endIndex = found + hash.length - 1
+				const start = found
+				const end = found + hash.length - 1
+				this.saveHighlightIndexes.call(found, end)
+				console.log(
+					'INTIAL HIGHLIGHT LOCATIONS FOUND IN THE HASH',
+					hash,
+					found,
+					found + hash.length - 1,
+				)
+				mainPage.highlighter.highlight(start, end)
+				// window.location.hash = ''
+				window.history.replaceState(
+					null,
+					document.title,
+					window.location.pathname + window.location.search,
+				)
+			}
+			// })
 		}
 	}
 }
