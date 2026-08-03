@@ -45,7 +45,8 @@ export class SettingsDialog extends LitElement {
 					} catch {}
 				}}"
 				@closed="${() => (this.open = false)}"
-				style="max-width:min(100vw - 18px, 500px);width:100%"
+				class="w-full h-full"
+				style="max-width:min(100vw - 18px, 600px); max-height:min(100vh - 12px, 1000px);"
 			>
 				<header slot="headline" class="select-none">
 					<md-icon>settings</md-icon>
@@ -59,6 +60,46 @@ export class SettingsDialog extends LitElement {
 							'Open in same tab on most highlighted',
 							'mostHighlightedOpenInSameTab',
 						)}
+					</card-element>
+
+					<card-element headline="display">
+						${store.F.SLIDER('Font size (px)', 'fontSizePx', {
+							min: 8,
+							max: 100,
+							step: 1,
+						})}
+						${store.F.SLIDER('Font weight', 'fontWeight', {
+							min: 100,
+							max: 900,
+							step: 50,
+						})}
+					</card-element>
+
+					<card-element headline="audio">
+						${store.F.SLIDER('Audio volume', 'audioVolume', {
+							min: 0,
+							max: 1,
+							step: 0.1,
+						})}
+					</card-element>
+
+					<card-element headline="Gamepad">
+						${store.F.SLIDER(
+							'Repeater initial delay (ms)',
+							'repeaterInitialDelayMs',
+							{
+								min: 100,
+								max: 500,
+								step: 10,
+								timeoutMs: 200,
+								ticks: true,
+							},
+						)}
+						${store.F.SLIDER('Repeater interval (ms)', 'repeaterIntervalMs', {
+							min: 10,
+							max: 500,
+							timeoutMs: 200,
+						})}
 					</card-element>
 
 					<card-element headline="Gemini API key">
@@ -98,46 +139,6 @@ export class SettingsDialog extends LitElement {
 								</md-icon-button>
 							</div>
 						</md-filled-text-field>
-					</card-element>
-
-					<card-element headline="Gamepad">
-						${store.F.SLIDER(
-							'Repeater initial delay (ms)',
-							'repeaterInitialDelayMs',
-							{
-								min: 100,
-								max: 500,
-								step: 10,
-								timeoutMs: 200,
-								ticks: true,
-							},
-						)}
-						${store.F.SLIDER('Repeater interval (ms)', 'repeaterIntervalMs', {
-							min: 10,
-							max: 500,
-							timeoutMs: 200,
-						})}
-					</card-element>
-
-					<card-element headline="display">
-						${store.F.SLIDER('Font size (px)', 'fontSizePx', {
-							min: 8,
-							max: 100,
-							step: 1,
-						})}
-						${store.F.SLIDER('Font weight', 'fontWeight', {
-							min: 100,
-							max: 900,
-							step: 50,
-						})}
-					</card-element>
-
-					<card-element headline="audio">
-						${store.F.SLIDER('Audio volume', 'audioVolume', {
-							min: 0,
-							max: 1,
-							step: 0.1,
-						})}
 					</card-element>
 
 					<card-element headline="theme">
