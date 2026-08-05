@@ -1,4 +1,5 @@
 import {withController} from '@snar/lit'
+import {HighlightManager} from '@vdegenne/highlight-manager'
 import * as jpsyndex from '@vdegenne/jpsyndex'
 import {
 	chatGptMediatorOpen,
@@ -20,8 +21,7 @@ import {
 } from 'lit/decorators.js'
 import toast from 'toastit'
 import {playClick} from '../assets/assets.js'
-// import {HighLightManager} from '../HighlightManager.js'
-import {HighLightManager} from '@vdegenne/highlight-manager'
+import {indexesHistory} from '../indexesHistory.js'
 import {store} from '../store.js'
 import {
 	getLineBoundaries,
@@ -36,10 +36,8 @@ import {
 	getFirstVisibleElement,
 	getLastVisibleElement,
 	isVisible,
-	sleep,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
-import {indexesHistory} from '../indexesHistory.js'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -125,9 +123,9 @@ export class PageMain extends PageElement {
 
 	// firstTime = true
 
-	highlighter = new HighLightManager('.letter', {
-		fastTravel: false,
-		scrollStrategy: {
+	highlighter = new HighlightManager('.letter', {
+		// fastTravel: false,
+		scroll: {
 			if: (is) => !is('partially-visible'),
 			block: 'center',
 			behavior: 'instant',
