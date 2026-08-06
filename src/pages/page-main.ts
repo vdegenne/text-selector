@@ -230,7 +230,7 @@ export class PageMain extends PageElement {
 
 			<div
 				id="feedback"
-				class="fixed bottom-3 left-5 text-lg flex items-center gap-2 *:even:text-(--md-sys-color-outline) font-[roboto]"
+				class="fixed bottom-3 left-5 text-lg flex items-center gap-2 *:even:text-(--md-sys-color-outline) font-[roboto] bg-(--md-sys-color-surface-container)"
 			>
 				${this.feedback}
 			</div>
