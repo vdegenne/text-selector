@@ -54,12 +54,11 @@
 	text-align: center;
 } */
 
-.jp {
-	font-family: 'Zen Maru Gothic';
-	font-family: 'Noto Serif JP';
+.jp,
+[jp] {
+	font-family: var(--jp-font);
 	/* position: relative; */
 	/* top: -2px; */
-	font-weight: var(--jp-font-weight, 400);
 }
 
 md-fab[disabled] {

@@ -1,4 +1,3 @@
-import {visibilityCheck} from 'html-vision/visibility.js'
 import {withController} from '@snar/lit'
 import {HighlightManager} from '@vdegenne/highlight-manager'
 import {
@@ -10,6 +9,7 @@ import {
 import {playJapanese, speakEnglish, speakFrench} from '@vdegenne/speech'
 import {tts, TTS_MODELS} from '@vdegenne/tts-server'
 import {hasSomeJapanese} from 'asian-regexps'
+import {visibilityCheck} from 'html-vision/visibility.js'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
 import {customElement, property, query, queryAll} from 'lit/decorators.js'
@@ -31,7 +31,6 @@ import {
 	copyToClipboard,
 	getFirstVisibleElement,
 	getLastVisibleElement,
-	isVisible,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
 
@@ -46,14 +45,6 @@ declare global {
 @customElement('page-main')
 @withController(store)
 @withStyles(css`
-	:host {
-		font-family: 'Playfair Display'; /* why not */
-		font-family: BJCree; /* BOF */
-		font-family: Merriweather; /* not bad at all */
-		font-size: var(--font-size-px);
-		font-weight: var(--font-weight);
-	}
-
 	.letter[highlight1] {
 		background-color: #caca00;
 		background-color: var(--md-sys-color-secondary-container);
@@ -77,6 +68,11 @@ declare global {
 		color: var(--md-sys-color-on-secondary-container);
 	}
 
+	.line-number,
+	.letters {
+		font-size: var(--font-size-px);
+	}
+
 	/* SINGLE highlighted element */
 	.letter[highlight1]:not(:has(~ .letter[highlight1])):not(
 			.letter[highlight1] ~ .letter[highlight1]
@@ -92,10 +88,6 @@ declare global {
 	/* LAST in a group */
 	.letter[highlight1]:not(:has(~ .letter[highlight1])) {
 		border-radius: 0 5px 5px 0;
-	}
-
-	[jp] .letter {
-		font-family: Roboto, 'Noto Serif JP';
 	}
 `)
 export class PageMain extends PageElement {
@@ -209,15 +201,13 @@ export class PageMain extends PageElement {
 						<div
 							class="flex items-center gap-5 py-1"
 							style="${i % 2 === 0 ? 'background-color:rgba(200, 200, 200, 0.06)' : ''}"
-							__style="border-bottom: 1px dashed var(--md-sys-color-outline)"
-							?jp=${isJp}
 						>
 							<span
-								class="text-(--md-sys-color-outline) opacity-70 font-[roboto]"
-								style="font-size: initial"
+								class="line-number text-(--md-sys-color-outline) opacity-70"
+								__style="font-size: initial"
 								>#${i}</span
 							>
-							<div class="break-all">
+							<div class="letters break-all" ?jp="${isJp}">
 								${splitLetters(line).map((letter) => {
 									return html`<!-- --><span class="letter">${letter}</span
 										><!-- -->`

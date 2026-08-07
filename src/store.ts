@@ -3,20 +3,12 @@ import {FormBuilder} from '@vdegenne/forms/FormBuilder.js'
 import {saveToLocalStorage} from 'snar-save-to-local-storage'
 import toast from 'toastit'
 import {clickAudio} from './assets/assets.js'
-import {availablePages} from './constants.js'
-import {
-	leftNextRepeater,
-	leftPrevRepeater,
-	rightDownRepeater,
-	rightNextRepeater,
-	rightPrevRepeater,
-	rightUpRepeater,
-} from './gamepad-repeaters.js'
+import {availablePages, FontValue} from './constants.js'
 import {indexesHistory} from './indexesHistory.js'
 import {Page} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {breakSentence} from './text-logic.js'
-import {generateHash, sleep} from './utils.js'
+import {generateHash} from './utils.js'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -30,6 +22,7 @@ export class AppStore extends ReactiveController {
 
 	@state() fontSizePx = 31
 	@state() fontWeight = 500
+	@state() font: FontValue = 'Noto Serif JP'
 
 	@state() verticalPadding = 1
 
@@ -128,11 +121,20 @@ export class AppStore extends ReactiveController {
 			// })
 		}
 
+		if (changed.has('font')) {
+			document.documentElement.style.setProperty('--jp-font', `'${this.font}'`)
+		}
 		if (changed.has('fontSizePx')) {
-			mainPage.style.setProperty('--font-size-px', `${this.fontSizePx}px`)
+			document.documentElement.style.setProperty(
+				'--font-size-px',
+				`${this.fontSizePx}px`,
+			)
 		}
 		if (changed.has('fontWeight')) {
-			mainPage.style.setProperty('--font-weight', this.fontWeight + '')
+			document.documentElement.style.setProperty(
+				'--font-weight',
+				this.fontWeight + '',
+			)
 		}
 
 		if (changed.has('audioVolume')) {

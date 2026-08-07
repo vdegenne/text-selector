@@ -1,6 +1,7 @@
-// import '@material/web/textfield/outlined-text-field.js';
 import type {MdDialog} from '@material/web/all.js'
 import '@material/web/iconbutton/icon-button.js'
+import '@material/web/select/filled-select.js'
+import '@material/web/select/select-option.js'
 import '@material/web/slider/slider.js'
 import '@material/web/textfield/filled-text-field.js'
 import {withController} from '@snar/lit'
@@ -10,6 +11,7 @@ import {withStyles} from 'lit-with-styles'
 import {query, state} from 'lit/decorators.js'
 import toast from 'toastit'
 import '../card-element.js'
+import {fontFamily} from '../constants.js'
 import {gamepadCtrl} from '../gamepad.js'
 import '../material/dialog-patch.js'
 import '../material/item-patch.js'
@@ -18,6 +20,7 @@ import {renderThemeElements} from '../styles/theme-elements.js'
 import {themeStore} from '../styles/themeStore.js'
 import {copyToClipboard} from '../utils.js'
 import styles from './settings-dialog.css?inline'
+// import '@material/web/textfield/outlined-text-field.js';
 
 @customElement({name: 'settings-dialog', inject: true})
 @withStyles(styles)
@@ -63,15 +66,18 @@ export class SettingsDialog extends LitElement {
 					</card-element>
 
 					<card-element headline="display">
+						${store.F.SELECT('Font family', 'font', fontFamily, {menuPositioning: 'popover'})}
 						${store.F.SLIDER('Font size (px)', 'fontSizePx', {
 							min: 8,
 							max: 100,
 							step: 1,
+							// timeoutMs: 20,
 						})}
 						${store.F.SLIDER('Font weight', 'fontWeight', {
 							min: 100,
 							max: 900,
 							step: 50,
+							// timeoutMs: 20,
 						})}
 					</card-element>
 
