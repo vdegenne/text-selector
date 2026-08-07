@@ -5,8 +5,8 @@ export const availablePages = ['main', 'search'] as const
 // true as AllValuesPresent<Page, typeof availablePages>
 
 export const fontFamily = [
-	'Noto Serif JP',
 	'Noto Sans JP',
+	'Noto Serif JP',
 	'Zen Maru Gothic',
 	'Playfair Display',
 	'BJCree',
