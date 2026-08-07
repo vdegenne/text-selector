@@ -156,6 +156,7 @@ export class PageMain extends PageElement {
 			const {highlightContent} = info
 			if (highlightContent) {
 				fullscreenElement.updateRemoteInfo.call('')
+				fullscreenElement.input = highlightContent
 				if (highlightContent.length < 15) {
 					const info = stateless.remoteInfoMap[highlightContent]
 					if (info && info.collections) {
