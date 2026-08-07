@@ -209,7 +209,8 @@ export class PageMain extends PageElement {
 					return html`<!-- -->
 						<div
 							class="flex items-center gap-5 py-1"
-							style="border-bottom: 1px dashed var(--md-sys-color-outline)"
+							style="${i % 2 === 0 ? 'background-color:rgba(200, 200, 200, 0.06)' : ''}"
+							__style="border-bottom: 1px dashed var(--md-sys-color-outline)"
 							?jp=${isJp}
 						>
 							<span
