@@ -162,9 +162,8 @@ export class PageMain extends PageElement {
 			// stateless.feedback = ''
 			const {highlightContent} = info
 			if (highlightContent) {
-				fullscreenElement.input = highlightContent
+				fullscreenElement.updateRemoteInfo.call('')
 				if (highlightContent.length < 15) {
-					fullscreenElement.updateRemoteInfo.call('')
 					const info = stateless.remoteInfoMap[highlightContent]
 					if (info && info.collections) {
 						fullscreenElement.updateRemoteInfo.call(highlightContent)

@@ -68,10 +68,7 @@ class FullscreenElement extends LitElement {
 	}
 
 	show(input?: string) {
-		if (input) this.input = input
-		if (this.input) {
-			this.updateRemoteInfo.call(this.input)
-		}
+		this.updateRemoteInfo.call(input ?? this.input)
 
 		this.open = true
 	}
@@ -146,6 +143,7 @@ class FullscreenElement extends LitElement {
 
 	updateRemoteInfo = new Debouncer(
 		async (query: string) => {
+			this.input = query
 			this.collections = ''
 			this.hiragana = ''
 			mainPage.special = false
