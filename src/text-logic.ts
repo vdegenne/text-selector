@@ -238,7 +238,7 @@ export function breakSentence(text: string): string {
 		/\bhttps?:\/\/[^\s。．！？、；，]+/g,
 		(url) => {
 			urls.push(url)
-			return `\u0000${urls.length - 1}\u0000\u0001`
+			return `\u0001\u0000${urls.length - 1}\u0000\u0001`
 		},
 	)
 
