@@ -28,6 +28,7 @@ import {mainPage} from './pages/page-main.js'
 import {translateSelection} from './server/functions.js'
 import {store} from './store.js'
 import {copyToClipboard, isValidUrl, japsyndexOpen} from './utils.js'
+import {fullscreenElement} from './fullscreen-element.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -367,6 +368,25 @@ class GamepadController extends ReactiveController {
 						if (highlightContent) {
 							store.toggleFavorite(highlightContent)
 						}
+						break
+				}
+			})
+
+			gamepad.for(back).before(({mode}) => {
+				switch (mode) {
+					case Mode.NORMAL:
+						const {highlightContent} = mainPage.highlighter.getInfo()
+						if (highlightContent) {
+							fullscreenElement.show(highlightContent)
+						}
+						break
+				}
+			})
+
+			gamepad.for(a).before(({mode}) => {
+				switch (mode) {
+					case Mode.NORMAL:
+						fullscreenElement.open = false
 						break
 				}
 			})

@@ -1,6 +1,5 @@
 import {withController} from '@snar/lit'
 import {HighlightManager} from '@vdegenne/highlight-manager'
-import * as jpsyndex from '@vdegenne/jpsyndex'
 import {
 	chatGptMediatorOpen,
 	chatGptMediatorUrl,
@@ -12,16 +11,12 @@ import {tts, TTS_MODELS} from '@vdegenne/tts-server'
 import {hasSomeJapanese} from 'asian-regexps'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
-import {
-	customElement,
-	property,
-	query,
-	queryAll,
-	state,
-} from 'lit/decorators.js'
+import {customElement, property, query, queryAll} from 'lit/decorators.js'
 import toast from 'toastit'
 import {playClick} from '../assets/assets.js'
+import {fullscreenElement} from '../fullscreen-element.js'
 import {indexesHistory} from '../indexesHistory.js'
+import {stateless} from '../stateless.js'
 import {store} from '../store.js'
 import {
 	getLineBoundaries,
@@ -38,7 +33,6 @@ import {
 	isVisible,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
-import {Debouncer} from '@vdegenne/debouncer'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -46,7 +40,7 @@ declare global {
 	}
 }
 
-const jpsyndexAPI = jpsyndex.getApi()
+// const {fullscreenElement} = await import('../fullscreen-element.js')
 
 @customElement('page-main')
 @withController(store)
@@ -106,7 +100,10 @@ const jpsyndexAPI = jpsyndex.getApi()
 export class PageMain extends PageElement {
 	@property({type: Boolean, reflect: true}) special = false
 
-	@state() feedback: any = ''
+	// /**
+	//  * @deprecated Use `stateless.feedback` instead
+	//  */
+	// @state() feedback: any = ''
 
 	@queryAll('.letter') letterElements!: HTMLElement[]
 	@query('.letter[highlight1]') firstHighlightedLetter?: HTMLDivElement
@@ -162,46 +159,19 @@ export class PageMain extends PageElement {
 			// this.firstTime = false
 
 			this.special = false
-			this.feedback = ''
+			stateless.feedback = ''
 			const {highlightContent} = info
-			if (highlightContent.length < 15) {
-				this.updateRemoteInfo.debounce(highlightContent)
+			if (highlightContent && highlightContent.length < 15) {
+				fullscreenElement.input = highlightContent
+				const info = stateless.remoteInfoMap[highlightContent]
+				if (info && info.collections) {
+					fullscreenElement.updateRemoteInfo.call(highlightContent)
+				} else {
+					fullscreenElement.updateRemoteInfo.debounce(highlightContent)
+				}
 			}
 		},
 	})
-
-	updateRemoteInfo = new Debouncer(
-		(query: string) => {
-			jpsyndexAPI
-				.get(`/search/${encodeURIComponent(query)}` as '/search/:word')
-				.then(async ({response}) => {
-					if (!response.ok) throw 0
-					this.special = true
-					// console.log(this)
-					this.feedback = html`${this.feedback}${(await response.text())
-						.split(/[/,]/)
-						.map((word) => html`<span>${word}</span>`)}`
-				})
-				.catch(() => {
-					// this.special = false
-					// this.feedback = ''
-				})
-
-			jpsyndexAPI
-				.get(`/hiragana/${encodeURIComponent(query)}` as '/hiragana/:query')
-				.then(async ({response}) => {
-					if (!response.ok) throw 0
-					const map = await response.json()
-					if (!map[query]) throw 0
-					this.feedback = html`<span class="jp text-2xl shrink-0"
-							>${map[query]}</span
-						>${this.feedback}`
-				})
-				.catch(null)
-		},
-		store.repeaterInitialDelayMs + 10,
-		{throwOnCancel: false},
-	)
 
 	render() {
 		const lines = store.input.split('\n').filter((l) => l)
@@ -253,8 +223,10 @@ export class PageMain extends PageElement {
 				id="feedback"
 				class="fixed top-0 right-0 p-0 text-lg flex items-center gap-2 *:even:text-(--md-sys-color-outline) font-[roboto] bg-(--md-sys-color-surface-container)"
 			>
-				${this.feedback}
+				${stateless.feedback}
 			</div>
+
+			${fullscreenElement}
 			<!----> `
 	}
 
@@ -313,31 +285,31 @@ export class PageMain extends PageElement {
 	}
 
 	previous() {
-		const {highlightElement} = this.highlighter.getInfo()
-
-		if (!isVisible(highlightElement)) {
-			const letterElements = [...this.letterElements]
-			const lastVisibleElement = getLastVisibleElement(letterElements)
-			const index = letterElements.indexOf(lastVisibleElement)
-			this.highlighter.highlight(index - 1)
-			return
-		}
+		// const {highlightElement} = this.highlighter.getInfo()
+		//
+		// if (!isVisible(highlightElement)) {
+		// 	const letterElements = [...this.letterElements]
+		// 	const lastVisibleElement = getLastVisibleElement(letterElements)
+		// 	const index = letterElements.indexOf(lastVisibleElement)
+		// 	this.highlighter.highlight(index - 1)
+		// 	return
+		// }
 
 		this.highlighter.previous()
 	}
 
 	next() {
-		const {highlightElements} = this.highlighter.getInfo()
-
-		const last = highlightElements.pop()
-
-		if (!isVisible(last)) {
-			const letterElements = [...this.letterElements]
-			const firstVisibleElement = getFirstVisibleElement(letterElements)
-			const index = letterElements.indexOf(firstVisibleElement)
-			this.highlighter.highlight(index)
-			return
-		}
+		// const {highlightElements} = this.highlighter.getInfo()
+		//
+		// const last = highlightElements.pop()
+		//
+		// if (!isVisible(last)) {
+		// 	const letterElements = [...this.letterElements]
+		// 	const firstVisibleElement = getFirstVisibleElement(letterElements)
+		// 	const index = letterElements.indexOf(firstVisibleElement)
+		// 	this.highlighter.highlight(index)
+		// 	return
+		// }
 
 		this.highlighter.next()
 	}

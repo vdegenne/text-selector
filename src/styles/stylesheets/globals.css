@@ -5,6 +5,13 @@
 	--md-elevation-level: 2 !important;
 }
 
+html {
+	/* scrollbar-gutter: stable; */
+}
+html[hide-scrollbar] {
+	overflow: hidden;
+}
+
 body {
 	margin: 0;
 
