@@ -151,6 +151,8 @@ export class AppStore extends ReactiveController {
 				rightNextRepeater,
 				rightUpRepeater,
 				rightDownRepeater,
+				upRepeater,
+				downRepeater,
 			} = await import('./gamepad-repeaters.js')
 			leftPrevRepeater.options.initialDelayMs = this.repeaterInitialDelayMs
 			leftPrevRepeater.options.intervalMs = this.repeaterIntervalMs
@@ -166,6 +168,9 @@ export class AppStore extends ReactiveController {
 			rightUpRepeater.options.intervalMs = this.repeaterIntervalMs
 			rightDownRepeater.options.initialDelayMs = this.repeaterInitialDelayMs
 			rightDownRepeater.options.intervalMs = this.repeaterIntervalMs
+
+			upRepeater.options.initialDelayMs = this.repeaterInitialDelayMs
+			downRepeater.options.intervalMs = this.repeaterIntervalMs * 0.5
 		}
 	}
 
