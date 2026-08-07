@@ -24,7 +24,7 @@ class FullscreenElement extends LitElement {
 	protected render() {
 		return html`<!-- -->
 			<md-dialog
-				?quick="${false}"
+				?quick="${true}"
 				?open="${this.open}"
 				@closed="${() => (this.open = false)}"
 				style="min-width: calc(100vw - 0px); min-height: calc(100vh - 0px); --md-dialog-container-color: var(--md-sys-color-surface-container);"
@@ -50,6 +50,13 @@ class FullscreenElement extends LitElement {
 	protected firstUpdated(): void {
 		new SS(
 			css`
+				.container::before {
+					opacity: 0;
+				}
+				.container {
+					backdrop-filter: blur(50px);
+					backdrop-filter: blur(30px) saturate(120%);
+				}
 				.content {
 					display: flex;
 					flex-direction: column;
