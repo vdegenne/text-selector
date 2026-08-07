@@ -2,9 +2,9 @@ import {MdDialog} from '@material/web/all.js'
 import {Debouncer} from '@vdegenne/debouncer'
 import {customElement} from 'custom-element-decorator'
 import {SS} from 'html-vision/ss.js'
-import {css, html, LitElement, PropertyValues} from 'lit'
+import {LitElement, html, css, PropertyValues} from 'lit'
 import {withStyles} from 'lit-with-styles'
-import {property, query, state} from 'lit/decorators.js'
+import {property, state, query} from 'lit/decorators.js'
 import {jpsyndexAPI} from './api.js'
 import {getFontSize} from './functions.js'
 import {mainPage} from './pages/page-main.js'
@@ -13,7 +13,7 @@ import {store} from './store.js'
 
 @customElement({name: 'fullscreen-element', inject: true})
 @withStyles()
-class FullscreenElement extends LitElement {
+export class FullscreenElement extends LitElement {
 	@property({type: Boolean}) open = false
 	@state() input = ''
 	@state() collections: RemoteInfo['collections']
@@ -26,7 +26,9 @@ class FullscreenElement extends LitElement {
 			<md-dialog
 				quick
 				?open="${this.open}"
-				@closed="${() => (this.open = false)}"
+				@closed="${() => {
+					return (this.open = false)
+				}}"
 				style="min-width: calc(100vw - 0px); min-height: calc(100vh - 0px);"
 			>
 				<div slot="content" class="flex-1 flex flex-col">
@@ -174,5 +176,3 @@ class FullscreenElement extends LitElement {
 		{throwOnCancel: false},
 	)
 }
-
-export const fullscreenElement = new FullscreenElement()

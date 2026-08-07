@@ -119,7 +119,7 @@ export class PageMain extends PageElement {
 		return this.getHighlightedLettersRatio() > 0.95
 	}
 
-	// firstTime = true
+	// firstHighlight = true
 
 	highlighter = new HighlightManager('.letter', {
 		// fastTravel: false,
@@ -161,16 +161,29 @@ export class PageMain extends PageElement {
 			// this.special = false
 			// stateless.feedback = ''
 			const {highlightContent} = info
-			if (highlightContent && highlightContent.length < 15) {
-				fullscreenElement.updateRemoteInfo.call('')
+			if (highlightContent) {
 				fullscreenElement.input = highlightContent
-				const info = stateless.remoteInfoMap[highlightContent]
-				if (info && info.collections) {
-					fullscreenElement.updateRemoteInfo.call(highlightContent)
-				} else {
-					fullscreenElement.updateRemoteInfo.debounce(highlightContent)
+				if (highlightContent.length < 15) {
+					fullscreenElement.updateRemoteInfo.call('')
+					const info = stateless.remoteInfoMap[highlightContent]
+					if (info && info.collections) {
+						fullscreenElement.updateRemoteInfo.call(highlightContent)
+					} else {
+						fullscreenElement.updateRemoteInfo.debounce(highlightContent)
+					}
 				}
 			}
+
+			// if (this.firstHighlight) {
+			// 	const params = new URLSearchParams(location.search)
+			// 	if (params.has('full')) {
+			// 		this.updateComplete.then(async () => {
+			// 			mainPage.selectAll()
+			// 			fullscreenElement.show()
+			// 		})
+			// 	}
+			// 	this.firstHighlight = false
+			// }
 		},
 	})
 
@@ -232,8 +245,21 @@ export class PageMain extends PageElement {
 	}
 
 	async firstUpdated() {
+		const params = new URLSearchParams(window.location.search)
 		// await sleep(2000)
-		const [start, end] = (await indexesHistory.getHighlightIndexes()) ?? [0, 0]
+		let start: number, end: number
+		const indexes = await indexesHistory.getHighlightIndexes()
+		if (indexes) {
+			;[start, end] = indexes
+		} else {
+			if (params.has('full')) {
+				start = 0
+				end = store.input.length
+				fullscreenElement.show()
+			} else {
+				start = end = 0
+			}
+		}
 		console.log('HIGHLIGHT FROM MAIN PAGE FIRST UPDATE', start, end)
 		this.highlighter.highlight(start, end)
 	}

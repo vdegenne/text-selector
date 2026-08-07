@@ -16,7 +16,7 @@ import {indexesHistory} from './indexesHistory.js'
 import {Page} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {breakSentence} from './text-logic.js'
-import {generateHash} from './utils.js'
+import {generateHash, sleep} from './utils.js'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {

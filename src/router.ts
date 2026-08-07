@@ -12,21 +12,36 @@ export const hash = new Hash<{fspath: string}>()
 // 	},
 // })
 
-export const router = new Router(async ({location, parts}) => {
-	// logger.log('Location has changed')
-	await store.updateComplete
-	hash.reflectHashToParams()
-	if (window.location.host.endsWith('.github.io')) {
-		parts = parts.slice(1)
-	}
-	if (parts.length === 0) {
-		store.page = 'main'
-	} else {
-		store.page = parts[0] as Page
-	}
+export const router = new Router(
+	async ({location, parts}) => {
+		console.log('test')
+		// logger.log('Location has changed')
+		await store.updateComplete
+		hash.reflectHashToParams()
+		if (window.location.host.endsWith('.github.io')) {
+			parts = parts.slice(1)
+		}
+		if (parts.length === 0) {
+			store.page = 'main'
+		} else {
+			store.page = parts[0] as Page
+		}
 
-	// const params = new URLSearchParams(location.search)
+		const params = new URLSearchParams(location.search)
 
-	// See below for initialization logic
-	store.firstUpdated
-})
+		// See below for initialization logic
+		store.firstUpdated
+
+		// await store.updateComplete
+		// await mainPage.updateComplete
+		//
+		// if (params.has('full')) {
+		// 	mainPage.selectAll()
+		// 	await mainPage.updateComplete
+		// 	await sleep(100)
+		// 	await mainPage.updateComplete
+		// 	fullscreenElement.show()
+		// }
+	},
+	{handlePageShow: true},
+)
