@@ -262,7 +262,6 @@ export class PageMain extends PageElement {
 
 		console.log('HIGHLIGHT FROM MAIN PAGE FIRST UPDATE', start, end)
 		this.highlighter.highlight(start, end)
-		console.log(start, end, store.input.length - 1)
 		if (start === 0 && end === store.input.length - 1 && params.has('full')) {
 			fullscreenElement.show()
 		}
@@ -384,7 +383,11 @@ export class PageMain extends PageElement {
 		const currLine = lines[currentLineIndex]
 
 		const prevIndex =
-			currentLineIndex === 0 ? lines.length - 1 : currentLineIndex - 1
+			currentLineIndex === 0
+				? store.loop
+					? lines.length - 1
+					: currentLineIndex
+				: currentLineIndex - 1
 
 		const prevLine = lines[prevIndex]
 
@@ -421,7 +424,11 @@ export class PageMain extends PageElement {
 		const currLine = lines[currentLineIndex]
 
 		const nextIndex =
-			currentLineIndex === lines.length - 1 ? 0 : currentLineIndex + 1
+			currentLineIndex === lines.length - 1
+				? store.loop
+					? 0
+					: currentLineIndex
+				: currentLineIndex + 1
 
 		const nextLine = lines[nextIndex]
 

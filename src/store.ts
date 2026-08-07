@@ -44,6 +44,8 @@ export class AppStore extends ReactiveController {
 	@state() repeaterInitialDelayMs = 300
 	@state() repeaterIntervalMs = 30
 
+	@state() loop = false
+
 	@state() favorites: string[] = []
 	toggleFavorite(item: string) {
 		if (this.favorites.includes(item)) {
@@ -171,6 +173,10 @@ export class AppStore extends ReactiveController {
 
 			upRepeater.options.initialDelayMs = this.repeaterInitialDelayMs
 			downRepeater.options.intervalMs = this.repeaterIntervalMs / 0.5
+		}
+
+		if (changed.has('loop')) {
+			mainPage.highlighter.setLoop(this.loop)
 		}
 	}
 

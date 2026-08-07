@@ -390,6 +390,21 @@ class GamepadController extends ReactiveController {
 						break
 				}
 			})
+
+			gamepad.for(rup).before(({mode}) => {
+				switch (mode) {
+					case Mode.SECONDARY:
+						getMainPage()?.highlighter.highlight(0)
+						break
+				}
+			})
+			gamepad.for(rdown).before(({mode}) => {
+				switch (mode) {
+					case Mode.SECONDARY:
+						getMainPage()?.highlighter.highlightLast()
+						break
+				}
+			})
 		})
 	}
 }

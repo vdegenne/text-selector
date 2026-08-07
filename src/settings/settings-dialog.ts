@@ -100,6 +100,7 @@ export class SettingsDialog extends LitElement {
 							max: 500,
 							timeoutMs: 200,
 						})}
+						${store.F.SWITCH('Loop', 'loop', {supportingText: 'Whether to loop highlight on edges or not.'})}
 					</card-element>
 
 					<card-element headline="Gemini API key">
