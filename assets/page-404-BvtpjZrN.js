@@ -1,1 +1,0 @@
-import{I as e,L as t,j as n,n as r,o as i}from"./page-main-BvhZJgxM.js";import{b as a,d as o,w as s}from"./animation-O2Y5V94A.js";var c=class extends r{render(){return a`404 NOT FOUND`}};c=n([o(`page-404`),t(i),e(s``)],c);export{c as Page404};

@@ -1,1 +1,0 @@
-import{c as e}from"./animation-O2Y5V94A.js";var t;function n(n){return(r,i)=>e(r,i,{get(){return(this.renderRoot??(t??=document.createDocumentFragment())).querySelectorAll(n)}})}export{n as t};
