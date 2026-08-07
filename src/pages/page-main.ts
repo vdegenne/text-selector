@@ -122,7 +122,6 @@ export class PageMain extends PageElement {
 	// firstHighlight = true
 
 	highlighter = new HighlightManager('.letter', {
-		// fastTravel: false,
 		scroll: {
 			if: (is) => !is('partially-visible'),
 			block: 'center',
