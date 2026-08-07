@@ -142,6 +142,10 @@ class FullscreenElement extends LitElement {
 		async (query: string) => {
 			this.collections = ''
 			this.hiragana = ''
+			mainPage.special = false
+
+			if (!query) return
+
 			const requestId = ++this.remoteInfoRequestId
 
 			const info = await this.getInfo(query)

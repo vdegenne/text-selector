@@ -158,10 +158,11 @@ export class PageMain extends PageElement {
 			// }
 			// this.firstTime = false
 
-			this.special = false
-			stateless.feedback = ''
+			// this.special = false
+			// stateless.feedback = ''
 			const {highlightContent} = info
 			if (highlightContent && highlightContent.length < 15) {
+				fullscreenElement.updateRemoteInfo.call('')
 				fullscreenElement.input = highlightContent
 				const info = stateless.remoteInfoMap[highlightContent]
 				if (info && info.collections) {
