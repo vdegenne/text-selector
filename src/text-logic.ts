@@ -238,12 +238,12 @@ export function breakSentence(text: string): string {
 		/\bhttps?:\/\/[^\s。．！？、；，]+/g,
 		(url) => {
 			urls.push(url)
-			return `\u0000${urls.length - 1}\u0000`
+			return `\u0000${urls.length - 1}\u0000\u0001`
 		},
 	)
 
 	return protectedText
-		.split(/(?<=[。．.!！?？;；、,])(?![。．.!！?？;；、,])/)
+		.split(/(?:\u0001|(?<=[。．.!！?？;；、,])(?![。．.!！?？;；、,]))/)
 		.map((sentence) =>
 			sentence.replace(/\u0000(\d+)\u0000/g, (_, i) => urls[Number(i)]),
 		)
