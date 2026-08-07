@@ -193,7 +193,8 @@ export class PageMain extends PageElement {
 					if (!response.ok) throw 0
 					const map = await response.json()
 					if (!map[query]) throw 0
-					this.feedback = html`${map[query]}${this.feedback}`
+					this.feedback = html`<span class="jp text-2xl">${map[query]}</span
+						>${this.feedback}`
 				})
 				.catch(null)
 		},
@@ -249,7 +250,7 @@ export class PageMain extends PageElement {
 
 			<div
 				id="feedback"
-				class="fixed top-0 right-0 p-1 text-lg flex items-center gap-2 *:even:text-(--md-sys-color-outline) font-[roboto] bg-(--md-sys-color-surface-container)"
+				class="fixed top-0 right-0 p-0 text-lg flex items-center gap-2 *:even:text-(--md-sys-color-outline) font-[roboto] bg-(--md-sys-color-surface-container)"
 			>
 				${this.feedback}
 			</div>
