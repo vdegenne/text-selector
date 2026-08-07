@@ -193,7 +193,8 @@ export class PageMain extends PageElement {
 					if (!response.ok) throw 0
 					const map = await response.json()
 					if (!map[query]) throw 0
-					this.feedback = html`<span class="jp text-2xl">${map[query]}</span
+					this.feedback = html`<span class="jp text-2xl shrink-0"
+							>${map[query]}</span
 						>${this.feedback}`
 				})
 				.catch(null)
