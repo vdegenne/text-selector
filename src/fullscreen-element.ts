@@ -27,7 +27,7 @@ class FullscreenElement extends LitElement {
 				quick
 				?open="${this.open}"
 				@closed="${() => (this.open = false)}"
-				style="min-width: calc(100vw - 0px); min-height: calc(100vh - 0px); --md-dialog-container-color: var(--md-sys-color-surface-container-low);"
+				style="min-width: calc(100vw - 0px); min-height: calc(100vh - 0px); --md-dialog-container-color: var(--md-sys-color-surface-container);"
 			>
 				<div slot="content" class="flex-1 flex flex-col">
 					<div></div>
