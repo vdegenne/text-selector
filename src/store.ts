@@ -143,7 +143,7 @@ export class AppStore extends ReactiveController {
 			changed.has('repeaterInitialDelayMs') ||
 			changed.has('repeaterIntervalMs')
 		) {
-			console.log('BOOM')
+			indexesHistory.updateSaveDebouncerTime(this.repeaterInitialDelayMs + 10)
 			const {
 				leftPrevRepeater,
 				leftNextRepeater,

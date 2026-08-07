@@ -41,14 +41,17 @@ class IndexesHistoryController extends ReactiveController {
 		}
 	}
 
-	saveHighlightIndexes = new Debouncer(
-		async (start: number, end: number) => {
-			this.saveComplete = this.saveIndexes(start, end)
-			await this.saveComplete
-		},
-		500,
-		{throwOnCancel: false},
-	)
+	updateSaveDebouncerTime(timeoutMs: number) {
+		return (this.saveHighlightIndexes = new Debouncer(
+			async (start: number, end: number) => {
+				this.saveComplete = this.saveIndexes(start, end)
+				await this.saveComplete
+			},
+			timeoutMs,
+			{throwOnCancel: false},
+		))
+	}
+	saveHighlightIndexes = this.updateSaveDebouncerTime(500)
 
 	async getHighlightIndexes(): Promise<[number, number] | undefined> {
 		const hash = await store.getInputHash()

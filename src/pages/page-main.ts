@@ -38,6 +38,7 @@ import {
 	isVisible,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
+import {Debouncer} from '@vdegenne/debouncer'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -160,27 +161,45 @@ export class PageMain extends PageElement {
 			// }
 			// this.firstTime = false
 
+			this.special = false
+			this.feedback = ''
 			const {highlightContent} = info
 			if (highlightContent.length < 15) {
-				jpsyndexAPI
-					.get(`/search/${highlightContent}` as '/search/:word')
-					.then(async ({response}) => {
-						if (!response.ok) throw 0
-						this.special = true
-						console.log(this)
-						this.feedback = (await response.text())
-							.split(/[/,]/)
-							.map((word) => html`<span>${word}</span>`)
-					})
-					.catch(() => {
-						this.special = false
-						this.feedback = ''
-					})
-			} else {
-				this.special = false
+				this.updateRemoteInfo.debounce(highlightContent)
 			}
 		},
 	})
+
+	updateRemoteInfo = new Debouncer(
+		(query: string) => {
+			jpsyndexAPI
+				.get(`/search/${encodeURIComponent(query)}` as '/search/:word')
+				.then(async ({response}) => {
+					if (!response.ok) throw 0
+					this.special = true
+					// console.log(this)
+					this.feedback = html`${this.feedback}${(await response.text())
+						.split(/[/,]/)
+						.map((word) => html`<span>${word}</span>`)}`
+				})
+				.catch(() => {
+					// this.special = false
+					// this.feedback = ''
+				})
+
+			jpsyndexAPI
+				.get(`/hiragana/${encodeURIComponent(query)}` as '/hiragana/:query')
+				.then(async ({response}) => {
+					if (!response.ok) throw 0
+					const map = await response.json()
+					if (!map[query]) throw 0
+					this.feedback = html`${map[query]}${this.feedback}`
+				})
+				.catch(null)
+		},
+		store.repeaterInitialDelayMs + 10,
+		{throwOnCancel: false},
+	)
 
 	render() {
 		const lines = store.input.split('\n').filter((l) => l)
@@ -230,7 +249,7 @@ export class PageMain extends PageElement {
 
 			<div
 				id="feedback"
-				class="fixed bottom-3 left-5 text-lg flex items-center gap-2 *:even:text-(--md-sys-color-outline) font-[roboto] bg-(--md-sys-color-surface-container)"
+				class="fixed top-0 right-0 p-1 text-lg flex items-center gap-2 *:even:text-(--md-sys-color-outline) font-[roboto] bg-(--md-sys-color-surface-container)"
 			>
 				${this.feedback}
 			</div>

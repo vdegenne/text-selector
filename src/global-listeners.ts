@@ -1,4 +1,4 @@
-import {cquerySelector} from 'html-vision'
+import {$} from 'html-vision'
 import {openSettingsDialog} from './imports.js'
 import {translateSelection} from './server/functions.js'
 
@@ -22,7 +22,7 @@ window.addEventListener('keypress', async (event: KeyboardEvent) => {
 		return
 	}
 
-	const button = cquerySelector(`[key="${event.key}"]`)
+	const button = $(`[key="${event.key}"]`)
 	if (button) {
 		button?.click()
 		return
