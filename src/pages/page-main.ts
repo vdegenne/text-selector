@@ -667,7 +667,7 @@ export class PageMain extends PageElement {
 		const {highlightContent} = this.highlighter.getInfo()
 		if (highlightContent) {
 			copyToClipboard(highlightContent)
-			toast(highlightContent)
+			toast(highlightContent, {timeoutMs: 1500})
 		}
 	}
 
