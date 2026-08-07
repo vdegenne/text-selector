@@ -14,7 +14,6 @@ export const hash = new Hash<{fspath: string}>()
 
 export const router = new Router(
 	async ({location, parts}) => {
-		console.log('test')
 		// logger.log('Location has changed')
 		await store.updateComplete
 		hash.reflectHashToParams()
@@ -31,17 +30,6 @@ export const router = new Router(
 
 		// See below for initialization logic
 		store.firstUpdated
-
-		// await store.updateComplete
-		// await mainPage.updateComplete
-		//
-		// if (params.has('full')) {
-		// 	mainPage.selectAll()
-		// 	await mainPage.updateComplete
-		// 	await sleep(100)
-		// 	await mainPage.updateComplete
-		// 	fullscreenElement.show()
-		// }
 	},
 	{handlePageShow: true},
 )

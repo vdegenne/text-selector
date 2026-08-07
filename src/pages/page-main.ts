@@ -254,14 +254,18 @@ export class PageMain extends PageElement {
 		} else {
 			if (params.has('full')) {
 				start = 0
-				end = store.input.length
-				fullscreenElement.show()
+				end = store.input.length - 1
 			} else {
 				start = end = 0
 			}
 		}
+
 		console.log('HIGHLIGHT FROM MAIN PAGE FIRST UPDATE', start, end)
 		this.highlighter.highlight(start, end)
+		console.log(start, end, store.input.length - 1)
+		if (start === 0 && end === store.input.length - 1 && params.has('full')) {
+			fullscreenElement.show()
+		}
 	}
 
 	expandHighlight() {
@@ -308,7 +312,7 @@ export class PageMain extends PageElement {
 	}
 
 	selectAll() {
-		this.highlighter.highlight(0, store.input.length)
+		this.highlighter.highlight(0, store.input.length - 1)
 	}
 
 	previous() {
