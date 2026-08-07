@@ -170,7 +170,7 @@ export class AppStore extends ReactiveController {
 			rightDownRepeater.options.intervalMs = this.repeaterIntervalMs
 
 			upRepeater.options.initialDelayMs = this.repeaterInitialDelayMs
-			downRepeater.options.intervalMs = this.repeaterIntervalMs * 0.5
+			downRepeater.options.intervalMs = this.repeaterIntervalMs / 0.5
 		}
 	}
 

@@ -1,5 +1,6 @@
 import {type PropertyValues} from 'snar'
 import {splitLetters} from './functions.js'
+import {visibilityCheck} from 'html-vision'
 // import {toast} from 'toastit'
 
 export function copyToClipboard(text: string | number) {
@@ -342,7 +343,7 @@ export function getFirstVisibleElement(
 	elements: HTMLElement[],
 ): HTMLElement | null {
 	for (let i = 0; i < elements.length; i++) {
-		if (isVisible(elements[i])) {
+		if (visibilityCheck(elements[i], (is) => is('fully-visible'))) {
 			return elements[i]
 		}
 	}
@@ -353,7 +354,7 @@ export function getLastVisibleElement(
 	elements: HTMLElement[],
 ): HTMLElement | null {
 	for (let i = elements.length - 1; i >= 0; i--) {
-		if (isVisible(elements[i])) {
+		if (visibilityCheck(elements[i], (is) => is('fully-visible'))) {
 			return elements[i]
 		}
 	}

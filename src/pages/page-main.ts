@@ -1,3 +1,4 @@
+import {visibilityCheck} from 'html-vision/visibility.js'
 import {withController} from '@snar/lit'
 import {HighlightManager} from '@vdegenne/highlight-manager'
 import {
@@ -361,7 +362,7 @@ export class PageMain extends PageElement {
 		// const textInfo = getTextInfo(store.input, {cursorPosition})
 		const textInfo = this.getTextInfo()
 
-		if (!isVisible(highlightElement)) {
+		if (visibilityCheck(highlightElement, (is) => !is('partially-visible'))) {
 			const letterElements = [...this.letterElements]
 			const lastVisibleElement = getLastVisibleElement(letterElements)
 			const index = letterElements.indexOf(lastVisibleElement)
@@ -399,7 +400,7 @@ export class PageMain extends PageElement {
 		const {highlightIndexStart, highlightIndexEnd, highlightElement} =
 			this.highlighter.getInfo()
 
-		if (!isVisible(highlightElement)) {
+		if (visibilityCheck(highlightElement, (is) => !is('partially-visible'))) {
 			const letterElements = [...this.letterElements]
 			const firstVisibleElement = getFirstVisibleElement(letterElements)
 			const index = letterElements.indexOf(firstVisibleElement)

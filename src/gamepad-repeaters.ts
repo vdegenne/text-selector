@@ -45,7 +45,7 @@ export const leftNextRepeater = new Repeater({
 
 export const upRepeater = new Repeater({
 	initialDelayMs: store.repeaterInitialDelayMs,
-	intervalMs: store.repeaterIntervalMs * 0.5, // was 60
+	intervalMs: store.repeaterIntervalMs / 0.5, // was 60
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
@@ -59,9 +59,10 @@ export const upRepeater = new Repeater({
 	},
 })
 
+console.log(store.repeaterIntervalMs)
 export const downRepeater = new Repeater({
 	initialDelayMs: store.repeaterInitialDelayMs,
-	intervalMs: store.repeaterIntervalMs * 0.5, // was 60
+	intervalMs: store.repeaterIntervalMs / 0.5, // was 60
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
