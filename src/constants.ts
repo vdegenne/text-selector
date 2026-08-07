@@ -7,7 +7,7 @@ export const availablePages = ['main', 'search'] as const
 export const fontFamily = [
 	'Noto Serif JP',
 	'Noto Sans JP',
-	// 'Zen Maru Gothic',
+	'Zen Maru Gothic',
 	'Playfair Display',
 	'BJCree',
 	'Merriweather',

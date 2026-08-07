@@ -71,6 +71,7 @@ declare global {
 	.line-number,
 	.letters {
 		font-size: var(--font-size-px);
+		font-weight: var(--font-weight);
 	}
 
 	/* SINGLE highlighted element */
@@ -199,8 +200,8 @@ export class PageMain extends PageElement {
 				${lines.map((line, i) => {
 					return html`<!-- -->
 						<div
-							class="flex items-center gap-5 py-1"
-							style="${i % 2 === 0 ? 'background-color:rgba(200, 200, 200, 0.06)' : ''}"
+							class="flex items-center gap-5 py-4"
+							style="${i % 2 === 0 ? 'background-color:rgba(200, 200, 200, 0.06)' : ''}; padding-block: var(--line-vertical-padding-px);"
 						>
 							<span
 								class="line-number text-(--md-sys-color-outline) opacity-70"

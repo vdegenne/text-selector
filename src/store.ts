@@ -20,9 +20,11 @@ export class AppStore extends ReactiveController {
 	// @state() startIndex = 0
 	// @state() endIndex = 0
 
+	@state() font: FontValue = 'Noto Serif JP'
 	@state() fontSizePx = 31
 	@state() fontWeight = 500
-	@state() font: FontValue = 'Noto Serif JP'
+
+	@state() lineVerticalPaddingPx = 12
 
 	@state() verticalPadding = 1
 
@@ -134,6 +136,13 @@ export class AppStore extends ReactiveController {
 			document.documentElement.style.setProperty(
 				'--font-weight',
 				this.fontWeight + '',
+			)
+		}
+
+		if (changed.has('lineVerticalPaddingPx')) {
+			document.documentElement.style.setProperty(
+				'--line-vertical-padding-px',
+				`${this.lineVerticalPaddingPx}px`,
 			)
 		}
 

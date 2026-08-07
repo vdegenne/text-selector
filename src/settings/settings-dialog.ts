@@ -66,6 +66,15 @@ export class SettingsDialog extends LitElement {
 					</card-element>
 
 					<card-element headline="display">
+						<md-elevated-card
+							jp
+							class="font-(--font-weight) text-(--font-size-px)"
+							style="font-weight: var(--font-weight); font-size: var(--font-size-px);"
+						>
+							<span class="leading-normal"
+								>武力を用いた対抗措置は基本的に禁止されるが</span
+							>
+						</md-elevated-card>
 						${store.F.SELECT('Font family', 'font', fontFamily, {menuPositioning: 'popover'})}
 						${store.F.SLIDER('Font size (px)', 'fontSizePx', {
 							min: 8,
@@ -79,6 +88,15 @@ export class SettingsDialog extends LitElement {
 							step: 50,
 							// timeoutMs: 20,
 						})}
+						${store.F.SLIDER(
+							'Line vertical padding (px)',
+							'lineVerticalPaddingPx',
+							{
+								min: 0,
+								max: 50,
+								step: 1,
+							},
+						)}
 					</card-element>
 
 					<card-element headline="audio">
