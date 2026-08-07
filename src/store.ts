@@ -124,7 +124,10 @@ export class AppStore extends ReactiveController {
 		}
 
 		if (changed.has('font')) {
-			document.documentElement.style.setProperty('--jp-font', `'${this.font}'`)
+			document.documentElement.style.setProperty(
+				'--jp-font',
+				`'${this.font}', Roboto`,
+			)
 		}
 		if (changed.has('fontSizePx')) {
 			document.documentElement.style.setProperty(
