@@ -24,7 +24,7 @@ class FullscreenElement extends LitElement {
 	protected render() {
 		return html`<!-- -->
 			<md-dialog
-				quick
+				?quick="${false}"
 				?open="${this.open}"
 				@closed="${() => (this.open = false)}"
 				style="min-width: calc(100vw - 0px); min-height: calc(100vh - 0px); --md-dialog-container-color: var(--md-sys-color-surface-container);"
