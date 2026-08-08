@@ -404,8 +404,6 @@ class GamepadController extends ReactiveController {
 						const params = new URLSearchParams(window.location.search)
 						if (
 							params.has('full') &&
-							highlightIndexStart &&
-							highlightIndexEnd &&
 							highlightIndexStart === 0 &&
 							highlightIndexEnd === store.input.length - 1
 						) {
