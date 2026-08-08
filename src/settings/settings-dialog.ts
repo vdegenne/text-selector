@@ -67,6 +67,7 @@ export class SettingsDialog extends LitElement {
 
 					<card-element headline="display">
 						<md-elevated-card
+							hidden
 							jp
 							class="font-(--font-weight) text-(--font-size-px)"
 							style="font-weight: var(--font-weight); font-size: var(--font-size-px);"

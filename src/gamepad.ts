@@ -361,6 +361,19 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
+			gamepad.for(r1).before(({mode}) => {
+				switch (mode) {
+					case Mode.NORMAL:
+						fullscreenElement.showHiragana = !fullscreenElement.showHiragana
+						break
+
+					case Mode.PRIMARY:
+						break
+					case Mode.SECONDARY:
+					case Mode.TERTIARY:
+				}
+			})
+
 			gamepad.for(y).before(({mode}) => {
 				switch (mode) {
 					case Mode.PRIMARY:

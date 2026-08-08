@@ -12,12 +12,18 @@ import {RemoteInfo, stateless} from './stateless.js'
 import {store} from './store.js'
 
 @customElement({name: 'fullscreen-element', inject: true})
-@withStyles()
+@withStyles(css`
+	#hiragana {
+		transition: opacity 0.7s linear;
+	}
+`)
 class FullscreenElement extends LitElement {
 	@property({type: Boolean}) open = false
 	@state() input = ''
 	@state() collections: RemoteInfo['collections']
 	@state() hiragana: RemoteInfo['hiragana']
+
+	@state() showHiragana = false
 
 	@query('md-dialog') dialog!: MdDialog
 
@@ -29,17 +35,26 @@ class FullscreenElement extends LitElement {
 				@closed="${() => (this.open = false)}"
 				style="min-width: calc(100vw - 0px); min-height: calc(100vh - 0px); --md-dialog-container-color: var(--md-sys-color-surface-container);"
 			>
+				<div slot="headline" class="flex items-center opacity-20" primary>
+					<md-icon ?invisible="${!this.collections}">verified</md-icon>
+					${this.collections}
+				</div>
 				<div slot="content" class="flex-1 flex flex-col">
 					<div></div>
 					<div
-						class="flex-1 flex flex-col gap-2 items-center justify-center jp"
+						class="flex-1 flex flex-col gap-3 items-center justify-center jp"
 					>
 						<span
 							style="font-size:${getFontSize(this.input)}px;"
-							class="leading-normal"
+							class="leading-none"
 							>${this.input}</span
 						>
-						<span class="text-xl">${this.hiragana}</span>
+						<span
+							id="hiragana"
+							class="text-xl"
+							?invisible="${!this.showHiragana}"
+							>${this.hiragana || '　'}</span
+						>
 					</div>
 					<div></div>
 				</div>
@@ -51,11 +66,11 @@ class FullscreenElement extends LitElement {
 		new SS(
 			css`
 				.container::before {
-					opacity: 0;
+					opacity: 0.5;
 				}
 				.container {
 					backdrop-filter: blur(50px);
-					backdrop-filter: blur(30px) saturate(120%);
+					backdrop-filter: blur(20px) saturate(120%);
 				}
 				.content {
 					display: flex;
@@ -68,13 +83,13 @@ class FullscreenElement extends LitElement {
 
 	updated(changed: PropertyValues<this>) {
 		if (changed.has('open')) {
-			if (this.open)
-				document.documentElement.setAttribute('hide-scrollbar', undefined)
+			if (this.open) document.documentElement.setAttribute('hide-scrollbar', '')
 			else document.documentElement.removeAttribute('hide-scrollbar')
 		}
 	}
 
 	show(input?: string) {
+		this.showHiragana = false
 		this.updateRemoteInfo.call(input ?? this.input)
 
 		this.open = true
@@ -152,7 +167,7 @@ class FullscreenElement extends LitElement {
 		async (query: string) => {
 			this.input = query
 			this.collections = ''
-			this.hiragana = ''
+			this.hiragana = undefined
 			mainPage.special = false
 
 			if (!query) return

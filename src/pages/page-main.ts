@@ -68,7 +68,6 @@ declare global {
 		color: var(--md-sys-color-on-secondary-container);
 	}
 
-	.line-number,
 	.letters {
 		font-size: var(--font-size-px);
 		font-weight: var(--font-weight);
@@ -205,7 +204,7 @@ export class PageMain extends PageElement {
 							style="${i % 2 === 0 ? 'background-color:rgba(200, 200, 200, 0.06)' : ''}; padding-block: var(--line-vertical-padding-px);"
 						>
 							<span
-								class="line-number text-(--md-sys-color-outline) opacity-70"
+								class="line-number text-(--md-sys-color-outline) opacity-70 font-(--font-weight) text-[clamp(12px,var(--font-size-px),48px)]"
 								__style="font-size: initial"
 								>#${i}</span
 							>

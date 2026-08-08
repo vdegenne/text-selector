@@ -3,7 +3,7 @@
 		"target": "esnext",
 		"module": "nodenext",
 		"moduleResolution": "nodenext",
-		"strict": false,
+		"strict": true,
 		"useDefineForClassFields": false,
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
