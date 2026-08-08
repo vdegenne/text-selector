@@ -172,6 +172,11 @@ class GamepadController extends ReactiveController {
 
 			gamepad
 				.for(rleft)
+				.on(({mode}) => {
+					if (mode === Mode.SECONDARY) {
+						store.fontSizePx--
+					}
+				})
 				.before(({mode}) => {
 					rightPrevRepeater.start(mode)
 				})
@@ -180,6 +185,11 @@ class GamepadController extends ReactiveController {
 				})
 			gamepad
 				.for(rright)
+				.on(({mode}) => {
+					if (mode === Mode.SECONDARY) {
+						store.fontSizePx++
+					}
+				})
 				.before(({mode}) => {
 					rightNextRepeater.start(mode)
 				})
