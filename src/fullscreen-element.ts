@@ -37,7 +37,7 @@ class FullscreenElement extends LitElement {
 			>
 				<div slot="headline" class="flex items-center opacity-20" primary>
 					<md-icon ?invisible="${!this.collections}">verified</md-icon>
-					${this.collections}
+					${this.collections.split(/[/,]/).map((word) => html`<span>${word}</span>`)}
 				</div>
 				<div slot="content" class="flex-1 flex flex-col">
 					<div></div>
