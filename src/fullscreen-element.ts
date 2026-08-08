@@ -175,7 +175,7 @@ class FullscreenElement extends LitElement {
 			} else {
 			}
 		},
-		store.repeaterInitialDelayMs + 100,
+		store.repeaterInitialDelayMs + 50,
 		{throwOnCancel: false},
 	)
 }
