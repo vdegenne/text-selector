@@ -49,7 +49,7 @@ class FullscreenElement extends LitElement {
 				<div slot="content" class="flex-1 flex flex-col">
 					<div></div>
 					<div
-						class="flex-1 flex flex-col gap-4 items-center justify-center jp"
+						class="flex-1 flex flex-col gap-6 items-center justify-center jp"
 					>
 						<span
 							style="font-size:${getFontSize(this.input)}px; font-weight:var(--font-weight);"
