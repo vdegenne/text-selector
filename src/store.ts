@@ -3,7 +3,7 @@ import {FormBuilder} from '@vdegenne/forms/FormBuilder.js'
 import {saveToLocalStorage} from 'snar-save-to-local-storage'
 import toast from 'toastit'
 import {clickAudio} from './assets/assets.js'
-import {availablePages, FontValue} from './constants.js'
+import {availablePages, fontFamily, FontValue} from './constants.js'
 import {indexesHistory} from './indexesHistory.js'
 import {Page} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
@@ -235,6 +235,12 @@ export class AppStore extends ReactiveController {
 			}
 			// })
 		}
+	}
+
+	cycleThroughFontFamilies() {
+		const index = fontFamily.indexOf(this.font)
+		const next = (index + 1) % fontFamily.length
+		this.font = fontFamily[next]
 	}
 }
 

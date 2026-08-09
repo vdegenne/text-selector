@@ -632,21 +632,6 @@ export class PageMain extends PageElement {
 		this.highlighter.highlight(highlightIndexStart, end)
 	}
 
-	openFullScreener() {
-		return
-		const {highlightContent} = this.highlighter.getInfo()
-		if (highlightContent) {
-			document.dispatchEvent(
-				new CustomEvent('open-fullscreener', {
-					bubbles: true,
-					detail: {
-						value: highlightContent,
-					},
-				}),
-			)
-		}
-	}
-
 	addCurrentSelectionToJpSynDex() {
 		const {highlightContent} = this.highlighter.getInfo()
 		if (highlightContent) {

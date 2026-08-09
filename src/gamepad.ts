@@ -133,7 +133,7 @@ class GamepadController extends ReactiveController {
 				})
 
 			gamepad
-				.for(map.LEFT_STICK_UP)
+				.for(lup)
 				.before(({mode}) => {
 					upRepeater.start(mode)
 				})
@@ -141,7 +141,7 @@ class GamepadController extends ReactiveController {
 					upRepeater.stop()
 				})
 			gamepad
-				.for(map.LEFT_STICK_DOWN)
+				.for(ldown)
 				.before(({mode}) => {
 					downRepeater.start(mode)
 				})
@@ -197,30 +197,49 @@ class GamepadController extends ReactiveController {
 					rightNextRepeater.stop()
 				})
 			gamepad
-				.for(map.RIGHT_STICK_UP)
+				.for(rup)
 				.before(({mode}) => {
-					rightUpRepeater.start(mode)
+					if (mode === Mode.SECONDARY) {
+						getMainPage()?.highlighter.highlight(0)
+					} else {
+						rightUpRepeater.start(mode)
+					}
 				})
 				.after(() => {
 					rightUpRepeater.stop()
 				})
 			gamepad
-				.for(map.RIGHT_STICK_DOWN)
+				.for(rdown)
 				.before(({mode}) => {
-					rightDownRepeater.start(mode)
+					if (mode === Mode.SECONDARY) {
+						getMainPage()?.highlighter.highlightLast()
+					} else {
+						rightDownRepeater.start(mode)
+					}
 				})
 				.after(() => {
 					rightDownRepeater.stop()
 				})
 
-			gamepad.for(map.RIGHT_BUTTONS_BOTTOM).before(async ({mode}) => {
+			gamepad.for(a).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
-						break
-					case Mode.TERTIARY:
+						const {highlightIndexStart, highlightIndexEnd} =
+							getMainPage()?.highlighter?.getInfo() ?? {}
+						const params = new URLSearchParams(window.location.search)
+						if (
+							params.has('full') &&
+							highlightIndexStart === 0 &&
+							highlightIndexEnd === store.input.length - 1
+						) {
+							window.close()
+						} else {
+							fullscreenElement.open = false
+						}
 						break
 				}
 			})
+
 			gamepad.for(b).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
@@ -246,11 +265,6 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(map.R1).before(({mode}) => {
-				if (mode === Mode.NORMAL) {
-				}
-			})
-
 			gamepad.for(dpadleft).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
@@ -271,6 +285,7 @@ class GamepadController extends ReactiveController {
 						break
 				}
 			})
+
 			gamepad.for(dpadright).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
@@ -334,25 +349,6 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(map.RIGHT_BUTTONS_TOP).before(({mode}) => {
-				switch (mode) {
-					case Mode.NORMAL:
-						break
-					case Mode.PRIMARY:
-						break
-					case Mode.SECONDARY:
-					case Mode.TERTIARY:
-				}
-			})
-
-			gamepad.for(map.MIDDLE_LEFT).before(({mode}) => {
-				switch (mode) {
-					case Mode.NORMAL:
-						mainPage.openFullScreener()
-						break
-				}
-			})
-
 			gamepad.for(l1).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
@@ -380,6 +376,8 @@ class GamepadController extends ReactiveController {
 					case Mode.PRIMARY:
 						break
 					case Mode.SECONDARY:
+						store.cycleThroughFontFamilies()
+						break
 					case Mode.TERTIARY:
 				}
 			})
@@ -402,40 +400,6 @@ class GamepadController extends ReactiveController {
 						if (highlightContent) {
 							fullscreenElement.show(highlightContent)
 						}
-						break
-				}
-			})
-
-			gamepad.for(a).before(({mode}) => {
-				switch (mode) {
-					case Mode.NORMAL:
-						const {highlightIndexStart, highlightIndexEnd} =
-							getMainPage()?.highlighter?.getInfo() ?? {}
-						const params = new URLSearchParams(window.location.search)
-						if (
-							params.has('full') &&
-							highlightIndexStart === 0 &&
-							highlightIndexEnd === store.input.length - 1
-						) {
-							window.close()
-						} else {
-							fullscreenElement.open = false
-						}
-						break
-				}
-			})
-
-			gamepad.for(rup).before(({mode}) => {
-				switch (mode) {
-					case Mode.SECONDARY:
-						getMainPage()?.highlighter.highlight(0)
-						break
-				}
-			})
-			gamepad.for(rdown).before(({mode}) => {
-				switch (mode) {
-					case Mode.SECONDARY:
-						getMainPage()?.highlighter.highlightLast()
 						break
 				}
 			})
