@@ -240,7 +240,9 @@ export class AppStore extends ReactiveController {
 	cycleThroughFontFamilies() {
 		const index = fontFamily.indexOf(this.font)
 		const next = (index + 1) % fontFamily.length
-		this.font = fontFamily[next]
+		const font = fontFamily[next]
+		this.font = font
+		toast(font)
 	}
 }
 
