@@ -9,6 +9,11 @@
 		"type": "git",
 		"url": ""
 	},
+	"scripts": {
+		"dev": "wireit",
+		"build": "wireit",
+		"pwa-assets": "wireit"
+	},
 	"wireit": {
 		"dev": {
 			"dependencies": [
@@ -93,7 +98,7 @@
 		"@vdegenne/about-dialog": "^0.4.2",
 		"@vdegenne/debouncer": "^1.0.17",
 		"@vdegenne/forms": "^0.1.73",
-		"@vdegenne/highlight-manager": "^1.0.5",
+		"@vdegenne/highlight-manager": "^1.0.12",
 		"@vdegenne/jpsyndex": "^1.0.11",
 		"@vdegenne/links": "^1.8.25",
 		"@vdegenne/lit-debug": "^0.1.2",
@@ -125,10 +130,5 @@
 		"vite-plugin-pwa": "^1.3.0",
 		"vscode-ui-connector": "^0.2.4",
 		"wireit": "^0.14.13"
-	},
-	"scripts": {
-		"dev": "wireit",
-		"build": "wireit",
-		"pwa-assets": "wireit"
 	}
 }

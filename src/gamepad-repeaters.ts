@@ -49,7 +49,8 @@ export const upRepeater = new Repeater({
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
-				mainPage.previousLine()
+				// mainPage.previousLine()
+				mainPage.highlighter.top()
 				break
 			case Mode.PRIMARY:
 				// mainPage.previousLine(true)
@@ -59,14 +60,14 @@ export const upRepeater = new Repeater({
 	},
 })
 
-console.log(store.repeaterIntervalMs)
 export const downRepeater = new Repeater({
 	initialDelayMs: store.repeaterInitialDelayMs,
 	intervalMs: store.repeaterIntervalMs / 0.5, // was 60
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
-				mainPage.nextLine()
+				// mainPage.nextLine()
+				mainPage.highlighter.bottom()
 				break
 			case Mode.PRIMARY:
 				// mainPage.nextLine(true)
