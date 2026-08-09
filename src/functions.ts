@@ -1,7 +1,7 @@
 export function getFontSize(text: string): number {
 	const length = text.length
 
-	const maxSize = 120 // px
+	const maxSize = 180 // px
 	const minSize = 24 // px
 
 	// tune these values depending on your design

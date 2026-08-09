@@ -65,13 +65,13 @@ class FullscreenElement extends LitElement {
 	protected firstUpdated(): void {
 		new SS(
 			css`
-				.container::before {
+				/*.container::before {
 					opacity: 0.5;
 				}
 				.container {
 					backdrop-filter: blur(50px);
 					backdrop-filter: blur(20px) saturate(120%);
-				}
+				}*/
 				.content {
 					display: flex;
 					flex-direction: column;
