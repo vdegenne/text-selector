@@ -41,7 +41,10 @@ class FullscreenElement extends LitElement {
 					primary
 				>
 					<md-icon ?invisible="${!this.collections}">verified</md-icon>
-					${this.collections.split(/[/,]/).map((word) => html`${word}`)}
+					${this.collections
+						.split(/[/,]/)
+						.map((word) => `${word}`)
+						.join(' ')}
 				</div>
 				<div slot="content" class="flex-1 flex flex-col">
 					<div></div>
