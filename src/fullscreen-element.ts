@@ -35,9 +35,13 @@ class FullscreenElement extends LitElement {
 				@closed="${() => (this.open = false)}"
 				style="min-width: calc(100vw - 0px); min-height: calc(100vh - 0px); --md-dialog-container-color: var(--md-sys-color-surface-container);"
 			>
-				<div slot="headline" class="flex items-center opacity-20" primary>
+				<div
+					slot="headline"
+					class="flex items-center opacity-20 text-lg"
+					primary
+				>
 					<md-icon ?invisible="${!this.collections}">verified</md-icon>
-					${this.collections.split(/[/,]/).map((word) => html`<span>${word}</span>`)}
+					${this.collections.split(/[/,]/).map((word) => html`${word}`)}
 				</div>
 				<div slot="content" class="flex-1 flex flex-col">
 					<div></div>
