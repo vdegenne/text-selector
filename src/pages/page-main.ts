@@ -117,7 +117,7 @@ export class PageMain extends PageElement {
 	highlighter = new HighlightManager('.letter', {
 		navigationStyle: 'relative-to',
 		scroll: {
-			if: (is) => !is('partially-visible'),
+			if: (is) => !is('fully-visible'),
 			block: 'center',
 			behavior: 'instant',
 		},
