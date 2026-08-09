@@ -1,5 +1,5 @@
 import {withController} from '@snar/lit'
-import {HighlightManager} from '@vdegenne/highlight-manager'
+import {Anchor, HighlightManager} from '@vdegenne/highlight-manager'
 import {
 	chatGptMediatorOpen,
 	chatGptMediatorUrl,
@@ -115,11 +115,13 @@ export class PageMain extends PageElement {
 	// firstHighlight = true
 
 	highlighter = new HighlightManager('.letter', {
-		navigationStyle: 'relative-to',
+		relativeOptions: {
+			debug: true,
+		},
 		scroll: {
 			if: (is) => !is('fully-visible'),
 			block: 'center',
-			behavior: 'instant',
+			behavior: 'smooth',
 		},
 		// keep the arrow form to avoid breaking "this"
 		onSelectionChange: (info) => {
@@ -130,6 +132,7 @@ export class PageMain extends PageElement {
 				'SELECTION CHANGED',
 				info.highlightIndexStart,
 				info.highlightIndexEnd,
+				// info.highlightElement,
 			)
 			indexesHistory.saveHighlightIndexes.debounce(
 				info.highlightIndexStart,

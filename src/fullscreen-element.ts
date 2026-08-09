@@ -42,7 +42,7 @@ class FullscreenElement extends LitElement {
 				>
 					<md-icon ?invisible="${!this.collections}">verified</md-icon>
 					${this.collections
-						.split(/[/,]/)
+						?.split(/[/,]/)
 						.map((word) => `${word}`)
 						.join(' ')}
 				</div>
