@@ -256,7 +256,7 @@ export class PageMain extends PageElement {
 		}
 
 		console.log('HIGHLIGHT FROM MAIN PAGE FIRST UPDATE', start, end)
-		// this.highlighter.highlight(start, end)
+		this.highlighter.highlight(start, end)
 		if (start === 0 && end === store.input.length - 1 && params.has('full')) {
 			fullscreenElement.show()
 		}
