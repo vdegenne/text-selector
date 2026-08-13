@@ -119,7 +119,7 @@ export class PageMain extends PageElement {
 		relativeOptions: {
 			debug: true,
 			maxDistance: 10,
-			outerOffset: 1,
+			outerOffset: 10,
 			dig: {count: 50, step: 30},
 		},
 		scroll: {
