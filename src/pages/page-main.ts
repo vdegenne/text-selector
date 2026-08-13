@@ -114,7 +114,7 @@ export class PageMain extends PageElement {
 
 	// firstHighlight = true
 
-	highlighter = new HighlightManager('.letter:not(.non-selectable)', {
+	highlighter = new HighlightManager('.letter', {
 		navigationStyle: NavigationStyle.RELATIVE_TO,
 		relativeOptions: {
 			debug: true,
