@@ -114,7 +114,7 @@ export class PageMain extends PageElement {
 
 	// firstHighlight = true
 
-	highlighter = new HighlightManager('.letter', {
+	highlighter = new HighlightManager('.letter:not(.non-selectable)', {
 		navigationStyle: NavigationStyle.RELATIVE_TO,
 		relativeOptions: {
 			debug: true,
@@ -237,8 +237,8 @@ export class PageMain extends PageElement {
 										><!-- -->`
 								})}
 								${
-									false && i !== lines.length - 1
-										? html`<span class="letter"></span>`
+									i !== lines.length - 1
+										? html`<span class="letter non-selectable"></span>`
 										: null
 								}
 							</div>
