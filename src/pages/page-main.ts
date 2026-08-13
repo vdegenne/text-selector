@@ -1,5 +1,5 @@
 import {withController} from '@snar/lit'
-import {Anchor, HighlightManager} from '@vdegenne/highlight-manager'
+import {HighlightManager, NavigationStyle} from '@vdegenne/highlight-manager'
 import {
 	chatGptMediatorOpen,
 	chatGptMediatorUrl,
@@ -115,25 +115,29 @@ export class PageMain extends PageElement {
 	// firstHighlight = true
 
 	highlighter = new HighlightManager('.letter', {
+		navigationStyle: NavigationStyle.RELATIVE_TO,
 		relativeOptions: {
 			debug: true,
+			maxDistance: 10,
+			outerOffset: 1,
+			dig: {count: 50, step: 30},
 		},
 		scroll: {
 			if: (is) => !is('fully-visible'),
 			block: 'center',
-			behavior: 'smooth',
+			behavior: 'instant',
 		},
 		// keep the arrow form to avoid breaking "this"
 		onSelectionChange: (info) => {
 			playClick()
 			// store.startIndex = info.highlightIndexStart
 			// store.endIndex = info.highlightIndexEnd
-			console.log(
-				'SELECTION CHANGED',
-				info.highlightIndexStart,
-				info.highlightIndexEnd,
-				// info.highlightElement,
-			)
+			// console.log(
+			// 	'SELECTION CHANGED',
+			// 	info.highlightIndexStart,
+			// 	info.highlightIndexEnd,
+			// 	// info.highlightElement,
+			// )
 			indexesHistory.saveHighlightIndexes.debounce(
 				info.highlightIndexStart,
 				info.highlightIndexEnd,
@@ -181,6 +185,18 @@ export class PageMain extends PageElement {
 			// 	this.firstHighlight = false
 			// }
 		},
+
+		getInfoMiddleware(info) {
+			return {
+				content: info.highlightElements
+					.map((letter) =>
+						letter.classList.contains('newline')
+							? '\n'
+							: letter.innerText?.trim(),
+					)
+					.join(''),
+			}
+		},
 	})
 
 	render() {
@@ -214,11 +230,14 @@ export class PageMain extends PageElement {
 							>
 							<div class="letters break-all" ?jp="${isJp}">
 								${splitLetters(line).map((letter) => {
-									return html`<!-- --><span class="letter">${letter}</span
+									const isNewLine = letter === '%0A'
+									return html`<!-- --><span
+											class="letter${isNewLine ? ' newline' : ''}"
+											>${isNewLine ? '\\n' : letter}</span
 										><!-- -->`
 								})}
 								${
-									i !== lines.length - 1
+									false && i !== lines.length - 1
 										? html`<span class="letter"></span>`
 										: null
 								}
@@ -651,10 +670,10 @@ export class PageMain extends PageElement {
 	}
 
 	copySelectionToClipBoard() {
-		const {highlightContent} = this.highlighter.getInfo()
-		if (highlightContent) {
-			copyToClipboard(highlightContent)
-			toast(highlightContent, {timeoutMs: 1500})
+		const {content} = this.highlighter.getInfo()
+		if (content) {
+			copyToClipboard(content)
+			toast(content, {timeoutMs: 1500})
 		}
 	}
 

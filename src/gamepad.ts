@@ -13,6 +13,7 @@ import {MGamepad, MiniGamepad, Mode} from '@vdegenne/mini-gamepad'
 import {hasSomeJapanese} from 'asian-regexps'
 import {state} from 'lit/decorators.js'
 import toast from 'toastit'
+import {fullscreenElement} from './fullscreen-element.js'
 import {
 	downRepeater,
 	leftNextRepeater,
@@ -28,7 +29,6 @@ import {mainPage} from './pages/page-main.js'
 import {translateSelection} from './server/functions.js'
 import {store} from './store.js'
 import {copyToClipboard, isValidUrl, japsyndexOpen} from './utils.js'
-import {fullscreenElement} from './fullscreen-element.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined

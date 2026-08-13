@@ -3,7 +3,9 @@ const graphemeSegmenter = new Intl.Segmenter(undefined, {
 })
 
 export function splitLetters(text: string) {
-	return [...graphemeSegmenter.segment(text)].map(({segment}) => segment)
+	return [...graphemeSegmenter.segment(text.replaceAll('%0A', '\uE000'))].map(
+		({segment}) => segment.replace('\uE000', '%0A'),
+	)
 }
 
 export function utf16IndexToGraphemeIndex(text: string, index: number): number {

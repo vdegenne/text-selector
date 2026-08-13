@@ -197,8 +197,13 @@ export class AppStore extends ReactiveController {
 	async firstUpdated() {
 		const params = new URLSearchParams(location.search)
 		if (params.has('input')) {
-			const inputParam = params.get('input')!.replace(/\n{2,}/g, '\n')
+			const inputParam = params
+				.get('input')!
+				.replace(/\n{2,}/g, '\n')
+				.replace(/\n/, '%0A\n')
+			console.log('INPUT PARAM', `"${inputParam}"`)
 			const input = this.breakSentences ? breakSentence(inputParam) : inputParam
+			console.log('BROKEN INPUT', `"${input}"`)
 			if (input !== this.input) {
 				this.input = input
 			}

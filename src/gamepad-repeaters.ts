@@ -1,7 +1,13 @@
+import {Profiler} from '@vdegenne/debug/profiler.js'
 import {Mode} from '@vdegenne/mini-gamepad'
 import {Repeater} from '@vdegenne/mini-gamepad/repeater.js'
 import {mainPage} from './pages/page-main.js'
 import {store} from './store.js'
+import toast from 'toastit'
+import {Anchor, NavigationStyle} from '@vdegenne/highlight-manager'
+
+const profiler = new Profiler(1000)
+profiler.startReporting()
 
 export const leftPrevRepeater = new Repeater({
 	initialDelayMs: store.repeaterInitialDelayMs,
@@ -9,16 +15,11 @@ export const leftPrevRepeater = new Repeater({
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
+				profiler.start()
 				mainPage.highlighter.previous({
-					navigationStyle: 'relative-to',
-					relativeOptions: {
-						maxDistance: 5,
-						outerOffset: 1,
-					},
-					noRelativeCallback() {
-						mainPage.highlighter.previous({navigationStyle: 'index-based'})
-					},
+					navigationStyle: NavigationStyle.INDEX_BASED,
 				})
+				profiler.end()
 				break
 			case Mode.PRIMARY:
 				mainPage.highlighter.extendLeftHighlight()
@@ -37,16 +38,11 @@ export const leftNextRepeater = new Repeater({
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
+				profiler.start()
 				mainPage.highlighter.next({
-					navigationStyle: 'relative-to',
-					relativeOptions: {
-						maxDistance: 5,
-						outerOffset: 1,
-					},
-					noRelativeCallback() {
-						mainPage.highlighter.next({navigationStyle: 'index-based'})
-					},
+					navigationStyle: NavigationStyle.INDEX_BASED,
 				})
+				profiler.end()
 				break
 			case Mode.PRIMARY:
 				// mainPage.highlighter.extendRightHighlight()
@@ -66,31 +62,17 @@ export const upRepeater = new Repeater({
 		switch (mode) {
 			case Mode.NORMAL:
 				// mainPage.previousLine()
-				const outerOffset = 40
-
-				function tryTop(outerOffset: number, noRelativeCallback?: () => void) {
-					mainPage.highlighter.top({
-						navigationStyle: 'relative-to',
-						relativeOptions: {
-							outerOffset,
-							maxDistance: 10,
+				profiler.start()
+				if (!mainPage.highlighter.up()) {
+					mainPage.highlighter.relativeMotion({
+						anchor: Anchor.TOP_CENTER,
+						rectOverride: {
+							top: window.innerHeight - 10,
+							bottom: window.innerHeight,
 						},
-						noRelativeCallback,
 					})
 				}
-
-				let callback: (() => void) | undefined
-
-				for (let i = 100; i >= 1; i--) {
-					const offset = outerOffset * i
-					const nextCallback = callback
-
-					callback = function () {
-						tryTop(offset, nextCallback)
-					}
-				}
-
-				callback?.()
+				profiler.end()
 				break
 			case Mode.PRIMARY:
 				// mainPage.previousLine(true)
@@ -107,34 +89,17 @@ export const downRepeater = new Repeater({
 		switch (mode) {
 			case Mode.NORMAL:
 				// mainPage.nextLine()
-				const outerOffset = 40
-
-				function tryBottom(
-					outerOffset: number,
-					noRelativeCallback?: () => void,
-				) {
-					mainPage.highlighter.bottom({
-						navigationStyle: 'relative-to',
-						relativeOptions: {
-							outerOffset,
-							maxDistance: 10,
+				profiler.start()
+				if (!mainPage.highlighter.down()) {
+					mainPage.highlighter.relativeMotion({
+						anchor: Anchor.BOTTOM_CENTER,
+						rectOverride: {
+							top: 0,
+							bottom: 10,
 						},
-						noRelativeCallback,
 					})
 				}
-
-				let callback: (() => void) | undefined
-
-				for (let i = 100; i >= 1; i--) {
-					const offset = outerOffset * i
-					const nextCallback = callback
-
-					callback = function () {
-						tryBottom(offset, nextCallback)
-					}
-				}
-
-				callback?.()
+				profiler.end()
 				break
 			case Mode.PRIMARY:
 				// mainPage.nextLine(true)
