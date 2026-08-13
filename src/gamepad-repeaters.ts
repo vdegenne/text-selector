@@ -1,10 +1,9 @@
 import {Profiler} from '@vdegenne/debug/profiler.js'
+import {Anchor, NavigationStyle} from '@vdegenne/highlight-manager'
 import {Mode} from '@vdegenne/mini-gamepad'
 import {Repeater} from '@vdegenne/mini-gamepad/repeater.js'
 import {mainPage} from './pages/page-main.js'
 import {store} from './store.js'
-import toast from 'toastit'
-import {Anchor, NavigationStyle} from '@vdegenne/highlight-manager'
 
 const profiler = new Profiler(1000)
 profiler.startReporting()
