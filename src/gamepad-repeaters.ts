@@ -63,13 +63,13 @@ export const upRepeater = new Repeater({
 				// mainPage.previousLine()
 				profiler.start()
 				if (!mainPage.highlighter.up()) {
-					mainPage.highlighter.relativeMotion({
-						anchor: Anchor.TOP_CENTER,
-						rectOverride: {
-							top: window.innerHeight - 10,
-							bottom: window.innerHeight,
-						},
-					})
+					// mainPage.highlighter.relativeMotion({
+					// 	anchor: Anchor.TOP_CENTER,
+					// 	rectOverride: {
+					// 		top: window.innerHeight - 10,
+					// 		bottom: window.innerHeight,
+					// 	},
+					// })
 				}
 				profiler.end()
 				break
@@ -90,13 +90,13 @@ export const downRepeater = new Repeater({
 				// mainPage.nextLine()
 				profiler.start()
 				if (!mainPage.highlighter.down()) {
-					mainPage.highlighter.relativeMotion({
-						anchor: Anchor.BOTTOM_CENTER,
-						rectOverride: {
-							top: 0,
-							bottom: 10,
-						},
-					})
+					// mainPage.highlighter.relativeMotion({
+					// 	anchor: Anchor.BOTTOM_CENTER,
+					// 	rectOverride: {
+					// 		top: 0,
+					// 		bottom: 10,
+					// 	},
+					// })
 				}
 				profiler.end()
 				break
