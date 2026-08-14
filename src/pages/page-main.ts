@@ -118,7 +118,7 @@ export class PageMain extends PageElement {
 		navigationStyle: NavigationStyle.RELATIVE_TO,
 		relativeOptions: {
 			debug: true,
-			maxDistance: 10,
+			maxDistance: 5,
 			outerOffset: 10,
 			dig: {count: 50, step: 30},
 		},
