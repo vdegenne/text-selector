@@ -125,7 +125,7 @@ export class PageMain extends PageElement {
 		scroll: {
 			if: (is) => !is('fully-visible'),
 			block: 'center',
-			behavior: 'instant',
+			behavior: 'smooth',
 		},
 		// keep the arrow form to avoid breaking "this"
 		onSelectionChange: (info) => {
