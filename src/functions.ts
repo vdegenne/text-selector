@@ -13,6 +13,7 @@ export function getFontSize(text: string): number {
 export function openInLocalhost(): void {
 	const url = new URL(window.location.href)
 	url.host = 'localhost:37923'
+	url.protocol = 'http'
 
 	window.open(url.href, '_blank')
 }
