@@ -13,8 +13,9 @@ import {store} from './store.js'
 
 @customElement({name: 'fullscreen-element', inject: true})
 @withStyles(css`
-	#hiragana {
-		transition: opacity 0.7s linear;
+	#hiragana,
+	.hideable {
+		transition: opacity 0.4s linear;
 	}
 `)
 class FullscreenElement extends LitElement {
@@ -35,17 +36,6 @@ class FullscreenElement extends LitElement {
 				@closed="${() => (this.open = false)}"
 				style="min-width: calc(100vw - 0px); min-height: calc(100vh - 0px); --md-dialog-container-color: var(--md-sys-color-surface-container);"
 			>
-				<div
-					slot="headline"
-					class="flex items-center opacity-20 text-lg"
-					primary
-				>
-					<md-icon ?invisible="${!this.collections}">verified</md-icon>
-					${this.collections
-						?.split(/[/,]/)
-						.map((word) => `${word}`)
-						.join(' ')}
-				</div>
 				<div slot="content" class="flex-1 flex flex-col">
 					<div></div>
 					<div
@@ -63,7 +53,15 @@ class FullscreenElement extends LitElement {
 							>${this.hiragana || '　'}</span
 						>
 					</div>
-					<div></div>
+					<div class="flex items-center justify-start text-lg gap-2" primary>
+						<md-icon ?invisible="${!this.collections}">verified</md-icon>
+						<div ?invisible="${!this.showHiragana}" class="hideable opacity-70">
+							${this.collections
+								?.split(/[/,]/)
+								.map((word) => `${word}`)
+								.join(' ')}
+						</div>
+					</div>
 				</div>
 			</md-dialog>
 			<!-- -->`
