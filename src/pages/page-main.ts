@@ -117,7 +117,7 @@ export class PageMain extends PageElement {
 	highlighter = new HighlightManager('.letter', {
 		navigationStyle: NavigationStyle.RELATIVE_TO,
 		relativeOptions: {
-			// debug: true,
+			debug: true,
 			maxDistance: 10,
 			outerOffset: 10,
 			dig: {count: 50, step: 30},
