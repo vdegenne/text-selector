@@ -90,13 +90,13 @@ export const downRepeater = new Repeater({
 				// mainPage.nextLine()
 				profiler.start()
 				if (!mainPage.highlighter.down()) {
-					// mainPage.highlighter.relativeMotion({
-					// 	anchor: Anchor.BOTTOM_CENTER,
-					// 	rectOverride: {
-					// 		top: 0,
-					// 		bottom: 10,
-					// 	},
-					// })
+					mainPage.highlighter.relativeMotion({
+						anchor: Anchor.BOTTOM_CENTER,
+						rectOverride: {
+							top: 0,
+							bottom: 10,
+						},
+					})
 				}
 				profiler.end()
 				break
