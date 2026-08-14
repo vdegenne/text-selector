@@ -9,3 +9,10 @@ export function getFontSize(text: string): number {
 
 	return Math.max(minSize, Math.min(maxSize, size))
 }
+
+export function openInLocalhost(): void {
+	const url = new URL(window.location.href)
+	url.host = 'localhost:37923'
+
+	window.open(url.href, '_blank')
+}

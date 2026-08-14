@@ -1,6 +1,7 @@
 import {$} from 'html-vision'
 import {openSettingsDialog} from './imports.js'
 import {translateSelection} from './server/functions.js'
+import {openInLocalhost} from './functions.js'
 
 const inputNames = ['INPUT', 'TEXTAREA', 'MD-FILLED-TEXT-FIELD']
 export function eventIsFromInput(event: Event) {
@@ -38,6 +39,10 @@ window.addEventListener('keypress', async (event: KeyboardEvent) => {
 
 		case 't':
 			translateSelection()
+			break
+
+		case 'l':
+			openInLocalhost()
 			break
 	}
 })
