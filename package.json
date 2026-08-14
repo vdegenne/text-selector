@@ -90,7 +90,7 @@
 		}
 	},
 	"devDependencies": {
-		"@google/genai": "^2.17.0",
+		"@google/genai": "^2.17.1",
 		"@material/mwc-top-app-bar": "^0.27.0",
 		"@material/web": "^2.5.0",
 		"@snar/lit": "^1.8.1",
@@ -99,7 +99,7 @@
 		"@vdegenne/debouncer": "^1.0.17",
 		"@vdegenne/debug": "^0.1.33",
 		"@vdegenne/forms": "^0.1.73",
-		"@vdegenne/highlight-manager": "^1.0.18",
+		"@vdegenne/highlight-manager": "^1.0.21",
 		"@vdegenne/jpsyndex": "^1.0.11",
 		"@vdegenne/links": "^1.8.25",
 		"@vdegenne/lit-debug": "^0.1.2",
