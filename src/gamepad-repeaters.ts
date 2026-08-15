@@ -1,12 +1,11 @@
-import {Profiler} from '@vdegenne/debug/profiler.js'
-import {Anchor, NavigationStyle} from '@vdegenne/highlight-manager'
+import {NavigationStyle} from '@vdegenne/highlight-manager'
 import {Mode} from '@vdegenne/mini-gamepad'
 import {Repeater} from '@vdegenne/mini-gamepad/repeater.js'
 import {mainPage} from './pages/page-main.js'
 import {store} from './store.js'
 
-const profiler = new Profiler(1000)
-profiler.startReporting()
+// const profiler = new Profiler(1000)
+// profiler.startReporting()
 
 export const leftPrevRepeater = new Repeater({
 	initialDelayMs: store.repeaterInitialDelayMs,
@@ -14,11 +13,11 @@ export const leftPrevRepeater = new Repeater({
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
-				profiler.start()
+				// profiler.start()
 				mainPage.highlighter.previous({
 					navigationStyle: NavigationStyle.INDEX_BASED,
 				})
-				profiler.end()
+				// profiler.end()
 				break
 			case Mode.PRIMARY:
 				mainPage.highlighter.extendLeftHighlight()
@@ -37,11 +36,11 @@ export const leftNextRepeater = new Repeater({
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
-				profiler.start()
+				// profiler.start()
 				mainPage.highlighter.next({
 					navigationStyle: NavigationStyle.INDEX_BASED,
 				})
-				profiler.end()
+				// profiler.end()
 				break
 			case Mode.PRIMARY:
 				// mainPage.highlighter.extendRightHighlight()
@@ -61,8 +60,9 @@ export const upRepeater = new Repeater({
 		switch (mode) {
 			case Mode.NORMAL:
 				// mainPage.previousLine()
-				profiler.start()
+				// profiler.start()
 				if (!mainPage.highlighter.up()) {
+					mainPage.previousLine()
 					// mainPage.highlighter.relativeMotion({
 					// 	anchor: Anchor.TOP_CENTER,
 					// 	rectOverride: {
@@ -71,7 +71,7 @@ export const upRepeater = new Repeater({
 					// 	},
 					// })
 				}
-				profiler.end()
+				// profiler.end()
 				break
 			case Mode.PRIMARY:
 				// mainPage.previousLine(true)
@@ -87,8 +87,9 @@ export const downRepeater = new Repeater({
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
-				profiler.start()
+				// profiler.start()
 				if (!mainPage.highlighter.down()) {
+					mainPage.nextLine()
 					// mainPage.highlighter.relativeMotion({
 					// 	anchor: Anchor.BOTTOM_CENTER,
 					// 	rectOverride: {
@@ -97,7 +98,7 @@ export const downRepeater = new Repeater({
 					// 	},
 					// })
 				}
-				profiler.end()
+				// profiler.end()
 				break
 			case Mode.PRIMARY:
 				// mainPage.nextLine(true)
