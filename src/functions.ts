@@ -26,3 +26,22 @@ export function openInLocalhost(): void {
 
 	window.open(url.href, '_blank')
 }
+
+export function findSubarray<T>(array: T[], search: T[]): number {
+	if (search.length === 0) return 0
+
+	for (let i = 0; i <= array.length - search.length; i++) {
+		let found = true
+
+		for (let j = 0; j < search.length; j++) {
+			if (array[i + j] !== search[j]) {
+				found = false
+				break
+			}
+		}
+
+		if (found) return i
+	}
+
+	return -1
+}

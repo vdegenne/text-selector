@@ -9,7 +9,7 @@ import {Page} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {breakSentence, splitLetters} from './text-logic.js'
 import {generateHash} from './utils.js'
-import {cleanInput} from './functions.js'
+import {cleanInput, findSubarray} from './functions.js'
 import {stateless} from './stateless.js'
 
 @saveToLocalStorage('text-selector:store')
@@ -233,12 +233,13 @@ export class AppStore extends ReactiveController {
 			await this.updateComplete
 			// sleep(100).then(() => {
 			const hash = decodeURIComponent(location.hash.slice(1))
-			const found = this.input.indexOf(hash)
+			const hashLetters = splitLetters(hash)
+			const found = findSubarray(stateless.cleanLetters, hashLetters)
 			if (found > -1) {
 				// this.startIndex = found
 				// this.endIndex = found + hash.length - 1
 				const start = found
-				const end = found + hash.length - 1
+				const end = found + hashLetters.length - 1
 				indexesHistory.saveHighlightIndexes.call(start, end)
 				console.log(
 					'INTIAL HIGHLIGHT LOCATIONS FOUND IN THE HASH',
