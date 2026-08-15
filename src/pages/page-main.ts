@@ -20,6 +20,7 @@ import {indexesHistory} from '../indexesHistory.js'
 import {stateless} from '../stateless.js'
 import {store} from '../store.js'
 import {
+	getCharType,
 	getLineBoundaries,
 	getSpecialBoundaries,
 	getTextInfo,
@@ -33,6 +34,7 @@ import {
 	getLastVisibleElement,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
+import {NEW_LINE} from '../constants.js'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -88,6 +90,10 @@ declare global {
 	/* LAST in a group */
 	.letter[highlight1]:not(:has(~ .letter[highlight1])) {
 		border-radius: 0 5px 5px 0;
+	}
+
+	.newline {
+		color: var(--md-sys-color-outline);
 	}
 `)
 export class PageMain extends PageElement {
@@ -230,14 +236,14 @@ export class PageMain extends PageElement {
 							>
 							<div class="letters break-all" ?jp="${isJp}">
 								${splitLetters(line).map((letter) => {
-									const isNewLine = letter === '%0A'
+									const isNewLine = letter === NEW_LINE
 									return html`<!-- --><span
 											class="letter${isNewLine ? ' newline' : ''}"
 											>${isNewLine ? '\\n' : letter}</span
 										><!-- -->`
 								})}
 								${
-									i !== lines.length - 1
+									false && i !== lines.length - 1
 										? html`<span class="letter non-selectable"></span>`
 										: null
 								}
@@ -283,15 +289,12 @@ export class PageMain extends PageElement {
 
 	expandHighlight() {
 		const info = this.highlighter.getInfo()
-		// TODO: should uncomment the replaceAll below back?
-		const text = store.input //.replaceAll('\n', ' ')
-		// TODO: should use the caache
-		const letters = splitLetters(store.input)
+		const letters = stateless.cleanLetters
 
 		const start = info.highlightIndexStart
 		const end = info.highlightIndexEnd
 
-		let next = getSpecialBoundaries(text, start)
+		let next = getSpecialBoundaries(letters, start)
 
 		if (next && next.start === start && next.end === end) {
 			next = null
@@ -317,7 +320,7 @@ export class PageMain extends PageElement {
 			// Still nothing changed, select all text
 			next = {
 				start: 0,
-				end: text.length - 1,
+				end: letters.length - 1,
 			}
 		}
 
@@ -363,8 +366,7 @@ export class PageMain extends PageElement {
 			;({highlightIndexStart: cursorPosition} = this.highlighter.getInfo())
 		}
 
-		// TODO: make letters cache from store
-		const letters = splitLetters(store.input)
+		const letters = stateless.finalLetters
 		return getTextInfo(letters, {cursorPosition})
 	}
 
@@ -437,21 +439,21 @@ export class PageMain extends PageElement {
 
 		const currLine = lines[currentLineIndex]
 
-		const nextIndex =
+		const nextLineIndex =
 			currentLineIndex === lines.length - 1
 				? store.loop
 					? 0
 					: currentLineIndex
 				: currentLineIndex + 1
 
-		const nextLine = lines[nextIndex]
+		const nextLine = lines[nextLineIndex]
 
 		const col = cursorPosition - currLine.firstCharIndex
 		const safeCol = Math.min(col, nextLine.length - 1)
 
 		const target = nextLine.firstCharIndex + safeCol
 
-		this.highlighter.highlight(target, target)
+		this.highlighter.highlight(target)
 	}
 
 	moveSelectionStartToPreviousLine() {
@@ -551,47 +553,43 @@ export class PageMain extends PageElement {
 
 	increaseLeftWordSelection(): void {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
-		const text = store.input as string
-		// TODO: change this to cache
-		const letters = splitLetters(text)
+		const letters = stateless.cleanLetters
 
-		let i = highlightIndexStart - 1
+		let start = highlightIndexStart - 1
 
-		if (i < 0) return
+		if (start < 0) return
 
-		// skip tout ce qui n'est pas un mot
-		while (i >= 0 && !isWordChar(text[i])) i--
+		const currentType = getCharType(letters[start])
 
-		if (i < 0) return
-
-		const {start} = getWordBoundaries(letters, i)
+		// Move left through the current type run.
+		while (start - 1 >= 0 && getCharType(letters[start - 1]) === currentType) {
+			start--
+		}
 
 		this.highlighter.highlight(start, highlightIndexEnd)
 	}
 
 	decreaseLeftWordSelection(): void {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
-		const text = store.input as string
-		// TODO: change this to cache
-		const letters = splitLetters(text)
+		const letters = stateless.cleanLetters
 
-		let i = highlightIndexStart
+		let start = highlightIndexStart
 
-		if (i >= highlightIndexEnd) return
+		if (start >= highlightIndexEnd) return
 
-		// move right to exit current word if we're inside one
-		if (i < text.length && isWordChar(text[i])) {
-			while (i < text.length && isWordChar(text[i])) i++
+		const currentType = getCharType(letters[start])
+
+		// Move right to the end of the current type run.
+		while (
+			start + 1 <= highlightIndexEnd &&
+			getCharType(letters[start + 1]) === currentType
+		) {
+			start++
 		}
 
-		// skip non-word chars (spaces, punctuation)
-		while (i < text.length && !isWordChar(text[i])) i++
+		// Remove the current type run.
+		start++
 
-		if (i >= text.length) return
-
-		const {start} = getWordBoundaries(letters, i)
-
-		// guard: do not cross end
 		if (start > highlightIndexEnd) {
 			this.highlighter.highlight(highlightIndexEnd, highlightIndexEnd)
 			return
@@ -602,51 +600,60 @@ export class PageMain extends PageElement {
 
 	increaseRightWordSelection(): void {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
-		const text = store.input as string
-		// TODO: change this to cache
-		const letters = splitLetters(text)
+		const letters = stateless.cleanLetters
 
-		let i = highlightIndexEnd + 1
+		let end = highlightIndexEnd
 
-		if (i >= text.length) return
+		if (end >= letters.length) return
 
-		// skip tout ce qui n'est pas un mot (espaces, ponctuation)
-		while (i < text.length && !isWordChar(text[i])) i++
+		const currentType = getCharType(letters[end])
 
-		if (i >= text.length) return
+		while (
+			end + 1 < letters.length &&
+			getCharType(letters[end + 1]) === currentType
+		) {
+			end++
+		}
 
-		const {end} = getWordBoundaries(letters, i)
+		if (end === highlightIndexEnd) {
+			end++
+
+			if (end >= letters.length) return
+
+			const nextType = getCharType(letters[end])
+
+			while (
+				end + 1 < letters.length &&
+				getCharType(letters[end + 1]) === nextType
+			) {
+				end++
+			}
+		}
 
 		this.highlighter.highlight(highlightIndexStart, end)
 	}
 
 	decreaseRightWordSelection(): void {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
-		const text = store.input as string
-		// TODO: change this to cache
-		const letters = splitLetters(text)
+		const letters = stateless.cleanLetters
 
-		let i = highlightIndexEnd
+		let end = highlightIndexEnd
 
-		if (i <= highlightIndexStart) return
+		if (end <= highlightIndexStart) return
 
-		// move left to exit current word if we're inside one
-		if (i >= 0 && isWordChar(text[i])) {
-			while (i >= 0 && isWordChar(text[i])) i--
+		const currentType = getCharType(letters[end])
+
+		// Move left to the beginning of the current type run.
+		while (
+			end - 1 >= highlightIndexStart &&
+			getCharType(letters[end - 1]) === currentType
+		) {
+			end--
 		}
 
-		// skip non-word chars (spaces, punctuation)
-		while (i >= 0 && !isWordChar(text[i])) i--
+		// The current type run is removed from the selection.
+		end--
 
-		// if no word found, collapse to start
-		if (i < highlightIndexStart) {
-			this.highlighter.highlight(highlightIndexStart, highlightIndexStart)
-			return
-		}
-
-		const {end} = getWordBoundaries(letters, i)
-
-		// guard: do not cross start
 		if (end < highlightIndexStart) {
 			this.highlighter.highlight(highlightIndexStart, highlightIndexStart)
 			return

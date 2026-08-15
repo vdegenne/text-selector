@@ -19,3 +19,9 @@ export const fontFamily = [
 ] as const
 
 export type FontValue = (typeof fontFamily)[number]
+
+/**
+ * Used to determine the original new lines in the input
+ * apart from the ones intentionally added when "break sentences" option is on.
+ */
+export const NEW_LINE = '\uE000'

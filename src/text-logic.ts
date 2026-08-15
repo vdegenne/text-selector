@@ -1,11 +1,11 @@
+import {NEW_LINE} from './constants.js'
+
 const graphemeSegmenter = new Intl.Segmenter(undefined, {
 	granularity: 'grapheme',
 })
 
 export function splitLetters(text: string) {
-	return [...graphemeSegmenter.segment(text.replaceAll('%0A', '\uE000'))].map(
-		({segment}) => segment.replace('\uE000', '%0A'),
-	)
+	return [...graphemeSegmenter.segment(text)].map(({segment}) => segment)
 }
 
 export function utf16IndexToGraphemeIndex(text: string, index: number): number {
@@ -25,8 +25,11 @@ export function utf16IndexToGraphemeIndex(text: string, index: number): number {
 }
 
 export function getCharType(c: string): tselect.CharType {
+	if (c === NEW_LINE) return 'newLine'
 	if (/[\u3040-\u309F]/u.test(c)) return 'hiragana'
-	if (/[\u30A0-\u30FF\u31F0-\u31FF]/u.test(c)) return 'katakana'
+	if (/[\u30A0-\u30FA\u30FC-\u30FF\u31F0-\u31FF]/u.test(c)) {
+		return 'katakana'
+	}
 	if (/[\u4E00-\u9FFF\u3400-\u4DBF\u3005]/u.test(c)) return 'kanji'
 	if (/[A-Za-z]/u.test(c)) return 'roman'
 	if (/\p{N}/u.test(c)) return 'number'
@@ -113,9 +116,11 @@ export function getLineBoundaries(
 }
 
 export function getSpecialBoundaries(
-	text: string,
+	letters: string[],
 	index: number,
 ): {start: number; end: number} | null {
+	const text = letters.join('')
+
 	const patterns = [
 		/(https?:\/\/[^\s]+)/u,
 		/(#[\p{L}\p{N}_-]+)/u,
@@ -127,9 +132,33 @@ export function getSpecialBoundaries(
 		const regex = new RegExp(pattern.source, 'gu')
 
 		for (const match of text.matchAll(regex)) {
-			const start = utf16IndexToGraphemeIndex(text, match.index!)
-			const end =
-				utf16IndexToGraphemeIndex(text, match.index! + match[0].length) - 1
+			const matchStart = match.index!
+			const matchEnd = matchStart + match[0].length
+
+			let start = 0
+			let offset = 0
+
+			for (const letter of letters) {
+				if (offset >= matchStart) {
+					break
+				}
+
+				offset += letter.length
+				start++
+			}
+
+			let end = start
+
+			for (let i = start; i < letters.length; i++) {
+				if (offset >= matchEnd) {
+					break
+				}
+
+				offset += letters[i].length
+				end++
+			}
+
+			end--
 
 			if (index >= start && index <= end) {
 				return {start, end}
@@ -149,6 +178,7 @@ export function getTextInfo(
 
 	const lines: tselect.LineInfo[] = []
 	let index = 0
+	let currentLineIndex = 0
 
 	const rawLines: string[][] = []
 	let currentLine: string[] = []
@@ -162,11 +192,7 @@ export function getTextInfo(
 		}
 	}
 
-	if (currentLine.length > 0) {
-		rawLines.push(currentLine)
-	}
-
-	let currentLineIndex = 0
+	rawLines.push(currentLine)
 
 	for (let i = 0; i < rawLines.length; i++) {
 		const lineLetters = rawLines[i]
@@ -180,13 +206,22 @@ export function getTextInfo(
 			line,
 		}
 
-		if (cursorPosition >= lineStart && cursorPosition <= lineEnd) {
+		// The end position belongs to the next line.
+		// Except for the last line, where it is the final cursor position.
+		const isLastLine = i === rawLines.length - 1
+
+		if (
+			cursorPosition >= lineStart &&
+			(isLastLine ? cursorPosition <= lineEnd : cursorPosition < lineEnd)
+		) {
 			lineInfo.cursorIndex = cursorPosition - lineStart
 			currentLineIndex = i
 		}
 
 		lines.push(lineInfo)
-		index += lineLetters.length + splitLetters(lineDelimiter).length
+
+		// The line delimiter itself does not occupy a logical position.
+		index = lineEnd
 	}
 
 	const numberOfLines = lines.length
@@ -233,7 +268,17 @@ export function wrapText(text: string, width: number): string {
 	return lines.join('\n')
 }
 
-export function breakSentence(text: string): string {
+export function breakSentence(
+	text: string,
+	{
+		breakPunctuations = false,
+	}: {
+		/**
+		 * @default false
+		 */
+		breakPunctuations?: boolean
+	} = {},
+): string {
 	const urls: string[] = []
 
 	const protectedText = text.replace(
@@ -244,12 +289,18 @@ export function breakSentence(text: string): string {
 		},
 	)
 
+	const breakCharacters = breakPunctuations
+		? `[。．.!！?？;；、,${NEW_LINE}]`
+		: `[${NEW_LINE}]`
+
 	return protectedText
-		.split(/(?:\u0001|(?<=[。．.!！?？;；、,])(?![。．.!！?？;；、,]))/)
+		.split(
+			new RegExp(`(?:\\u0001|(?<=${breakCharacters})(?!${breakCharacters}))`),
+		)
 		.map((sentence) =>
 			sentence.replace(/\u0000(\d+)\u0000/g, (_, i) => urls[Number(i)]),
 		)
-		.map((sentence) => sentence.trim())
+		.map((sentence) => sentence.replace(/^[ \t]+|[ \t]+$/g, ''))
 		.filter(Boolean)
 		.join('\n')
 }

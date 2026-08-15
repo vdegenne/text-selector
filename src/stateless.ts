@@ -17,6 +17,9 @@ class StatelessController extends Snar {
 	@state() feedback: string | TemplateResult = ''
 
 	remoteInfoMap: {[query: string]: RemoteInfo} = {}
+
+	@state() cleanLetters: string[] = []
+	@state() finalLetters: string[] = []
 }
 
 export const stateless = new StatelessController()

@@ -1,3 +1,12 @@
+import {NEW_LINE} from './constants.js'
+
+export function cleanInput(input: string) {
+	return input
+		.replaceAll('\u200B', '') // remove zero width spaces
+		.replace(/\n{2,}/g, '\n') // avoid too much new lines
+		.replace(/\n/g, NEW_LINE) // replace new lines with new line code
+}
+
 export function getFontSize(text: string): number {
 	const length = text.length
 

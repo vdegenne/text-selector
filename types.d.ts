@@ -42,6 +42,7 @@ declare namespace tselect {
 	}
 
 	type CharType =
+		| 'newLine'
 		| 'hiragana'
 		| 'katakana'
 		| 'kanji'

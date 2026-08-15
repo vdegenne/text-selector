@@ -87,16 +87,15 @@ export const downRepeater = new Repeater({
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
-				// mainPage.nextLine()
 				profiler.start()
 				if (!mainPage.highlighter.down()) {
-					mainPage.highlighter.relativeMotion({
-						anchor: Anchor.BOTTOM_CENTER,
-						rectOverride: {
-							top: 0,
-							bottom: 10,
-						},
-					})
+					// mainPage.highlighter.relativeMotion({
+					// 	anchor: Anchor.BOTTOM_CENTER,
+					// 	rectOverride: {
+					// 		top: 0,
+					// 		bottom: 10,
+					// 	},
+					// })
 				}
 				profiler.end()
 				break

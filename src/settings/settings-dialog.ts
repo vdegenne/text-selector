@@ -58,7 +58,7 @@ export class SettingsDialog extends LitElement {
 
 				<form slot="content" method="dialog" id="form" class="">
 					<card-element headline="global">
-						${store.F.SWITCH('Break sentences', 'breakSentences', {supportingText: 'If enabled, will add new lines between sentence punctuations.'})}
+						${store.F.SWITCH('Break on punctuations', 'breakSentences', {supportingText: 'If enabled, will add new lines between sentence punctuations.'})}
 						${store.F.SWITCH(
 							'Open in same tab on most highlighted',
 							'mostHighlightedOpenInSameTab',

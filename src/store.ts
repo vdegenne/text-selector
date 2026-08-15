@@ -3,12 +3,14 @@ import {FormBuilder} from '@vdegenne/forms/FormBuilder.js'
 import {saveToLocalStorage} from 'snar-save-to-local-storage'
 import toast from 'toastit'
 import {clickAudio} from './assets/assets.js'
-import {availablePages, fontFamily, FontValue} from './constants.js'
+import {availablePages, fontFamily, FontValue, NEW_LINE} from './constants.js'
 import {indexesHistory} from './indexesHistory.js'
 import {Page} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
-import {breakSentence} from './text-logic.js'
+import {breakSentence, splitLetters} from './text-logic.js'
 import {generateHash} from './utils.js'
+import {cleanInput} from './functions.js'
+import {stateless} from './stateless.js'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -197,15 +199,29 @@ export class AppStore extends ReactiveController {
 	async firstUpdated() {
 		const params = new URLSearchParams(location.search)
 		if (params.has('input')) {
-			const inputParam = params
-				.get('input')!
-				.replace(/\n{2,}/g, '\n')
-				.replace(/\n/, '%0A\n')
-			console.log('INPUT PARAM', `"${inputParam}"`)
-			const input = this.breakSentences ? breakSentence(inputParam) : inputParam
-			console.log('BROKEN INPUT', `"${input}"`)
-			if (input !== this.input) {
-				this.input = input
+			const rawInput = params.get('input')!
+			console.log('RAW INPUT', rawInput.split(''))
+
+			const cleanedInput = cleanInput(rawInput)
+			stateless.cleanLetters = splitLetters(cleanedInput)
+			console.log(
+				'CLEAN INPUT',
+				stateless.cleanLetters.map((c) => (c === NEW_LINE ? 'NEW_LINE' : c)),
+			)
+
+			const finalInput = breakSentence(cleanedInput, {
+				breakPunctuations: this.breakSentences,
+			})
+			stateless.finalLetters = splitLetters(finalInput)
+			console.log(
+				'FINAL INPUT',
+				stateless.finalLetters.map((c) => (c === NEW_LINE ? 'NEW_LINE' : c)),
+			)
+
+			console.log(stateless)
+
+			if (finalInput !== this.input) {
+				this.input = finalInput
 			}
 		}
 
