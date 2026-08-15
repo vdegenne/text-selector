@@ -61,7 +61,7 @@ export const upRepeater = new Repeater({
 			case Mode.NORMAL:
 				// mainPage.previousLine()
 				// profiler.start()
-				if (!mainPage.highlighter.up()) {
+				if (!mainPage.highlighter.up({medianBreak: false})) {
 					mainPage.previousLine()
 					// mainPage.highlighter.relativeMotion({
 					// 	anchor: Anchor.TOP_CENTER,
@@ -88,7 +88,11 @@ export const downRepeater = new Repeater({
 		switch (mode) {
 			case Mode.NORMAL:
 				// profiler.start()
-				if (!mainPage.highlighter.down()) {
+				if (
+					!mainPage.highlighter.down({
+						medianBreak: false,
+					})
+				) {
 					mainPage.nextLine()
 					// mainPage.highlighter.relativeMotion({
 					// 	anchor: Anchor.BOTTOM_CENTER,
