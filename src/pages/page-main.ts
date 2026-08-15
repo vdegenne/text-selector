@@ -126,7 +126,7 @@ export class PageMain extends PageElement {
 			debug: true,
 			maxDistance: 5,
 			outerOffset: 10,
-			dig: {count: 3, step: 20},
+			dig: {count: 5, step: 20},
 		},
 		scroll: {
 			if: (is) => !is('fully-visible'),
