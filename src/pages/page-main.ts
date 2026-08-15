@@ -94,6 +94,7 @@ declare global {
 
 	.newline {
 		color: var(--md-sys-color-outline);
+		opacity: 0.8;
 	}
 `)
 export class PageMain extends PageElement {
