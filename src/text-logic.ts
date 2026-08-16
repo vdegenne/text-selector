@@ -31,7 +31,7 @@ export function getCharType(c: string): tselect.CharType {
 		return 'katakana'
 	}
 	if (/[\u4E00-\u9FFF\u3400-\u4DBF\u3005]/u.test(c)) return 'kanji'
-	if (/[A-Za-z]/u.test(c)) return 'roman'
+	if (/\p{L}/u.test(c)) return 'roman'
 	if (/\p{N}/u.test(c)) return 'number'
 	if (/[_-]/u.test(c)) return 'connector'
 	if (/\s/u.test(c)) return 'space'
@@ -293,14 +293,16 @@ export function breakSentence(
 		? `[。．.!！?？;；、,${NEW_LINE}]`
 		: `[${NEW_LINE}]`
 
-	return protectedText
-		.split(
-			new RegExp(`(?:\\u0001|(?<=${breakCharacters})(?!${breakCharacters}))`),
-		)
-		.map((sentence) =>
-			sentence.replace(/\u0000(\d+)\u0000/g, (_, i) => urls[Number(i)]),
-		)
-		.map((sentence) => sentence.replace(/^[ \t]+|[ \t]+$/g, ''))
-		.filter(Boolean)
-		.join('\n')
+	return (
+		protectedText
+			.split(
+				new RegExp(`(?:\\u0001|(?<=${breakCharacters})(?!${breakCharacters}))`),
+			)
+			.map((sentence) =>
+				sentence.replace(/\u0000(\d+)\u0000/g, (_, i) => urls[Number(i)]),
+			)
+			// .map((sentence) => sentence.replace(/^[ \t]+|[ \t]+$/g, ''))
+			.filter(Boolean)
+			.join('\n')
+	)
 }
