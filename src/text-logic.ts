@@ -104,11 +104,11 @@ export function getLineBoundaries(
 	startIndex: number,
 	endIndex: number = startIndex,
 ): {start: number; end: number} {
-	while (startIndex > 0 && letters[startIndex - 1] !== '\n') {
+	while (startIndex > 0 && letters[startIndex - 1] !== NEW_LINE) {
 		startIndex--
 	}
 
-	while (endIndex < letters.length - 1 && letters[endIndex + 1] !== '\n') {
+	while (endIndex < letters.length - 1 && letters[endIndex + 1] !== NEW_LINE) {
 		endIndex++
 	}
 

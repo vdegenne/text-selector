@@ -295,6 +295,20 @@ export class PageMain extends PageElement {
 		const start = info.highlightIndexStart
 		const end = info.highlightIndexEnd
 
+		const textInfo = getTextInfo(stateless.finalLetters, {
+			cursorPosition: start,
+		})
+
+		const currentLine = textInfo.lines[textInfo.currentLineIndex]
+		const lineStart = currentLine.firstCharIndex
+		const lineEnd = lineStart + currentLine.length - 1
+
+		// If the current line is already selected, select all text.
+		if (lineStart === start && lineEnd === end) {
+			this.selectAll()
+			return
+		}
+
 		let next = getSpecialBoundaries(letters, start)
 
 		if (next && next.start === start && next.end === end) {
@@ -306,22 +320,17 @@ export class PageMain extends PageElement {
 		}
 
 		if (next.start === start && next.end === end) {
-			// Nothing changed, try extending
+			// Nothing changed, try extending across type boundaries.
 			next = getWordBoundaries(letters, start, end, {
 				ignoreTypeBoundaries: true,
 			})
 		}
 
 		if (next.start === start && next.end === end) {
-			// Still nothing changed, select the line
-			next = getLineBoundaries(letters, start, end)
-		}
-
-		if (next.start === start && next.end === end) {
-			// Still nothing changed, select all text
+			// Still nothing changed, select the current line.
 			next = {
-				start: 0,
-				end: letters.length - 1,
+				start: lineStart,
+				end: lineEnd,
 			}
 		}
 
