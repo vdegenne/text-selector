@@ -2,6 +2,8 @@ import {$} from 'html-vision'
 import {openSettingsDialog} from './imports.js'
 import {translateSelection} from './server/functions.js'
 import {openInLocalhost} from './functions.js'
+import {store} from './store.js'
+import {fullscreenElement} from './fullscreen-element.js'
 
 const inputNames = ['INPUT', 'TEXTAREA', 'MD-FILLED-TEXT-FIELD']
 export function eventIsFromInput(event: Event) {
@@ -44,5 +46,11 @@ window.addEventListener('keypress', async (event: KeyboardEvent) => {
 		case 'l':
 			openInLocalhost()
 			break
+	}
+})
+
+window.addEventListener('focus', () => {
+	if (store.closeFullScreenOnWindowFocus) {
+		fullscreenElement.open = false
 	}
 })

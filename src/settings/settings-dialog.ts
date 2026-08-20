@@ -63,6 +63,11 @@ export class SettingsDialog extends LitElement {
 							'Open in same tab on most highlighted',
 							'mostHighlightedOpenInSameTab',
 						)}
+						${store.F.SWITCH(
+							"Close fullscreen on window's focus",
+							'closeFullScreenOnWindowFocus',
+							{},
+						)}
 					</card-element>
 
 					<card-element headline="display">

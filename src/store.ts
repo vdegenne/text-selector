@@ -43,6 +43,8 @@ export class AppStore extends ReactiveController {
 
 	@state() loop = false
 
+	@state() closeFullScreenOnWindowFocus = false
+
 	@state() favorites: string[] = []
 	toggleFavorite(item: string) {
 		if (this.favorites.includes(item)) {
