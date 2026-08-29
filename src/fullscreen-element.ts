@@ -11,6 +11,7 @@ import {getFontSize} from './functions.js'
 import {mainPage} from './pages/page-main.js'
 import {RemoteInfo, stateless} from './stateless.js'
 import {store} from './store.js'
+import toast from 'toastit'
 
 @customElement({name: 'fullscreen-element', inject: true})
 @withStyles(css`
@@ -26,7 +27,7 @@ class FullscreenElement extends LitElement {
 	@state() collections: RemoteInfo['collections']
 	@state() hiragana: RemoteInfo['hiragana']
 
-	@state() showHiragana = false
+	// @state() showHiragana = false
 
 	@query('md-dialog') dialog!: MdDialog
 
@@ -51,13 +52,16 @@ class FullscreenElement extends LitElement {
 						<span
 							id="hiragana"
 							class="text-xl"
-							?invisible="${!this.showHiragana}"
+							?invisible="${!store.fullScreenShowHiragana}"
 							>${this.hiragana || '　'}</span
 						>
 					</div>
 					<div class="flex items-center justify-start text-lg gap-2" primary>
 						<md-icon ?invisible="${!this.collections}">verified</md-icon>
-						<div ?invisible="${!this.showHiragana}" class="hideable opacity-70">
+						<div
+							?invisible="${!store.fullScreenShowHiragana}"
+							class="hideable opacity-70"
+						>
 							${this.collections
 								?.split(/[/,]/)
 								.map((word) => `${word}`)
@@ -96,7 +100,7 @@ class FullscreenElement extends LitElement {
 	}
 
 	show(input?: string) {
-		this.showHiragana = false
+		store.fullScreenShowHiragana = false
 		this.updateRemoteInfo.call(input ?? this.input)
 
 		this.open = true
