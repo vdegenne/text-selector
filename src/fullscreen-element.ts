@@ -100,7 +100,7 @@ class FullscreenElement extends LitElement {
 	}
 
 	show(input?: string) {
-		store.fullScreenShowHiragana = false
+		// store.fullScreenShowHiragana = false
 		this.updateRemoteInfo.call(input ?? this.input)
 
 		this.open = true
