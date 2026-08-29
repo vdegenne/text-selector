@@ -1,4 +1,5 @@
 import {MdDialog} from '@material/web/all.js'
+import {withController} from '@snar/lit'
 import {Debouncer} from '@vdegenne/debouncer'
 import {customElement} from 'custom-element-decorator'
 import {SS} from 'html-vision/ss.js'
@@ -18,6 +19,7 @@ import {store} from './store.js'
 		transition: opacity 0.4s linear;
 	}
 `)
+@withController(store)
 class FullscreenElement extends LitElement {
 	@property({type: Boolean}) open = false
 	@state() input = ''
