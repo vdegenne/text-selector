@@ -370,7 +370,7 @@ class GamepadController extends ReactiveController {
 			gamepad.for(r1).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
-						fullscreenElement.showHiragana = !fullscreenElement.showHiragana
+						store.fullScreenShowHiragana = !store.fullScreenShowHiragana
 						break
 
 					case Mode.PRIMARY:

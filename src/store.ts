@@ -4,13 +4,13 @@ import {saveToLocalStorage} from 'snar-save-to-local-storage'
 import toast from 'toastit'
 import {clickAudio} from './assets/assets.js'
 import {availablePages, fontFamily, FontValue, NEW_LINE} from './constants.js'
+import {cleanInput, findSubarray} from './functions.js'
 import {indexesHistory} from './indexesHistory.js'
 import {Page} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
+import {stateless} from './stateless.js'
 import {breakSentence, splitLetters} from './text-logic.js'
 import {generateHash} from './utils.js'
-import {cleanInput, findSubarray} from './functions.js'
-import {stateless} from './stateless.js'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -44,6 +44,7 @@ export class AppStore extends ReactiveController {
 	@state() loop = false
 
 	@state() closeFullScreenOnWindowFocus = false
+	@state() fullScreenShowHiragana = false
 
 	@state() favorites: string[] = []
 	toggleFavorite(item: string) {
