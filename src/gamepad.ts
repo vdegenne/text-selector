@@ -384,6 +384,13 @@ class GamepadController extends ReactiveController {
 
 			gamepad.for(y).before(({mode}) => {
 				switch (mode) {
+					case Mode.NORMAL:
+						if (fullscreenElement.open) {
+							fullscreenElement.open = false
+						} else {
+							window.close()
+						}
+						break
 					case Mode.PRIMARY:
 						const {highlightContent} = mainPage.highlighter.getInfo()
 						if (highlightContent) {

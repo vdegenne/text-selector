@@ -11,7 +11,6 @@ import {getFontSize} from './functions.js'
 import {mainPage} from './pages/page-main.js'
 import {RemoteInfo, stateless} from './stateless.js'
 import {store} from './store.js'
-import toast from 'toastit'
 
 @customElement({name: 'fullscreen-element', inject: true})
 @withStyles(css`
