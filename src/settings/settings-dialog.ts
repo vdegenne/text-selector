@@ -63,10 +63,19 @@ export class SettingsDialog extends LitElement {
 							'Open in same tab on most highlighted',
 							'mostHighlightedOpenInSameTab',
 						)}
+						<md-divider></md-divider>
 						${store.F.SWITCH(
 							"Close fullscreen on window's focus",
 							'closeFullScreenOnWindowFocus',
 							{},
+						)}
+						${store.F.SWITCH(
+							'Prevent closing on full selection',
+							'fullscreenPreventClosingWhenFullSelection',
+							{
+								disabled: !store.closeFullScreenOnWindowFocus,
+								style: {['padding-left']: '24px'},
+							},
 						)}
 					</card-element>
 
