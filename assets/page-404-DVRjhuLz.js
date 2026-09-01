@@ -1,0 +1,1 @@
+import{Y as e,at as t,d as n,et as r,ft as i,n as a,ot as o,pt as s}from"./page-main-9x2RPLOK.js";var c=class extends a{render(){return i`404 NOT FOUND`}};c=r([e(`page-404`),o(n),t(s``)],c);export{c as Page404};
