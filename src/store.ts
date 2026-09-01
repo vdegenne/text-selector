@@ -44,7 +44,7 @@ export class AppStore extends ReactiveController {
 	@state() loop = false
 
 	@state() closeFullScreenOnWindowFocus = false
-	@state() fullscreenPreventClosingWhenFullSelection = false
+	@state() fullscreenPreventClosingWhenFullSelection = true
 	@state() fullScreenShowHiragana = false
 
 	@state() favorites: string[] = []
