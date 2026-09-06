@@ -622,7 +622,7 @@ export class PageMain extends PageElement {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 		const letters = stateless.cleanLetters
 
-		let end = highlightIndexEnd
+		let end = highlightIndexEnd + 1
 
 		if (end >= letters.length) return
 
