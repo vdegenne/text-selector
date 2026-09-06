@@ -618,7 +618,7 @@ export class PageMain extends PageElement {
 		this.highlighter.highlight(start, highlightIndexEnd)
 	}
 
-	increaseRightWordSelection(): void {
+	increaseRightWordSelection(jumpCharacters = [' ']): void {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 		const letters = stateless.cleanLetters
 
@@ -626,8 +626,16 @@ export class PageMain extends PageElement {
 
 		if (end >= letters.length) return
 
+		// Skip excluded characters before entering the next run.
+		while (end < letters.length && jumpCharacters.includes(letters[end])) {
+			end++
+		}
+
+		if (end >= letters.length) return
+
 		const currentType = getCharType(letters[end])
 
+		// Move right through the current type run.
 		while (
 			end + 1 < letters.length &&
 			getCharType(letters[end + 1]) === currentType
@@ -635,25 +643,10 @@ export class PageMain extends PageElement {
 			end++
 		}
 
-		if (end === highlightIndexEnd) {
-			end++
-
-			if (end >= letters.length) return
-
-			const nextType = getCharType(letters[end])
-
-			while (
-				end + 1 < letters.length &&
-				getCharType(letters[end + 1]) === nextType
-			) {
-				end++
-			}
-		}
-
 		this.highlighter.highlight(highlightIndexStart, end)
 	}
 
-	decreaseRightWordSelection(): void {
+	decreaseRightWordSelection(jumpCharacters = [' ']): void {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 		const letters = stateless.cleanLetters
 
@@ -671,8 +664,13 @@ export class PageMain extends PageElement {
 			end--
 		}
 
-		// The current type run is removed from the selection.
+		// Remove the current type run.
 		end--
+
+		// Skip excluded characters after the removed run.
+		while (end > highlightIndexStart && jumpCharacters.includes(letters[end])) {
+			end--
+		}
 
 		if (end < highlightIndexStart) {
 			this.highlighter.highlight(highlightIndexStart, highlightIndexStart)
