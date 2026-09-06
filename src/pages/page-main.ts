@@ -194,11 +194,13 @@ export class PageMain extends PageElement {
 		getInfoMiddleware(info) {
 			return {
 				content: info.highlightElements
-					.map((letter) =>
+					.map((letter) => {
+						console.log(letter)
 						letter.classList.contains('newline')
 							? '\n'
-							: letter.innerText?.trim(),
-					)
+							: // : letter.innerText?.trim()
+								letter.innerText
+					})
 					.join(''),
 			}
 		},
