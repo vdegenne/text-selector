@@ -594,19 +594,6 @@ export class PageMain extends PageElement {
 
 		if (start >= highlightIndexEnd) return
 
-		// Skip excluded characters.
-		while (
-			start < highlightIndexEnd &&
-			jumpCharacters.includes(letters[start])
-		) {
-			start++
-		}
-
-		if (start >= highlightIndexEnd) {
-			this.highlighter.highlight(highlightIndexEnd, highlightIndexEnd)
-			return
-		}
-
 		const currentType = getCharType(letters[start])
 
 		// Move right to the end of the current type run.
@@ -620,9 +607,12 @@ export class PageMain extends PageElement {
 		// Remove the current type run.
 		start++
 
-		if (start > highlightIndexEnd) {
-			this.highlighter.highlight(highlightIndexEnd, highlightIndexEnd)
-			return
+		// Skip excluded characters after the removed run.
+		while (
+			start < highlightIndexEnd &&
+			jumpCharacters.includes(letters[start])
+		) {
+			start++
 		}
 
 		this.highlighter.highlight(start, highlightIndexEnd)
