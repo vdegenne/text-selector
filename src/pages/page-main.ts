@@ -15,17 +15,16 @@ import {withStyles} from 'lit-with-styles'
 import {customElement, property, query, queryAll} from 'lit/decorators.js'
 import toast from 'toastit'
 import {playClick} from '../assets/assets.js'
+import {NEW_LINE} from '../constants.js'
 import {fullscreenElement} from '../fullscreen-element.js'
 import {indexesHistory} from '../indexesHistory.js'
 import {stateless} from '../stateless.js'
 import {store} from '../store.js'
 import {
 	getCharType,
-	getLineBoundaries,
 	getSpecialBoundaries,
 	getTextInfo,
 	getWordBoundaries,
-	isWordChar,
 	splitLetters,
 } from '../text-logic.js'
 import {
@@ -34,7 +33,6 @@ import {
 	getLastVisibleElement,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
-import {NEW_LINE} from '../constants.js'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -561,11 +559,18 @@ export class PageMain extends PageElement {
 		this.highlighter.highlight(highlightIndexStart, target - 1)
 	}
 
-	increaseLeftWordSelection(): void {
+	increaseLeftWordSelection(jumpCharacters = [' ']): void {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 		const letters = stateless.cleanLetters
 
 		let start = highlightIndexStart - 1
+
+		if (start < 0) return
+
+		// Skip excluded characters.
+		while (start >= 0 && jumpCharacters.includes(letters[start])) {
+			start--
+		}
 
 		if (start < 0) return
 
@@ -579,13 +584,26 @@ export class PageMain extends PageElement {
 		this.highlighter.highlight(start, highlightIndexEnd)
 	}
 
-	decreaseLeftWordSelection(): void {
+	decreaseLeftWordSelection(jumpCharacters = [' ']): void {
 		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
 		const letters = stateless.cleanLetters
 
 		let start = highlightIndexStart
 
 		if (start >= highlightIndexEnd) return
+
+		// Skip excluded characters.
+		while (
+			start < highlightIndexEnd &&
+			jumpCharacters.includes(letters[start])
+		) {
+			start++
+		}
+
+		if (start >= highlightIndexEnd) {
+			this.highlighter.highlight(highlightIndexEnd, highlightIndexEnd)
+			return
+		}
 
 		const currentType = getCharType(letters[start])
 
