@@ -93,8 +93,13 @@ class FullscreenElement extends LitElement {
 
 	updated(changed: PropertyValues<this>) {
 		if (changed.has('open')) {
-			if (this.open) document.documentElement.setAttribute('hide-scrollbar', '')
-			else document.documentElement.removeAttribute('hide-scrollbar')
+			if (this.open) {
+				document.documentElement.setAttribute('hide-scrollbar', '')
+				document.documentElement.requestFullscreen()
+			} else {
+				document.documentElement.removeAttribute('hide-scrollbar')
+				document.exitFullscreen()
+			}
 		}
 	}
 
