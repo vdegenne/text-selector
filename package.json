@@ -90,7 +90,7 @@
 		}
 	},
 	"devDependencies": {
-		"@google/genai": "^2.20.0",
+		"@google/genai": "^2.21.0",
 		"@material/mwc-top-app-bar": "^0.27.0",
 		"@material/web": "^2.5.0",
 		"@snar/lit": "^1.8.1",
@@ -98,8 +98,8 @@
 		"@vdegenne/about-dialog": "^0.4.2",
 		"@vdegenne/debouncer": "^1.0.17",
 		"@vdegenne/debug": "^0.1.33",
-		"@vdegenne/forms": "^0.1.74",
-		"@vdegenne/highlight-manager": "^1.0.26",
+		"@vdegenne/forms": "^0.1.76",
+		"@vdegenne/highlight-manager": "^1.0.27",
 		"@vdegenne/jpsyndex": "^1.0.11",
 		"@vdegenne/links": "^1.8.26",
 		"@vdegenne/lit-debug": "^0.1.2",
