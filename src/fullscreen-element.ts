@@ -95,7 +95,7 @@ class FullscreenElement extends LitElement {
 		if (changed.has('open')) {
 			if (this.open) {
 				document.documentElement.setAttribute('hide-scrollbar', '')
-				document.documentElement.requestFullscreen()
+				this.dialog.requestFullscreen()
 			} else {
 				document.documentElement.removeAttribute('hide-scrollbar')
 				document.exitFullscreen()
