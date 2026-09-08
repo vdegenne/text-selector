@@ -18,6 +18,14 @@ import {store} from './store.js'
 	.hideable {
 		transition: opacity 0.4s linear;
 	}
+
+	md-dialog::backdrop {
+		background: red;
+	}
+
+	:fullscreen::backdrop {
+		background: red;
+	}
 `)
 @withController(store)
 class FullscreenElement extends LitElement {
@@ -86,6 +94,9 @@ class FullscreenElement extends LitElement {
 					display: flex;
 					flex-direction: column;
 				}
+				.scrim {
+					display: none !important;
+				}
 			`,
 			this.dialog.shadowRoot!,
 		)
@@ -95,10 +106,11 @@ class FullscreenElement extends LitElement {
 		if (changed.has('open')) {
 			if (this.open) {
 				document.documentElement.setAttribute('hide-scrollbar', '')
-				this.requestFullscreen()
+				// this.dialog.requestFullscreen()
+				// this.dialog.renderRoot.firstElementChild?.requestFullscreen()
 			} else {
 				document.documentElement.removeAttribute('hide-scrollbar')
-				document.exitFullscreen()
+				// document.exitFullscreen()
 			}
 		}
 	}
