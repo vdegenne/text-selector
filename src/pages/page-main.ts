@@ -195,8 +195,8 @@ export class PageMain extends PageElement {
 			return {
 				content: info.highlightElements
 					.map((letter) => {
-						console.log(letter)
-						letter.classList.contains('newline')
+						// console.log(`"${letter.innerText}"`)
+						return letter.classList.contains('newline')
 							? '\n'
 							: // : letter.innerText?.trim()
 								letter.innerText
