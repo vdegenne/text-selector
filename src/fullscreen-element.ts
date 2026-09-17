@@ -108,9 +108,11 @@ class FullscreenElement extends LitElement {
 				document.documentElement.setAttribute('hide-scrollbar', '')
 				// this.dialog.requestFullscreen()
 				// this.dialog.renderRoot.firstElementChild?.requestFullscreen()
+				document.title += ' (dialog)'
 			} else {
 				document.documentElement.removeAttribute('hide-scrollbar')
 				// document.exitFullscreen()
+				document.title = document.title.replace(/ \(dialog\)$/, '')
 			}
 		}
 	}

@@ -232,7 +232,7 @@ class GamepadController extends ReactiveController {
 							highlightIndexStart === 0 &&
 							highlightIndexEnd === store.input.length - 1
 						) {
-							window.close()
+							// window.close()
 						} else {
 							fullscreenElement.open = false
 						}
@@ -388,7 +388,7 @@ class GamepadController extends ReactiveController {
 						if (fullscreenElement.open) {
 							fullscreenElement.open = false
 						} else {
-							window.close()
+							// window.close()
 						}
 						break
 					case Mode.PRIMARY:
