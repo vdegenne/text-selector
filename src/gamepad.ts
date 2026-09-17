@@ -356,10 +356,10 @@ class GamepadController extends ReactiveController {
 						break
 
 					case Mode.PRIMARY:
-						const {highlightContent} = mainPage.highlighter.getInfo()
-						if (highlightContent) {
+						const {content} = mainPage.highlighter.getInfo()
+						if (content) {
 							// youtubeSearchOpen(`${highlightContent} prononciation`)
-							siteDexOpen(highlightContent)
+							siteDexOpen(content)
 						}
 						break
 					case Mode.SECONDARY:
