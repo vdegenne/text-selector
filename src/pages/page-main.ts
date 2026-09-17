@@ -703,19 +703,19 @@ export class PageMain extends PageElement {
 	}
 
 	getContent() {
-		const {highlightContent} = this.highlighter.getInfo()
-		if (highlightContent) {
-			return highlightContent
+		const {content} = this.highlighter.getInfo()
+		if (content) {
+			return content
 		}
 	}
 
 	openChatGPTSelector() {
-		const {highlightContent} = this.highlighter.getInfo()
-		if (highlightContent) {
+		const {content} = this.highlighter.getInfo()
+		if (content) {
 			if (store.mostHighlightedOpenInSameTab && this.isMostHighlighted()) {
-				window.location.href = chatGptMediatorUrl(highlightContent)
+				window.location.href = chatGptMediatorUrl(content)
 			} else {
-				chatGptMediatorOpen(highlightContent)
+				chatGptMediatorOpen(content)
 			}
 		}
 	}
