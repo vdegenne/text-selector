@@ -49,5 +49,14 @@ export function findSubarray<T>(array: T[], search: T[]): number {
 }
 
 export function closeTab() {
-	ydotool('29:1 17:1 17:0 29:0')
+	// ydotool('29:1 17:1 17:0 29:0')
+
+	// You need `control-page-with-controller` extension for that.
+	// The content script receives this event and will forward to the background to close the tab.
+	window.postMessage(
+		{
+			type: 'close-tab',
+		},
+		'*',
+	)
 }

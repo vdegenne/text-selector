@@ -389,8 +389,7 @@ class GamepadController extends ReactiveController {
 					case Mode.NORMAL:
 						if (
 							fullscreenElement.open === false ||
-							(mainPage.highlighter.isFullyHighlighted &&
-								!store.fullscreenPreventClosingWhenFullSelection)
+							mainPage.highlighter.isFullyHighlighted
 						) {
 							// window.close()
 							closeTab()
