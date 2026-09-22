@@ -225,16 +225,17 @@ class GamepadController extends ReactiveController {
 			gamepad.for(a).before(({mode}) => {
 				switch (mode) {
 					case Mode.NORMAL:
-						const {highlightIndexStart, highlightIndexEnd} =
-							getMainPage()?.highlighter?.getInfo() ?? {}
-						const params = new URLSearchParams(window.location.search)
+						// const {highlightIndexStart, highlightIndexEnd} =
+						// 	getMainPage()?.highlighter?.getInfo() ?? {}
+						// const params = new URLSearchParams(window.location.search)
 						if (
-							params.has('full') &&
-							highlightIndexStart === 0 &&
-							highlightIndexEnd === store.input.length - 1
+							!fullscreenElement.open
+							// params.has('full') &&
+							// highlightIndexStart === 0 &&
+							// highlightIndexEnd === store.input.length - 1
 						) {
 							// window.close()
-							closeTab()
+							// closeTab()
 						} else {
 							fullscreenElement.open = false
 						}
