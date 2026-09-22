@@ -29,6 +29,7 @@ import {mainPage} from './pages/page-main.js'
 import {translateSelection} from './server/functions.js'
 import {store} from './store.js'
 import {copyToClipboard, isValidUrl, japsyndexOpen} from './utils.js'
+import {closeTab} from './functions.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -233,6 +234,7 @@ class GamepadController extends ReactiveController {
 							highlightIndexEnd === store.input.length - 1
 						) {
 							// window.close()
+							closeTab()
 						} else {
 							fullscreenElement.open = false
 						}
@@ -389,6 +391,7 @@ class GamepadController extends ReactiveController {
 							fullscreenElement.open = false
 						} else {
 							// window.close()
+							closeTab()
 						}
 						break
 					case Mode.PRIMARY:

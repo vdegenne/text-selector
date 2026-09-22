@@ -1,3 +1,5 @@
+import {ydotool} from '@vdegenne/py-server'
+import {api} from './api.js'
 import {NEW_LINE} from './constants.js'
 
 export function cleanInput(input: string) {
@@ -44,4 +46,8 @@ export function findSubarray<T>(array: T[], search: T[]): number {
 	}
 
 	return -1
+}
+
+export function closeTab() {
+	ydotool('29:1 17:1 17:0 29:0')
 }

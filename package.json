@@ -106,6 +106,7 @@
 		"@vdegenne/material-color-helpers": "^1.11.7",
 		"@vdegenne/mini-gamepad": "^0.4.17",
 		"@vdegenne/mini-rest": "^0.3.8",
+		"@vdegenne/py-server": "^0.1.7",
 		"@vdegenne/rollup-plugin-minify-html": "^1.0.6",
 		"@vdegenne/router": "^0.1.11",
 		"@vdegenne/speech": "^0.5.4",
