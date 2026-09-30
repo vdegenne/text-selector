@@ -794,7 +794,7 @@ export class PageMain extends PageElement {
 					store.voicevoxLastVoiceUsed = voiceName
 					toast(voiceName, {timeoutMs: 5000})
 					voicevox
-						.play(text, store.voicevoxVoiceId, store.voicevoxVoiceSpeed)
+						.tog(text, store.voicevoxVoiceId, store.voicevoxVoiceSpeed)
 						.then(() => {
 							// toast('END')
 						})

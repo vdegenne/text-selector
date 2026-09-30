@@ -1,5 +1,6 @@
 import {ReactiveController, state} from '@snar/lit'
 import {VOICEVOX_DEFAULT_HOST} from './constants.js'
+import toast from 'toastit'
 
 interface VoiceVoxStyle {
 	id: number
@@ -22,8 +23,13 @@ class VoiceVoxClient extends ReactiveController {
 	@state() host = VOICEVOX_DEFAULT_HOST
 
 	private cache = new Map<string, CachedAudio>()
-	private currentAudio: HTMLAudioElement | null = null
-	private currentResolve: (() => void) | null = null
+	private currentAudios = new Map<
+		string,
+		{
+			audio: HTMLAudioElement
+			resolve: () => void
+		}
+	>()
 
 	async connect() {
 		this.state = 'connecting'
@@ -56,37 +62,41 @@ class VoiceVoxClient extends ReactiveController {
 			throw new Error('VoiceVox is not connected')
 		}
 
+		toast(this.getVoiceTitleFromId(voiceId))
+
 		const key = this.getCacheKey(sentence, voiceId, speed)
-		const cached = this.cache.get(key)
 
-		if (cached) {
-			this.stop()
+		this.stop(key)
 
-			const audio = cached instanceof Promise ? await cached : cached
+		let cached = this.cache.get(key)
 
-			this.cache.set(key, audio)
+		if (!cached) {
+			const promise = this.fetchAudio(sentence, voiceId, speed)
 
-			await this.playBlob(audio)
+			this.cache.set(key, promise)
+
+			try {
+				const audio = await promise
+				this.cache.set(key, audio)
+
+				await this.playBlob(audio, key)
+			} catch (error) {
+				this.cache.delete(key)
+				throw error
+			}
+
 			return
 		}
 
-		const promise = this.fetchAudio(sentence, voiceId, speed)
+		const audio = cached instanceof Promise ? await cached : cached
 
-		this.cache.set(key, promise)
+		this.cache.set(key, audio)
 
-		try {
-			const audio = await promise
-			this.cache.set(key, audio)
-
-			await this.playBlob(audio)
-		} catch (error) {
-			this.cache.delete(key)
-			throw error
-		}
+		await this.playBlob(audio, key)
 	}
 
 	async togglePlay(sentence: string, voiceId: number, speed: number) {
-		if (this.currentAudio) {
+		if (this.currentAudios.size > 0) {
 			this.stop()
 			return
 		}
@@ -132,24 +142,30 @@ class VoiceVoxClient extends ReactiveController {
 		return synthesisResponse.blob()
 	}
 
-	private async playBlob(blob: Blob) {
+	private async playBlob(blob: Blob, key: string) {
 		const url = URL.createObjectURL(blob)
 		const audio = new Audio(url)
 
-		this.currentAudio = audio
+		this.currentAudios.set(key, {
+			audio,
+			resolve: () => {},
+		})
 
 		try {
 			await audio.play()
 
 			await new Promise<void>((resolve, reject) => {
-				this.currentResolve = resolve
+				const current = this.currentAudios.get(key)
+
+				if (current?.audio === audio) {
+					current.resolve = resolve
+				}
 
 				audio.addEventListener(
 					'ended',
 					() => {
-						if (this.currentAudio === audio) {
-							this.currentAudio = null
-							this.currentResolve = null
+						if (this.currentAudios.get(key)?.audio === audio) {
+							this.currentAudios.delete(key)
 						}
 
 						URL.revokeObjectURL(url)
@@ -161,9 +177,8 @@ class VoiceVoxClient extends ReactiveController {
 				audio.addEventListener(
 					'error',
 					() => {
-						if (this.currentAudio === audio) {
-							this.currentAudio = null
-							this.currentResolve = null
+						if (this.currentAudios.get(key)?.audio === audio) {
+							this.currentAudios.delete(key)
 						}
 
 						URL.revokeObjectURL(url)
@@ -173,9 +188,8 @@ class VoiceVoxClient extends ReactiveController {
 				)
 			})
 		} catch (error) {
-			if (this.currentAudio === audio) {
-				this.currentAudio = null
-				this.currentResolve = null
+			if (this.currentAudios.get(key)?.audio === audio) {
+				this.currentAudios.delete(key)
 			}
 
 			URL.revokeObjectURL(url)
@@ -183,20 +197,30 @@ class VoiceVoxClient extends ReactiveController {
 		}
 	}
 
-	private stop() {
-		if (!this.currentAudio) {
+	private stop(key?: string) {
+		if (key) {
+			const current = this.currentAudios.get(key)
+
+			if (!current) {
+				return
+			}
+
+			current.audio.pause()
+			current.audio.currentTime = 0
+
+			this.currentAudios.delete(key)
+			current.resolve()
+
 			return
 		}
 
-		this.currentAudio.pause()
-		this.currentAudio.currentTime = 0
+		for (const current of this.currentAudios.values()) {
+			current.audio.pause()
+			current.audio.currentTime = 0
+			current.resolve()
+		}
 
-		this.currentAudio = null
-
-		const resolve = this.currentResolve
-		this.currentResolve = null
-
-		resolve?.()
+		this.currentAudios.clear()
 	}
 
 	private getCacheKey(sentence: string, voiceId: number, speed: number) {
