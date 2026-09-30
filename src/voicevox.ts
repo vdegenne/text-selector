@@ -158,6 +158,8 @@ class VoiceVoxClient extends ReactiveController {
 			resolve: () => {},
 		})
 
+		console.log(audio.volume)
+
 		try {
 			await audio.play()
 
