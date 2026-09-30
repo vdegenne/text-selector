@@ -25,3 +25,9 @@ export type FontValue = (typeof fontFamily)[number]
  * apart from the ones intentionally added when "break sentences" option is on.
  */
 export const NEW_LINE = '\uE000'
+
+export const TTSs = ['gemini', 'voicevox'] as const
+
+export type Tts = (typeof TTSs)[number]
+
+export const VOICEVOX_DEFAULT_HOST = 'http://127.0.0.1:50021'

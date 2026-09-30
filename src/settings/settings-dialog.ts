@@ -13,7 +13,7 @@ import {withStyles} from 'lit-with-styles'
 import {query, state} from 'lit/decorators.js'
 import toast from 'toastit'
 import '../card-element.js'
-import {fontFamily} from '../constants.js'
+import {fontFamily, TTSs} from '../constants.js'
 import {gamepadCtrl} from '../gamepad.js'
 import '../material/dialog-patch.js'
 import '../material/item-patch.js'
@@ -22,11 +22,13 @@ import {renderThemeElements} from '../styles/theme-elements.js'
 import {themeStore} from '../styles/themeStore.js'
 import {copyToClipboard} from '../utils.js'
 import styles from './settings-dialog.css?inline'
+import {voicevox} from '../voicevox.js'
 // import '@material/web/textfield/outlined-text-field.js';
 
 @customElement({name: 'settings-dialog', inject: true})
 @withStyles(styles)
 @withController(themeStore)
+@withController(voicevox)
 @withController(store)
 export class SettingsDialog extends LitElement {
 	@state() open = false
@@ -122,6 +124,67 @@ export class SettingsDialog extends LitElement {
 							max: 1,
 							step: 0.1,
 						})}
+						${store.F.SELECT('TTS', 'TTS', TTSs, {menuPositioning: 'popover'})}
+						${
+							store.TTS === 'voicevox'
+								? html`
+										${
+											voicevox.state === 'connecting'
+												? html`
+														<md-list-item>
+															<md-circular-progress
+																indeterminate
+																slot="start"
+															></md-circular-progress>
+															Please wait
+														</md-list-item>
+													`
+												: null
+										}
+										${
+											voicevox.state === 'connection_error'
+												? html`
+														<md-list-item error>
+															<md-icon slot="start">error</md-icon>
+															Couldn't connect
+															<md-filled-tonal-button
+																form=""
+																slot="end"
+																@click="${() => voicevox.connect()}"
+																>Try again</md-filled-tonal-button
+															>
+														</md-list-item>
+													`
+												: null
+										}
+										${
+											voicevox.state === 'connected'
+												? html`
+														${store.F.SELECT(
+															'Voice',
+															'voicevoxVoiceId',
+															voicevox.getVoiceTitles(),
+															{
+																disabled: store.voicevoxRandom,
+																type: 'number',
+															},
+														)}
+														${store.F.SWITCH('Random voice', 'voicevoxRandom')}
+														${store.F.SLIDER('Voice speed', 'voicevoxVoiceSpeed', {min: 0.1, max: 1.9, step: 0.1})}
+														<md-list-item
+															?hidden=${true || !store.voicevoxLastVoiceUsed}
+														>
+															<md-icon slot="start">history</md-icon>
+															<div slot="headline">
+																Last voice used: ${store.voicevoxLastVoiceUsed}
+															</div>
+														</md-list-item>
+													`
+												: null
+										}
+									`
+								: null
+						}
 					</card-element>
 
 					<card-element headline="Gamepad">

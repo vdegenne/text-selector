@@ -3,7 +3,14 @@ import {FormBuilder} from '@vdegenne/forms/FormBuilder.js'
 import {saveToLocalStorage} from 'snar-save-to-local-storage'
 import toast from 'toastit'
 import {clickAudio} from './assets/assets.js'
-import {availablePages, fontFamily, FontValue, NEW_LINE} from './constants.js'
+import {
+	availablePages,
+	fontFamily,
+	FontValue,
+	NEW_LINE,
+	Tts,
+	VOICEVOX_DEFAULT_HOST,
+} from './constants.js'
 import {cleanInput, findSubarray} from './functions.js'
 import {indexesHistory} from './indexesHistory.js'
 import {Page} from './pages/index.js'
@@ -11,6 +18,7 @@ import {mainPage} from './pages/page-main.js'
 import {stateless} from './stateless.js'
 import {breakSentence, splitLetters} from './text-logic.js'
 import {generateHash} from './utils.js'
+import {voicevox} from './voicevox.js'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -33,8 +41,16 @@ export class AppStore extends ReactiveController {
 	@state() mostHighlightedOpenInSameTab = false
 
 	@state() audioVolume = 0.3
-
+	@state() TTS: Tts = 'voicevox'
 	@state() geminiApiKey = ''
+	@state() voicevoxHost = VOICEVOX_DEFAULT_HOST
+	/**
+	 * Use 0 for random voice
+	 */
+	@state() voicevoxVoiceId = 1
+	@state() voicevoxRandom = false
+	@state() voicevoxLastVoiceUsed = ''
+	@state() voicevoxVoiceSpeed = 1
 
 	@state() breakSentences = false
 
@@ -197,6 +213,14 @@ export class AppStore extends ReactiveController {
 
 		if (changed.has('loop')) {
 			mainPage.highlighter.setLoop(this.loop)
+		}
+
+		if (changed.has('TTS')) {
+			if (this.TTS === 'voicevox') {
+				voicevox.connect()
+			} else {
+				voicevox.disconnect()
+			}
 		}
 	}
 

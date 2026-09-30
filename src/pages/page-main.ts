@@ -33,6 +33,7 @@ import {
 	getLastVisibleElement,
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
+import {voicevox} from '../voicevox.js'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -774,7 +775,7 @@ export class PageMain extends PageElement {
 		// fallback final assumé
 		if (!lang) lang = 'en'
 
-		// toast(lang)
+		// toast(lang, {timeoutMs: 1000})
 
 		switch (lang) {
 			case 'fr':
@@ -782,6 +783,24 @@ export class PageMain extends PageElement {
 				break
 			case 'ja':
 				// speakJapanese(text)
+				if (store.TTS === 'voicevox') {
+					if (store.voicevoxRandom) {
+						store.voicevoxVoiceId = voicevox.getRandomVoiceId()
+						// voicevox.play(text, voicevox.getRandomVoiceId()).then(() => {
+						// 	toast('END')
+						// })
+					}
+					const voiceName = voicevox.getVoiceTitleFromId(store.voicevoxVoiceId)
+					store.voicevoxLastVoiceUsed = voiceName
+					toast(voiceName, {timeoutMs: 5000})
+					voicevox
+						.play(text, store.voicevoxVoiceId, store.voicevoxVoiceSpeed)
+						.then(() => {
+							// toast('END')
+						})
+					return
+				}
+
 				try {
 					await playJapanese(text, {fallbackToSpeechSynthesis: false})
 				} catch {

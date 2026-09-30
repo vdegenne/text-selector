@@ -1,0 +1,3 @@
+{
+	"reject": ["@vite-pwa/assets-generator"]
+}
