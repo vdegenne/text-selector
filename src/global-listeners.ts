@@ -5,6 +5,8 @@ import {openSettingsDialog} from './imports.js'
 import {mainPage} from './pages/page-main.js'
 import {translateSelection} from './server/functions.js'
 import {store} from './store.js'
+import {voicevox} from './voicevox.js'
+import toast from 'toastit'
 
 const inputNames = ['INPUT', 'TEXTAREA', 'MD-FILLED-TEXT-FIELD']
 export function eventIsFromInput(event: Event) {
@@ -46,6 +48,15 @@ window.addEventListener('keypress', async (event: KeyboardEvent) => {
 
 		case 'l':
 			openInLocalhost()
+			break
+
+		case 'r':
+			if (store.TTS === 'voicevox' && voicevox.state === 'connected') {
+				const voiceId = voicevox.getRandomVoiceId()
+				store.voicevoxVoiceId = voiceId
+				const voiceName = voicevox.getVoiceTitleFromId(voiceId)
+				toast(voiceName)
+			}
 			break
 	}
 })
