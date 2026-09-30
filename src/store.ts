@@ -41,7 +41,7 @@ export class AppStore extends ReactiveController {
 	@state() mostHighlightedOpenInSameTab = false
 
 	@state() audioVolume = 0.3
-	@state() TTS: Tts = 'voicevox'
+	@state() TTS: Tts = 'gemini'
 	@state() geminiApiKey = ''
 	@state() voicevoxHost = VOICEVOX_DEFAULT_HOST
 	/**

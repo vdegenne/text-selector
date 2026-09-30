@@ -57,7 +57,7 @@ class VoiceVoxClient extends ReactiveController {
 		this.state = 'disconnected'
 	}
 
-	async play(sentence: string, voiceId: number, speed: number) {
+	async play(sentence: string, voiceId: number, speed: number, volume = 1) {
 		if (this.state !== 'connected') {
 			throw new Error('VoiceVox is not connected')
 		}
@@ -79,7 +79,7 @@ class VoiceVoxClient extends ReactiveController {
 				const audio = await promise
 				this.cache.set(key, audio)
 
-				await this.playBlob(audio, key)
+				await this.playBlob(audio, key, volume)
 			} catch (error) {
 				this.cache.delete(key)
 				throw error
@@ -92,16 +92,21 @@ class VoiceVoxClient extends ReactiveController {
 
 		this.cache.set(key, audio)
 
-		await this.playBlob(audio, key)
+		await this.playBlob(audio, key, volume)
 	}
 
-	async togglePlay(sentence: string, voiceId: number, speed: number) {
+	async togglePlay(
+		sentence: string,
+		voiceId: number,
+		speed: number,
+		volume = 1,
+	) {
 		if (this.currentAudios.size > 0) {
 			this.stop()
 			return
 		}
 
-		return this.play(sentence, voiceId, speed)
+		return this.play(sentence, voiceId, speed, volume)
 	}
 
 	private async fetchAudio(sentence: string, voiceId: number, speed: number) {
@@ -142,9 +147,11 @@ class VoiceVoxClient extends ReactiveController {
 		return synthesisResponse.blob()
 	}
 
-	private async playBlob(blob: Blob, key: string) {
+	private async playBlob(blob: Blob, key: string, volume: number) {
 		const url = URL.createObjectURL(blob)
 		const audio = new Audio(url)
+
+		audio.volume = Math.max(0, Math.min(1, volume))
 
 		this.currentAudios.set(key, {
 			audio,
