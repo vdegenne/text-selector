@@ -1,1 +1,0 @@
-import{_t as e,at as t,d as n,dt as r,et as i,n as a,ut as o,vt as s}from"./page-main-DWQXiFsn.js";var c=class extends a{render(){return e`404 NOT FOUND`}};c=t([i(`page-404`),r(n),o(s``)],c);export{c as Page404};
