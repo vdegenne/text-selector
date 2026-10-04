@@ -9,10 +9,10 @@ class CardElement extends LitElement {
 
 	render() {
 		const headline = this.headline
-			.replace(/=/g, '')
-			.trim()
-			.toLowerCase()
-			.replace(/^./, (c) => c.toUpperCase())
+		// .replace(/=/g, '')
+		// .trim()
+		// .toLowerCase()
+		// .replace(/^./, (c) => c.toUpperCase())
 
 		return html`<!-- -->
 			<md-elevated-card class="flex flex-col">

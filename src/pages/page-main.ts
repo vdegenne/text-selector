@@ -34,6 +34,7 @@ import {
 } from '../utils.js'
 import {PageElement} from './PageElement.js'
 import {voicevox} from '../voicevox.js'
+import {kokoro} from '../kokoro.js'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -740,10 +741,10 @@ export class PageMain extends PageElement {
 	}
 
 	async speakSelection() {
-		const {highlightContent} = this.highlighter.getInfo()
-		if (!highlightContent) return
+		const {content} = this.highlighter.getInfo()
+		if (!content) return
 
-		const text = highlightContent.trim()
+		const text = content.trim()
 		if (!text) return
 
 		let lang: string | undefined
@@ -751,8 +752,9 @@ export class PageMain extends PageElement {
 		if (hasSomeJapanese(text)) {
 			lang = 'ja'
 		} else {
-			const {detect} = await import('tinyld')
-			lang = detect(text, {only: ['en', 'fr']})
+			// const {detect} = await import('tinyld')
+			// lang = detect(text, {only: ['en', 'fr']})
+			lang = store.lang
 		}
 
 		function guessWithKeywords(t: string) {
@@ -778,12 +780,23 @@ export class PageMain extends PageElement {
 		// toast(lang, {timeoutMs: 1000})
 
 		switch (lang) {
+			case 'en':
+				kokoro.play(text, {
+					voiceId: store.kokoroEnVoiceId,
+					speed: 1,
+					volume: store.volume,
+				})
+				break
 			case 'fr':
-				speakFrench(text)
+				kokoro.play(text, {
+					voiceId: store.kokoroFrVoiceId,
+					speed: 1,
+					volume: store.volume,
+				})
 				break
 			case 'ja':
 				// speakJapanese(text)
-				if (store.TTS === 'voicevox') {
+				if (store.jaTTS === 'voicevox') {
 					if (store.voicevoxRandom) {
 						store.voicevoxVoiceId = voicevox.getRandomVoiceId()
 						// voicevox.play(text, voicevox.getRandomVoiceId()).then(() => {
@@ -798,7 +811,7 @@ export class PageMain extends PageElement {
 							text,
 							store.voicevoxVoiceId,
 							store.voicevoxVoiceSpeed,
-							store.audioVolume,
+							store.volume,
 						)
 						.then(() => {
 							// toast('END')

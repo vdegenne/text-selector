@@ -7,9 +7,13 @@ import {
 	availablePages,
 	fontFamily,
 	FontValue,
+	Language,
+	languages,
 	NEW_LINE,
-	Tts,
+	JaTTS,
 	VOICEVOX_DEFAULT_HOST,
+	EnTTS,
+	FrTTS,
 } from './constants.js'
 import {cleanInput, findSubarray} from './functions.js'
 import {indexesHistory} from './indexesHistory.js'
@@ -19,6 +23,8 @@ import {stateless} from './stateless.js'
 import {breakSentence, splitLetters} from './text-logic.js'
 import {generateHash} from './utils.js'
 import {voicevox} from './voicevox.js'
+import {kokoro} from './kokoro.js'
+import {EnVoice, FrVoice} from '@vdegenne/kokoro'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -40,9 +46,21 @@ export class AppStore extends ReactiveController {
 
 	@state() mostHighlightedOpenInSameTab = false
 
-	@state() audioVolume = 0.3
-	@state() TTS: Tts = 'gemini'
+	/**
+	 * Language to use for the TTS when the text to play is not japanese.
+	 */
+	@state() lang: Language = 'en'
+	cycleLangs() {
+		return (this.lang =
+			languages[(languages.indexOf(this.lang) + 1) % languages.length])
+	}
+
+	@state() volume = 0.3
+	@state() jaTTS: JaTTS = 'voicevox'
+	@state() enTTS: EnTTS = 'kokoro'
+	@state() frTTS: FrTTS = 'kokoro'
 	@state() geminiApiKey = ''
+
 	@state() voicevoxHost = VOICEVOX_DEFAULT_HOST
 	/**
 	 * Use 0 for random voice
@@ -51,6 +69,14 @@ export class AppStore extends ReactiveController {
 	@state() voicevoxRandom = false
 	@state() voicevoxLastVoiceUsed = ''
 	@state() voicevoxVoiceSpeed = 1
+
+	@state() kokoroEnVoiceId: EnVoice = 'af_heart'
+	@state() kokoroEnRandom = false
+	@state() kokoroEnLastVoiceUsed = ''
+
+	@state() kokoroFrVoiceId: FrVoice = 'ff_siwis'
+	@state() kokoroFrRandom = false
+	@state() kokoroFrLastVoiceUsed = ''
 
 	@state() breakSentences = false
 
@@ -171,9 +197,9 @@ export class AppStore extends ReactiveController {
 			)
 		}
 
-		if (changed.has('audioVolume')) {
+		if (changed.has('volume')) {
 			if (clickAudio) {
-				clickAudio.volume = this.audioVolume
+				clickAudio.volume = this.volume
 			}
 		}
 
@@ -215,11 +241,18 @@ export class AppStore extends ReactiveController {
 			mainPage.highlighter.setLoop(this.loop)
 		}
 
-		if (changed.has('TTS')) {
-			if (this.TTS === 'voicevox') {
+		if (changed.has('jaTTS')) {
+			if (this.jaTTS === 'voicevox') {
 				voicevox.connect()
 			} else {
 				voicevox.disconnect()
+			}
+		}
+		if (changed.has('enTTS') || changed.has('frTTS')) {
+			if (this.enTTS === 'kokoro' || this.frTTS === 'kokoro') {
+				kokoro.connect()
+			} else {
+				kokoro.disconnect()
 			}
 		}
 	}

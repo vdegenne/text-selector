@@ -1,4 +1,4 @@
-import type {MdDialog} from '@material/web/all.js'
+import type {MdDialog, MdTabs} from '@material/web/all.js'
 import '@material/web/iconbutton/icon-button.js'
 import '@material/web/list/list-item.js'
 import '@material/web/select/filled-select.js'
@@ -13,7 +13,7 @@ import {withStyles} from 'lit-with-styles'
 import {query, state} from 'lit/decorators.js'
 import toast from 'toastit'
 import '../card-element.js'
-import {fontFamily, TTSs} from '../constants.js'
+import {enTTSs, fontFamily, frTTSs, jaTTSs} from '../constants.js'
 import {gamepadCtrl} from '../gamepad.js'
 import '../material/dialog-patch.js'
 import '../material/item-patch.js'
@@ -23,17 +23,24 @@ import {themeStore} from '../styles/themeStore.js'
 import {copyToClipboard} from '../utils.js'
 import styles from './settings-dialog.css?inline'
 import {voicevox} from '../voicevox.js'
+import {kokoroSettings} from '../templates.js'
+import {kokoro} from '../kokoro.js'
 // import '@material/web/textfield/outlined-text-field.js';
+
+type TtsSelectedLabel = 'JP' | 'EN' | 'FR'
 
 @customElement({name: 'settings-dialog', inject: true})
 @withStyles(styles)
 @withController(themeStore)
 @withController(voicevox)
+@withController(kokoro)
 @withController(store)
 export class SettingsDialog extends LitElement {
 	@state() open = false
 
 	@state() passwordHidden = true
+
+	@state() ttsSelectedLabel: TtsSelectedLabel = 'JP'
 
 	@query('md-dialog') dialog!: MdDialog
 
@@ -119,14 +126,14 @@ export class SettingsDialog extends LitElement {
 					</card-element>
 
 					<card-element headline="audio">
-						${store.F.SLIDER('Audio volume', 'audioVolume', {
+						${store.F.SLIDER('Audio volume', 'volume', {
 							min: 0,
 							max: 1,
 							step: 0.1,
 						})}
-						${store.F.SELECT('TTS', 'TTS', TTSs, {menuPositioning: 'popover'})}
+						${store.F.SELECT('TTS', 'jaTTS', jaTTSs)}
 						${
-							store.TTS === 'voicevox'
+							store.jaTTS === 'voicevox'
 								? html`
 										${
 											voicevox.state === 'connecting'
@@ -185,6 +192,43 @@ export class SettingsDialog extends LitElement {
 									`
 								: null
 						}
+					</card-element>
+
+					<card-element headline="TTS">
+						<md-tabs
+							@change="${(event: CustomEvent) => {
+								const tabs = event.currentTarget as MdTabs
+								const label = tabs.activeTab?.textContent?.trim()
+
+								this.ttsSelectedLabel = label as TtsSelectedLabel
+							}}"
+						>
+							<md-primary-tab>JP</md-primary-tab>
+							<md-primary-tab>EN</md-primary-tab>
+							<md-primary-tab>FR</md-primary-tab>
+						</md-tabs>
+
+						${
+							this.ttsSelectedLabel === 'JP'
+								? html`<!-- -->
+										jp
+										<!-- -->`
+								: null
+						}
+						<div
+							?hidden=${this.ttsSelectedLabel !== 'EN'}
+							class="flex flex-col gap-2"
+						>
+							${store.F.SELECT('TTS', 'enTTS', enTTSs)}
+							${store.enTTS === 'kokoro' ? kokoroSettings(kokoro, store, 'En') : null}
+						</div>
+						<div
+							?hidden=${this.ttsSelectedLabel !== 'FR'}
+							class="flex flex-col gap-2"
+						>
+							${store.F.SELECT('TTS', 'frTTS', frTTSs)}
+							${store.frTTS === 'kokoro' ? kokoroSettings(kokoro, store, 'Fr') : null}
+						</div>
 					</card-element>
 
 					<card-element headline="Gamepad">

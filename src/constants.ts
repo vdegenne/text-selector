@@ -26,8 +26,16 @@ export type FontValue = (typeof fontFamily)[number]
  */
 export const NEW_LINE = '\uE000'
 
-export const TTSs = ['gemini', 'voicevox'] as const
+export const jaTTSs = ['gemini', 'voicevox'] as const
+export const enTTSs = ['gemini', 'kokoro'] as const
+export const frTTSs = ['gemini', 'kokoro'] as const
 
-export type Tts = (typeof TTSs)[number]
+export type JaTTS = (typeof jaTTSs)[number]
+export type EnTTS = (typeof enTTSs)[number]
+export type FrTTS = (typeof frTTSs)[number]
 
 export const VOICEVOX_DEFAULT_HOST = 'http://127.0.0.1:50021'
+export const KOKORO_DEFAULT_HOST = 'http://localhost:8880'
+
+export const languages = ['en', 'fr'] as const
+export type Language = (typeof languages)[number]

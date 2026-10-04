@@ -51,7 +51,7 @@ window.addEventListener('keypress', async (event: KeyboardEvent) => {
 			break
 
 		case 'r':
-			if (store.TTS === 'voicevox' && voicevox.state === 'connected') {
+			if (store.jaTTS === 'voicevox' && voicevox.state === 'connected') {
 				const voiceId = voicevox.getRandomVoiceId()
 				store.voicevoxVoiceId = voiceId
 				const voiceName = voicevox.getVoiceTitleFromId(voiceId)
