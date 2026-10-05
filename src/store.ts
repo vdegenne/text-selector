@@ -199,7 +199,7 @@ export class AppStore extends ReactiveController {
 
 		if (changed.has('volume')) {
 			if (clickAudio) {
-				clickAudio.volume = this.volume
+				// clickAudio.volume = this.volume
 			}
 		}
 
