@@ -101,7 +101,7 @@
 		"@vdegenne/forms": "^0.1.86",
 		"@vdegenne/highlight-manager": "^1.0.27",
 		"@vdegenne/jpsyndex": "^1.0.11",
-		"@vdegenne/kokoro": "^0.1.8",
+		"@vdegenne/kokoro": "^0.1.11",
 		"@vdegenne/links": "^1.8.26",
 		"@vdegenne/lit-debug": "^0.1.2",
 		"@vdegenne/material-color-helpers": "^1.11.7",
