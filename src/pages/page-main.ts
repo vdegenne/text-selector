@@ -35,6 +35,7 @@ import {
 import {PageElement} from './PageElement.js'
 import {voicevox} from '../voicevox.js'
 import {kokoro} from '../kokoro.js'
+import {availableVoices} from '@vdegenne/kokoro'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -781,6 +782,13 @@ export class PageMain extends PageElement {
 
 		switch (lang) {
 			case 'en':
+				if (store.kokoroEnRandom) {
+					store.kokoroEnVoiceId =
+						availableVoices.En[
+							Math.floor(Math.random() * availableVoices.En.length)
+						]
+					toast(kokoro.getVoiceTitleFromId(store.kokoroEnVoiceId))
+				}
 				kokoro.play(text, {
 					voiceId: store.kokoroEnVoiceId,
 					speed: 1,
@@ -788,6 +796,13 @@ export class PageMain extends PageElement {
 				})
 				break
 			case 'fr':
+				if (store.kokoroFrRandom) {
+					store.kokoroFrVoiceId =
+						availableVoices.Fr[
+							Math.floor(Math.random() * availableVoices.Fr.length)
+						]
+					toast(kokoro.getVoiceTitleFromId(store.kokoroFrVoiceId))
+				}
 				kokoro.play(text, {
 					voiceId: store.kokoroFrVoiceId,
 					speed: 1,
