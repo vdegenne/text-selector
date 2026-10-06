@@ -1,30 +1,30 @@
 import {PropertyValues, ReactiveController, state} from '@snar/lit'
 import {FormBuilder} from '@vdegenne/forms/FormBuilder.js'
+import {EnVoice, FrVoice, JaVoice} from '@vdegenne/kokoro'
 import {saveToLocalStorage} from 'snar-save-to-local-storage'
 import toast from 'toastit'
 import {clickAudio} from './assets/assets.js'
 import {
 	availablePages,
+	EnTTS,
 	fontFamily,
 	FontValue,
+	FrTTS,
+	JaTTS,
 	Language,
 	languages,
 	NEW_LINE,
-	JaTTS,
 	VOICEVOX_DEFAULT_HOST,
-	EnTTS,
-	FrTTS,
 } from './constants.js'
 import {cleanInput, findSubarray} from './functions.js'
 import {indexesHistory} from './indexesHistory.js'
+import {kokoro} from './kokoro.js'
 import {Page} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {stateless} from './stateless.js'
 import {breakSentence, splitLetters} from './text-logic.js'
 import {generateHash} from './utils.js'
 import {voicevox} from './voicevox.js'
-import {kokoro} from './kokoro.js'
-import {EnVoice, FrVoice} from '@vdegenne/kokoro'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -46,7 +46,7 @@ export class AppStore extends ReactiveController {
 
 	@state() mostHighlightedOpenInSameTab = false
 
-	@state() bottomRightFeedback = 'this is a test'
+	@state() bottomRightFeedback = ''
 
 	/**
 	 * Language to use for the TTS when the text to play is not japanese.
@@ -64,20 +64,33 @@ export class AppStore extends ReactiveController {
 	@state() geminiApiKey = ''
 
 	@state() voicevoxHost = VOICEVOX_DEFAULT_HOST
-	/**
-	 * Use 0 for random voice
-	 */
-	@state() voicevoxVoiceId = 1
+	@state() voicevoxVoiceId = 0
 	@state() voicevoxRandom = false
+	/**
+	 * @deprecated useless
+	 */
 	@state() voicevoxLastVoiceUsed = ''
 	@state() voicevoxVoiceSpeed = 1
 
+	@state() kokoroJaVoiceId: JaVoice = 'jf_alpha'
+	@state() kokoroJaRandom = false
+	/**
+	 * @deprecated useless
+	 */
+	@state() kokoroJaLastVoiceUsed = ''
+
 	@state() kokoroEnVoiceId: EnVoice = 'af_heart'
 	@state() kokoroEnRandom = false
+	/**
+	 * @deprecated useless
+	 */
 	@state() kokoroEnLastVoiceUsed = ''
 
 	@state() kokoroFrVoiceId: FrVoice = 'ff_siwis'
 	@state() kokoroFrRandom = false
+	/**
+	 * @deprecated useless
+	 */
 	@state() kokoroFrLastVoiceUsed = ''
 
 	@state() breakSentences = false

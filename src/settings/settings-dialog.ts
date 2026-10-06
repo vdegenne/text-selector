@@ -23,28 +23,31 @@ import {themeStore} from '../styles/themeStore.js'
 import {copyToClipboard} from '../utils.js'
 import styles from './settings-dialog.css?inline'
 import {voicevox} from '../voicevox.js'
-import {kokoroSettings} from '../templates.js'
+import {kokoroSettings, voicevoxSettings} from '../templates.js'
 import {kokoro} from '../kokoro.js'
 // import '@material/web/textfield/outlined-text-field.js';
 
-type TtsSelectedLabel = 'JP' | 'EN' | 'FR'
+type TtsSelectedLabel = 'JA' | 'EN' | 'FR'
+
+console.log(voicevox)
 
 @customElement({name: 'settings-dialog', inject: true})
 @withStyles(styles)
 @withController(themeStore)
-@withController(voicevox)
-@withController(kokoro)
 @withController(store)
+@withController(kokoro)
+@withController(voicevox)
 export class SettingsDialog extends LitElement {
 	@state() open = false
 
 	@state() passwordHidden = true
 
-	@state() ttsSelectedLabel: TtsSelectedLabel = 'JP'
+	@state() ttsSelectedLabel: TtsSelectedLabel = 'JA'
 
 	@query('md-dialog') dialog!: MdDialog
 
 	render() {
+		console.log('RENDER.........................')
 		return html`
 			<md-dialog
 				?open="${this.open}"
@@ -88,6 +91,11 @@ export class SettingsDialog extends LitElement {
 								style: {['padding-left']: '24px'},
 							},
 						)}
+						${store.F.SLIDER('Audio volume', 'volume', {
+							min: 0,
+							max: 1,
+							step: 0.1,
+						})}
 					</card-element>
 
 					<card-element headline="display">
@@ -125,75 +133,6 @@ export class SettingsDialog extends LitElement {
 						)}
 					</card-element>
 
-					<card-element headline="audio">
-						${store.F.SLIDER('Audio volume', 'volume', {
-							min: 0,
-							max: 1,
-							step: 0.1,
-						})}
-						${store.F.SELECT('TTS', 'jaTTS', jaTTSs)}
-						${
-							store.jaTTS === 'voicevox'
-								? html`
-										${
-											voicevox.state === 'connecting'
-												? html`
-														<md-list-item>
-															<md-circular-progress
-																indeterminate
-																slot="start"
-															></md-circular-progress>
-															Please wait
-														</md-list-item>
-													`
-												: null
-										}
-										${
-											voicevox.state === 'connection_error'
-												? html`
-														<md-list-item error>
-															<md-icon slot="start">error</md-icon>
-															Couldn't connect
-															<md-filled-tonal-button
-																form=""
-																slot="end"
-																@click="${() => voicevox.connect()}"
-																>Try again</md-filled-tonal-button
-															>
-														</md-list-item>
-													`
-												: null
-										}
-										${
-											voicevox.state === 'connected'
-												? html`
-														${store.F.SELECT(
-															'Voice',
-															'voicevoxVoiceId',
-															voicevox.getVoiceTitles(),
-															{
-																disabled: store.voicevoxRandom,
-																type: 'number',
-															},
-														)}
-														${store.F.SWITCH('Random voice', 'voicevoxRandom')}
-														${store.F.SLIDER('Voice speed', 'voicevoxVoiceSpeed', {min: 0.1, max: 1.9, step: 0.1})}
-														<md-list-item
-															?hidden=${true || !store.voicevoxLastVoiceUsed}
-														>
-															<md-icon slot="start">history</md-icon>
-															<div slot="headline">
-																Last voice used: ${store.voicevoxLastVoiceUsed}
-															</div>
-														</md-list-item>
-													`
-												: null
-										}
-									`
-								: null
-						}
-					</card-element>
-
 					<card-element headline="TTS">
 						<md-tabs
 							@change="${(event: CustomEvent) => {
@@ -203,15 +142,17 @@ export class SettingsDialog extends LitElement {
 								this.ttsSelectedLabel = label as TtsSelectedLabel
 							}}"
 						>
-							<md-primary-tab>JP</md-primary-tab>
+							<md-primary-tab>JA</md-primary-tab>
 							<md-primary-tab>EN</md-primary-tab>
 							<md-primary-tab>FR</md-primary-tab>
 						</md-tabs>
 
 						${
-							this.ttsSelectedLabel === 'JP'
+							this.ttsSelectedLabel === 'JA'
 								? html`<!-- -->
-										jp
+										${store.F.SELECT('TTS', 'jaTTS', jaTTSs)}
+										${store.jaTTS === 'voicevox' ? voicevoxSettings(voicevox, store) : null}
+										${store.jaTTS === 'kokoro' ? kokoroSettings(kokoro, store, 'Ja') : null}
 										<!-- -->`
 								: null
 						}

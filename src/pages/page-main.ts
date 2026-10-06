@@ -803,8 +803,9 @@ export class PageMain extends PageElement {
 						availableVoices.En[
 							Math.floor(Math.random() * availableVoices.En.length)
 						]
-					store.bottomRightFeedback = store.kokoroEnVoiceId
 				}
+
+				store.bottomRightFeedback = store.kokoroEnVoiceId
 				kokoro.play(text, {
 					voiceId: store.kokoroEnVoiceId,
 					speed: 1,
@@ -817,8 +818,9 @@ export class PageMain extends PageElement {
 						availableVoices.Fr[
 							Math.floor(Math.random() * availableVoices.Fr.length)
 						]
-					toast(kokoro.getVoiceTitleFromId(store.kokoroFrVoiceId))
 				}
+
+				store.bottomRightFeedback = store.kokoroFrVoiceId
 				kokoro.play(text, {
 					voiceId: store.kokoroFrVoiceId,
 					speed: 1,
@@ -826,6 +828,24 @@ export class PageMain extends PageElement {
 				})
 				break
 			case 'ja':
+				if (store.jaTTS === 'kokoro') {
+					if (store.kokoroJaRandom) {
+						store.kokoroJaVoiceId =
+							availableVoices.Ja[
+								Math.floor(Math.random() * availableVoices.Ja.length)
+							]
+					}
+
+					store.bottomRightFeedback = store.kokoroJaVoiceId
+					kokoro.play(text, {
+						voiceId: store.kokoroJaVoiceId,
+						speed: 1,
+						volume: store.volume,
+					})
+
+					console.log('KOKORO END')
+					return
+				}
 				// speakJapanese(text)
 				if (store.jaTTS === 'voicevox') {
 					if (store.voicevoxRandom) {
@@ -838,12 +858,11 @@ export class PageMain extends PageElement {
 					store.voicevoxLastVoiceUsed = voiceName
 					toast(voiceName, {timeoutMs: 5000})
 					voicevox
-						.play(
-							text,
-							store.voicevoxVoiceId,
-							store.voicevoxVoiceSpeed,
-							store.volume,
-						)
+						.play(text, {
+							voiceId: store.voicevoxVoiceId,
+							speed: store.voicevoxVoiceSpeed,
+							volume: store.volume,
+						})
 						.then(() => {
 							// toast('END')
 						})
