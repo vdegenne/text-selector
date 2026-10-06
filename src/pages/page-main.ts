@@ -1,23 +1,31 @@
 import {withController} from '@snar/lit'
 import {HighlightManager, NavigationStyle} from '@vdegenne/highlight-manager'
+import {availableVoices} from '@vdegenne/kokoro'
 import {
 	chatGptMediatorOpen,
 	chatGptMediatorUrl,
 	cnrtlUrl,
 	jishoUrl,
 } from '@vdegenne/links'
-import {playJapanese, speakEnglish, speakFrench} from '@vdegenne/speech'
+import {playJapanese, speakEnglish} from '@vdegenne/speech'
 import {tts, TTS_MODELS} from '@vdegenne/tts-server'
 import {hasSomeJapanese} from 'asian-regexps'
 import {visibilityCheck} from 'html-vision/visibility.js'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
-import {customElement, property, query, queryAll} from 'lit/decorators.js'
+import {
+	customElement,
+	property,
+	query,
+	queryAll,
+	state,
+} from 'lit/decorators.js'
 import toast from 'toastit'
 import {playClick} from '../assets/assets.js'
 import {NEW_LINE} from '../constants.js'
 import {fullscreenElement} from '../fullscreen-element.js'
 import {indexesHistory} from '../indexesHistory.js'
+import {kokoro} from '../kokoro.js'
 import {stateless} from '../stateless.js'
 import {store} from '../store.js'
 import {
@@ -32,10 +40,8 @@ import {
 	getFirstVisibleElement,
 	getLastVisibleElement,
 } from '../utils.js'
-import {PageElement} from './PageElement.js'
 import {voicevox} from '../voicevox.js'
-import {kokoro} from '../kokoro.js'
-import {availableVoices} from '@vdegenne/kokoro'
+import {PageElement} from './PageElement.js'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -264,7 +270,17 @@ export class PageMain extends PageElement {
 				${stateless.feedback}
 			</div>
 
+			<div
+				class="fixed bottom-0 right-0 bg-(--md-sys-color-primary-container) px-3 py-1"
+				@click="${() => {
+					store.bottomRightFeedback = ''
+				}}"
+			>
+				${store.bottomRightFeedback}
+			</div>
+
 			${fullscreenElement}
+
 			<!----> `
 	}
 
@@ -787,7 +803,7 @@ export class PageMain extends PageElement {
 						availableVoices.En[
 							Math.floor(Math.random() * availableVoices.En.length)
 						]
-					toast(kokoro.getVoiceTitleFromId(store.kokoroEnVoiceId))
+					store.bottomRightFeedback = store.kokoroEnVoiceId
 				}
 				kokoro.play(text, {
 					voiceId: store.kokoroEnVoiceId,

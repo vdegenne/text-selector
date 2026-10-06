@@ -46,6 +46,8 @@ export class AppStore extends ReactiveController {
 
 	@state() mostHighlightedOpenInSameTab = false
 
+	@state() bottomRightFeedback = 'this is a test'
+
 	/**
 	 * Language to use for the TTS when the text to play is not japanese.
 	 */
