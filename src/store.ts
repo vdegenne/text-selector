@@ -301,6 +301,8 @@ export class AppStore extends ReactiveController {
 			}
 		}
 
+		console.log(this.input)
+
 		/*
 		 * Initial highlight (based on the hash)
 		 */
