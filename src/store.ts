@@ -25,6 +25,7 @@ import {stateless} from './stateless.js'
 import {breakSentence, splitLetters} from './text-logic.js'
 import {generateHash} from './utils.js'
 import {voicevox} from './voicevox.js'
+import {hasSomeJapanese} from 'asian-regexps'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -301,7 +302,19 @@ export class AppStore extends ReactiveController {
 			}
 		}
 
-		console.log(this.input)
+		/**
+		 * Detect language
+		 */
+		if (this.input) {
+			if (hasSomeJapanese(this.input)) {
+				store.lang = 'ja'
+				store.bottomRightFeedback = 'Language detected: JA'
+			} else {
+				// TODO: More than en
+				store.lang = 'en'
+				store.bottomRightFeedback = 'Language detected: EN'
+			}
+		}
 
 		/*
 		 * Initial highlight (based on the hash)
