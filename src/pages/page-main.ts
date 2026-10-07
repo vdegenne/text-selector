@@ -830,20 +830,23 @@ export class PageMain extends PageElement {
 			case 'ja':
 				if (store.jaTTS === 'kokoro') {
 					if (store.kokoroJaRandom) {
-						store.kokoroJaVoiceId =
-							availableVoices.Ja[
-								Math.floor(Math.random() * availableVoices.Ja.length)
-							]
+						store.kokoroJaVoiceId = kokoro.getRandomVoiceId({
+							lang: 'Ja',
+							exclude: [store.kokoroJaVoiceId],
+						})
+					}
+					store.bottomRightFeedback = store.kokoroJaVoiceId
+
+					try {
+						await kokoro.play(text, {
+							voiceId: store.kokoroJaVoiceId,
+							speed: 1,
+							volume: store.volume,
+						})
+					} catch (err) {
+						toast(err.message)
 					}
 
-					store.bottomRightFeedback = store.kokoroJaVoiceId
-					kokoro.play(text, {
-						voiceId: store.kokoroJaVoiceId,
-						speed: 1,
-						volume: store.volume,
-					})
-
-					console.log('KOKORO END')
 					return
 				}
 				// speakJapanese(text)

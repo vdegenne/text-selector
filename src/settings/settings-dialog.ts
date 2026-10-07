@@ -1,3 +1,4 @@
+import {kokoroSettingsTemplate} from '@vdegenne/kokoro/settings-template.js'
 import type {MdDialog, MdTabs} from '@material/web/all.js'
 import '@material/web/iconbutton/icon-button.js'
 import '@material/web/list/list-item.js'
@@ -23,7 +24,7 @@ import {themeStore} from '../styles/themeStore.js'
 import {copyToClipboard} from '../utils.js'
 import styles from './settings-dialog.css?inline'
 import {voicevox} from '../voicevox.js'
-import {kokoroSettings, voicevoxSettings} from '../templates.js'
+import {voicevoxSettings} from '../templates.js'
 import {kokoro} from '../kokoro.js'
 // import '@material/web/textfield/outlined-text-field.js';
 
@@ -152,7 +153,7 @@ export class SettingsDialog extends LitElement {
 								? html`<!-- -->
 										${store.F.SELECT('TTS', 'jaTTS', jaTTSs)}
 										${store.jaTTS === 'voicevox' ? voicevoxSettings(voicevox, store) : null}
-										${store.jaTTS === 'kokoro' ? kokoroSettings(kokoro, store, 'Ja') : null}
+										${store.jaTTS === 'kokoro' ? kokoroSettingsTemplate(kokoro, store, 'Ja') : null}
 										<!-- -->`
 								: null
 						}
@@ -161,14 +162,14 @@ export class SettingsDialog extends LitElement {
 							class="flex flex-col gap-2"
 						>
 							${store.F.SELECT('TTS', 'enTTS', enTTSs)}
-							${store.enTTS === 'kokoro' ? kokoroSettings(kokoro, store, 'En') : null}
+							${store.enTTS === 'kokoro' ? kokoroSettingsTemplate(kokoro, store, 'En') : null}
 						</div>
 						<div
 							?hidden=${this.ttsSelectedLabel !== 'FR'}
 							class="flex flex-col gap-2"
 						>
 							${store.F.SELECT('TTS', 'frTTS', frTTSs)}
-							${store.frTTS === 'kokoro' ? kokoroSettings(kokoro, store, 'Fr') : null}
+							${store.frTTS === 'kokoro' ? kokoroSettingsTemplate(kokoro, store, 'Fr') : null}
 						</div>
 					</card-element>
 
