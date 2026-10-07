@@ -805,7 +805,8 @@ export class PageMain extends PageElement {
 						]
 				}
 
-				store.bottomRightFeedback = store.kokoroEnVoiceId
+				store.bottomRightFeedback = `kokoro: ${store.kokoroEnVoiceId}`
+
 				kokoro.play(text, {
 					voiceId: store.kokoroEnVoiceId,
 					speed: 1,
@@ -820,7 +821,8 @@ export class PageMain extends PageElement {
 						]
 				}
 
-				store.bottomRightFeedback = store.kokoroFrVoiceId
+				store.bottomRightFeedback = `kokoro: ${store.kokoroFrVoiceId}`
+
 				kokoro.play(text, {
 					voiceId: store.kokoroFrVoiceId,
 					speed: 1,
@@ -835,7 +837,7 @@ export class PageMain extends PageElement {
 							exclude: [store.kokoroJaVoiceId],
 						})
 					}
-					store.bottomRightFeedback = store.kokoroJaVoiceId
+					store.bottomRightFeedback = `kokoro: ${store.kokoroJaVoiceId}`
 
 					try {
 						await kokoro.play(text, {
@@ -858,8 +860,8 @@ export class PageMain extends PageElement {
 						// })
 					}
 					const voiceName = voicevox.getVoiceTitleFromId(store.voicevoxVoiceId)
-					store.voicevoxLastVoiceUsed = voiceName
-					toast(voiceName, {timeoutMs: 5000})
+					// toast(`voicevox: ${voiceName}`, {timeoutMs: 5000})
+					store.bottomRightFeedback = `voicevox: ${voiceName}`
 					voicevox
 						.play(text, {
 							voiceId: store.voicevoxVoiceId,
