@@ -807,11 +807,15 @@ export class PageMain extends PageElement {
 
 				store.bottomRightFeedback = `kokoro: ${store.kokoroEnVoiceId}`
 
-				kokoro.play(text, {
-					voiceId: store.kokoroEnVoiceId,
-					speed: 1,
-					volume: store.volume,
-				})
+				try {
+					await kokoro.play(text, {
+						voiceId: store.kokoroEnVoiceId,
+						speed: 1,
+						volume: store.volume,
+					})
+				} catch (err) {
+					toast(err.message)
+				}
 				break
 			case 'fr':
 				if (store.kokoroFrRandom) {
