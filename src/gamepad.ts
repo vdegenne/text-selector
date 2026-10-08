@@ -381,6 +381,11 @@ class GamepadController extends ReactiveController {
 						break
 
 					case Mode.PRIMARY:
+						if (store.jaTTS === 'kokoro') {
+							store.jaTTS = 'voicevox'
+						} else {
+							store.jaTTS = 'kokoro'
+						}
 						break
 					case Mode.SECONDARY:
 						store.cycleThroughFontFamilies()
