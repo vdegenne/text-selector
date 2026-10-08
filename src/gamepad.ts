@@ -30,6 +30,7 @@ import {translateSelection} from './server/functions.js'
 import {store} from './store.js'
 import {copyToClipboard, isValidUrl, japsyndexOpen} from './utils.js'
 import {closeTab} from './functions.js'
+import {voicevox} from './voicevox.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -366,6 +367,11 @@ class GamepadController extends ReactiveController {
 						}
 						break
 					case Mode.SECONDARY:
+						if (store.lang === 'ja') {
+							store.voicevoxVoiceId = voicevox.getRandomVoiceId()
+						}
+						mainPage.speakSelection()
+						break
 					case Mode.TERTIARY:
 				}
 			})
