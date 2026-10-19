@@ -77,12 +77,12 @@ export async function geminiTranslate(
 ): Promise<string | undefined> {
 	try {
 		const {output} = await _askGemini(
-			`Traduis en francais directement: "${content}"`,
+			`Traduis en francais et donne la romanisation entre parenthèses (séparés par une nouvelle ligne): "${content}"`,
 			{
 				apiKey: store.geminiApiKey,
 				model: store.geminiModel,
 				thinkingLevel: 'low',
-				systemInstruction: 'Just give the translation, no talking.',
+				systemInstruction: 'Just give the answer, no talking.',
 			},
 		)
 		return output
@@ -91,7 +91,6 @@ export async function geminiTranslate(
 			toast('Rate Limit reached for this model!')
 		} else {
 			throw err
-			console.log(err)
 		}
 
 		return undefined
