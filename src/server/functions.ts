@@ -21,9 +21,7 @@ export async function translateSelection() {
 	}
 
 	try {
-		const result = await geminiTranslate(content, {
-			apiKey: store.geminiApiKey,
-		})
+		const result = await geminiTranslate(content)
 		toast(result, {timeoutMs: -1})
 	} catch (err) {
 		toast(err)

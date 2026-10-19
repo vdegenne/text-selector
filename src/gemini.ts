@@ -1,4 +1,6 @@
 import {GoogleGenAI, ThinkingLevel, Type} from '@google/genai'
+import {askGemini as _askGemini} from '@vdegenne/gemini'
+import {store} from './store.js'
 
 export async function askGemini(
 	sentence: string,
@@ -69,32 +71,16 @@ export async function askGemini(
 	return JSON.stringify(response.text)
 }
 
-export async function geminiTranslate(
-	content: string,
-	options: {apiKey: string},
-): Promise<string> {
-	const ai = new GoogleGenAI({apiKey: options.apiKey})
-
-	const response = await ai.models.generateContent({
-		model: 'gemini-3.1-flash-lite',
-		// model: 'gemini-flash-lite-latest',
-		config: {
-			thinkingConfig: {
-				thinkingLevel: ThinkingLevel.MINIMAL,
-			},
-			systemInstruction: [{text: 'Just give the translation, no other words.'}],
+export async function geminiTranslate(content: string): Promise<string> {
+	const {output} = await _askGemini(
+		`Traduis en francais directement: "${content}"`,
+		{
+			apiKey: store.geminiApiKey,
+			model: 'gemini-4-argon',
+			thinkingLevel: 'low',
+			systemInstruction: 'Just give the translation, no talking.',
 		},
-		contents: [
-			{
-				role: 'user',
-				parts: [
-					{
-						text: `Traduis en francais directement: "${content}"`,
-					},
-				],
-			},
-		],
-	})
+	)
 
-	return response.text
+	return output
 }
