@@ -89,6 +89,9 @@ export async function geminiTranslate(
 	} catch (err) {
 		if (err instanceof RateLimitError) {
 			toast('Rate Limit reached for this model!')
+		} else {
+			throw err
+			console.log(err)
 		}
 
 		return undefined
