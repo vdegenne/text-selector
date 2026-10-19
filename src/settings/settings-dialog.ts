@@ -1,5 +1,8 @@
-import {kokoroSettingsTemplate} from '@vdegenne/kokoro/settings-template.js'
-import type {MdDialog, MdTabs} from '@material/web/all.js'
+import {
+	MdFilledTextField,
+	type MdDialog,
+	type MdTabs,
+} from '@material/web/all.js'
 import '@material/web/iconbutton/icon-button.js'
 import '@material/web/list/list-item.js'
 import '@material/web/select/filled-select.js'
@@ -8,6 +11,8 @@ import '@material/web/slider/slider.js'
 import '@material/web/switch/switch.js'
 import '@material/web/textfield/filled-text-field.js'
 import {withController} from '@snar/lit'
+import {geminiModels} from '@vdegenne/gemini'
+import {kokoroSettingsTemplate} from '@vdegenne/kokoro/settings-template.js'
 import {customElement} from 'custom-element-decorator'
 import {html, LitElement} from 'lit'
 import {withStyles} from 'lit-with-styles'
@@ -16,17 +21,16 @@ import toast from 'toastit'
 import '../card-element.js'
 import {enTTSs, fontFamily, frTTSs, jaTTSs} from '../constants.js'
 import {gamepadCtrl} from '../gamepad.js'
+import {kokoro} from '../kokoro.js'
 import '../material/dialog-patch.js'
 import '../material/item-patch.js'
 import {store} from '../store.js'
 import {renderThemeElements} from '../styles/theme-elements.js'
 import {themeStore} from '../styles/themeStore.js'
-import {copyToClipboard} from '../utils.js'
-import styles from './settings-dialog.css?inline'
-import {voicevox} from '../voicevox.js'
 import {voicevoxSettings} from '../templates.js'
-import {kokoro} from '../kokoro.js'
-// import '@material/web/textfield/outlined-text-field.js';
+import {copyToClipboard} from '../utils.js'
+import {voicevox} from '../voicevox.js'
+import styles from './settings-dialog.css?inline'
 
 type TtsSelectedLabel = 'JA' | 'EN' | 'FR'
 
@@ -48,7 +52,7 @@ export class SettingsDialog extends LitElement {
 	@query('md-dialog') dialog!: MdDialog
 
 	render() {
-		console.log('RENDER.........................')
+		// console.log('RENDER.........................')
 		return html`
 			<md-dialog
 				?open="${this.open}"
@@ -193,24 +197,33 @@ export class SettingsDialog extends LitElement {
 						${store.F.SWITCH('Loop', 'loop', {supportingText: 'Whether to loop highlight on edges or not.'})}
 					</card-element>
 
-					<card-element headline="Gemini API key">
+					<card-element headline="Gemini">
+						<div class="flex items-center gap-3">
+							You can use Gemini to quickly create new sets.
+							<md-outlined-button
+								form=""
+								href="https://aistudio.google.com/apikey"
+								target="_blank"
+								>Create key</md-outlined-button
+							>
+						</div>
 						<md-filled-text-field
+							label="API key"
 							value="${store.geminiApiKey}"
 							type="${this.passwordHidden ? 'password' : 'text'}"
-							@change="${(event: Event) => {
-								store.geminiApiKey = (event.target as any).value
+							autocomplete="off"
+							@input="${(event: Event) => {
+								const target = event.target
+								if (target instanceof MdFilledTextField) {
+									store.geminiApiKey = (event.target as any).value
+								}
 							}}"
 						>
 							<div slot="trailing-icon">
 								<md-icon-button
 									toggle
 									form=""
-									@click="${() => {
-										this.passwordHidden = !this.passwordHidden
-									}}"
-									@change="${(event: Event) => {
-										event.stopPropagation()
-									}}"
+									@click="${() => (this.passwordHidden = !this.passwordHidden)}"
 								>
 									<md-icon>visibility_off</md-icon>
 									<md-icon slot="selected">visibility</md-icon>
@@ -219,17 +232,17 @@ export class SettingsDialog extends LitElement {
 								<md-icon-button
 									form=""
 									@click="${() => {
-										copyToClipboard(store.geminiApiKey)
-										toast('API key copied')
-									}}"
-									@change="${(event: Event) => {
-										event.stopPropagation()
+										if (store.geminiApiKey) {
+											copyToClipboard(store.geminiApiKey)
+											toast('API key copied')
+										}
 									}}"
 								>
 									<md-icon>content_copy</md-icon>
 								</md-icon-button>
 							</div>
 						</md-filled-text-field>
+						${store.F.SELECT('Model', 'geminiModel', geminiModels)}
 					</card-element>
 
 					<card-element headline="theme">

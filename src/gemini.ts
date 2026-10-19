@@ -1,5 +1,6 @@
 import {GoogleGenAI, ThinkingLevel, Type} from '@google/genai'
-import {askGemini as _askGemini} from '@vdegenne/gemini'
+import {askGemini as _askGemini, RateLimitError} from '@vdegenne/gemini'
+import toast from 'toastit'
 import {store} from './store.js'
 
 export async function askGemini(
@@ -71,16 +72,25 @@ export async function askGemini(
 	return JSON.stringify(response.text)
 }
 
-export async function geminiTranslate(content: string): Promise<string> {
-	const {output} = await _askGemini(
-		`Traduis en francais directement: "${content}"`,
-		{
-			apiKey: store.geminiApiKey,
-			model: 'gemini-4-argon',
-			thinkingLevel: 'low',
-			systemInstruction: 'Just give the translation, no talking.',
-		},
-	)
+export async function geminiTranslate(
+	content: string,
+): Promise<string | undefined> {
+	try {
+		const {output} = await _askGemini(
+			`Traduis en francais directement: "${content}"`,
+			{
+				apiKey: store.geminiApiKey,
+				model: store.geminiModel,
+				thinkingLevel: 'low',
+				systemInstruction: 'Just give the translation, no talking.',
+			},
+		)
+		return output
+	} catch (err) {
+		if (err instanceof RateLimitError) {
+			toast('Rate Limit reached for this model!')
+		}
 
-	return output
+		return undefined
+	}
 }

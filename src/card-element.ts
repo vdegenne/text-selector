@@ -15,12 +15,13 @@ class CardElement extends LitElement {
 		// .replace(/^./, (c) => c.toUpperCase())
 
 		return html`<!-- -->
-			<md-elevated-card class="flex flex-col">
-				<div>
-					<md-text-button inert class="my-1 mx-2">${headline}</md-text-button>
-				</div>
-				<div id="content" class="p-[0px_24px_24px]">
-					<div class="flex flex-col gap-4"><slot></slot></div>
+			<md-elevated-card class="text-(--md-sys-color-on-surface)">
+				<div
+					id="content"
+					class="flex flex-col flex-1 justify-between gap-4 p-4"
+				>
+					${headline ? html`<div>${headline}</div>` : null}
+					<slot></slot>
 				</div>
 			</md-elevated-card>
 			<!-- -->`

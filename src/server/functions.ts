@@ -24,6 +24,7 @@ export async function translateSelection() {
 		const result = await geminiTranslate(content)
 		toast(result, {timeoutMs: -1})
 	} catch (err) {
-		toast(err)
+		console.log(err)
+		// toast(err)
 	}
 }

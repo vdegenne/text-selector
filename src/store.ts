@@ -1,6 +1,8 @@
 import {PropertyValues, ReactiveController, state} from '@snar/lit'
 import {FormBuilder} from '@vdegenne/forms/FormBuilder.js'
+import {GeminiModel} from '@vdegenne/gemini'
 import {EnVoice, FrVoice, JaVoice} from '@vdegenne/kokoro'
+import {hasSomeJapanese} from 'asian-regexps'
 import {saveToLocalStorage} from 'snar-save-to-local-storage'
 import toast from 'toastit'
 import {clickAudio} from './assets/assets.js'
@@ -25,7 +27,6 @@ import {stateless} from './stateless.js'
 import {breakSentence, splitLetters} from './text-logic.js'
 import {generateHash} from './utils.js'
 import {voicevox} from './voicevox.js'
-import {hasSomeJapanese} from 'asian-regexps'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -63,6 +64,7 @@ export class AppStore extends ReactiveController {
 	@state() enTTS: EnTTS = 'kokoro'
 	@state() frTTS: FrTTS = 'kokoro'
 	@state() geminiApiKey = ''
+	@state() geminiModel: GeminiModel = 'gemini-3.1-flash-lite'
 
 	@state() voicevoxHost = VOICEVOX_DEFAULT_HOST
 	@state() voicevoxVoiceId = 0
