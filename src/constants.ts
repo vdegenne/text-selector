@@ -37,5 +37,5 @@ export type FrTTS = (typeof frTTSs)[number]
 export const VOICEVOX_DEFAULT_HOST = 'http://127.0.0.1:50021'
 export const KOKORO_DEFAULT_HOST = 'http://localhost:8880'
 
-export const languages = ['ja', 'en', 'fr'] as const
+export const languages = ['Ja', 'En', 'Fr'] as const
 export type Language = (typeof languages)[number]

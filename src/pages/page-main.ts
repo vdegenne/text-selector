@@ -1,6 +1,5 @@
 import {withController} from '@snar/lit'
 import {HighlightManager, NavigationStyle} from '@vdegenne/highlight-manager'
-import {availableVoices} from '@vdegenne/kokoro'
 import {
 	chatGptMediatorOpen,
 	chatGptMediatorUrl,
@@ -13,19 +12,12 @@ import {hasSomeJapanese} from 'asian-regexps'
 import {visibilityCheck} from 'html-vision/visibility.js'
 import {css, html} from 'lit'
 import {withStyles} from 'lit-with-styles'
-import {
-	customElement,
-	property,
-	query,
-	queryAll,
-	state,
-} from 'lit/decorators.js'
+import {customElement, property, query, queryAll} from 'lit/decorators.js'
 import toast from 'toastit'
 import {playClick} from '../assets/assets.js'
-import {NEW_LINE} from '../constants.js'
+import {Language, NEW_LINE} from '../constants.js'
 import {fullscreenElement} from '../fullscreen-element.js'
 import {indexesHistory} from '../indexesHistory.js'
-import {kokoro} from '../kokoro.js'
 import {stateless} from '../stateless.js'
 import {store} from '../store.js'
 import {
@@ -35,6 +27,7 @@ import {
 	getWordBoundaries,
 	splitLetters,
 } from '../text-logic.js'
+import {kokoroPlayer} from '../tts.js'
 import {
 	copyToClipboard,
 	getFirstVisibleElement,
@@ -764,10 +757,10 @@ export class PageMain extends PageElement {
 		const text = content.trim()
 		if (!text) return
 
-		let lang: string | undefined
+		let lang: Language
 
 		if (hasSomeJapanese(text)) {
-			lang = 'ja'
+			lang = 'Ja'
 		} else {
 			// const {detect} = await import('tinyld')
 			// lang = detect(text, {only: ['en', 'fr']})
@@ -778,11 +771,11 @@ export class PageMain extends PageElement {
 			const s = t.toLowerCase()
 
 			// FR
-			if (/[éèêàùç]/.test(s)) return 'fr'
-			if (/\b(le|la|les|un|une|des|est|et)\b/.test(s)) return 'fr'
+			if (/[éèêàùç]/.test(s)) return 'Fr'
+			if (/\b(le|la|les|un|une|des|est|et)\b/.test(s)) return 'Fr'
 
 			// EN
-			if (/\b(a|an|the|and|is|are|this|that)\b/.test(s)) return 'en'
+			if (/\b(a|an|the|and|is|are|this|that)\b/.test(s)) return 'En'
 
 			return null
 		}
@@ -792,70 +785,30 @@ export class PageMain extends PageElement {
 		}
 
 		// fallback final assumé
-		if (!lang) lang = 'en'
+		if (!lang) lang = 'En'
 
 		// toast(lang, {timeoutMs: 1000})
 
-		switch (lang) {
-			case 'en':
-				if (store.kokoroEnRandom) {
-					store.kokoroEnVoiceId =
-						availableVoices.En[
-							Math.floor(Math.random() * availableVoices.En.length)
-						]
-				}
-
-				store.bottomRightFeedback = `kokoro: ${store.kokoroEnVoiceId}`
-
-				try {
-					await kokoro.play(text, {
-						voiceId: store.kokoroEnVoiceId,
-						speed: 1,
-						volume: store.volume,
-					})
-				} catch (err) {
-					toast(err.message)
-				}
-				break
-			case 'fr':
-				if (store.kokoroFrRandom) {
-					store.kokoroFrVoiceId =
-						availableVoices.Fr[
-							Math.floor(Math.random() * availableVoices.Fr.length)
-						]
-				}
-
-				store.bottomRightFeedback = `kokoro: ${store.kokoroFrVoiceId}`
-
-				kokoro.play(text, {
-					voiceId: store.kokoroFrVoiceId,
-					speed: 1,
+		if (
+			store.enTTS === 'kokoro' ||
+			store.jaTTS === 'kokoro' ||
+			store.frTTS === 'kokoro'
+		) {
+			try {
+				kokoroPlayer.cancelAllSpeeches()
+				const {playPromise} = kokoroPlayer.play([text, lang], {
 					volume: store.volume,
 				})
-				break
-			case 'ja':
-				if (store.jaTTS === 'kokoro') {
-					if (store.kokoroJaRandom) {
-						store.kokoroJaVoiceId = kokoro.getRandomVoiceId({
-							lang: 'Ja',
-							exclude: [store.kokoroJaVoiceId],
-						})
-					}
-					store.bottomRightFeedback = `kokoro: ${store.kokoroJaVoiceId}`
+				await playPromise
+			} catch (err) {
+				// toast(err.message)
+			} finally {
+				return
+			}
+		}
 
-					try {
-						await kokoro.play(text, {
-							voiceId: store.kokoroJaVoiceId,
-							speed: 1,
-							volume: store.volume,
-						})
-					} catch (err) {
-						toast(err.message)
-					}
-
-					return
-				}
-				// speakJapanese(text)
+		switch (lang) {
+			case 'Ja':
 				if (store.jaTTS === 'voicevox') {
 					if (store.voicevoxRandom) {
 						store.voicevoxVoiceId = voicevox.getRandomVoiceId()

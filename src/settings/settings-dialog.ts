@@ -98,7 +98,7 @@ export class SettingsDialog extends LitElement {
 						)}
 						${store.F.SLIDER('Audio volume', 'volume', {
 							min: 0,
-							max: 1,
+							max: 2,
 							step: 0.1,
 						})}
 					</card-element>
@@ -154,11 +154,11 @@ export class SettingsDialog extends LitElement {
 
 						${
 							this.ttsSelectedLabel === 'JA'
-								? html`<!-- -->
+								? html`<!---->
 										${store.F.SELECT('TTS', 'jaTTS', jaTTSs)}
 										${store.jaTTS === 'voicevox' ? voicevoxSettings(voicevox, store) : null}
 										${store.jaTTS === 'kokoro' ? kokoroSettingsTemplate(kokoro, store, 'Ja') : null}
-										<!-- -->`
+										<!---->`
 								: null
 						}
 						<div

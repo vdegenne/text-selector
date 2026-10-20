@@ -1,4 +1,5 @@
 import {ReactiveController} from '@snar/lit'
+import {Language} from '@vdegenne/kokoro'
 import {
 	googleImagesOpen,
 	googleImagesUrl,
@@ -14,6 +15,7 @@ import {hasSomeJapanese} from 'asian-regexps'
 import {state} from 'lit/decorators.js'
 import toast from 'toastit'
 import {fullscreenElement} from './fullscreen-element.js'
+import {closeTab} from './functions.js'
 import {
 	downRepeater,
 	leftNextRepeater,
@@ -24,12 +26,12 @@ import {
 	rightUpRepeater,
 	upRepeater,
 } from './gamepad-repeaters.js'
+import {kokoro} from './kokoro.js'
 import {getMainPage} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
 import {translateSelection} from './server/functions.js'
 import {store} from './store.js'
 import {copyToClipboard, isValidUrl, japsyndexOpen} from './utils.js'
-import {closeTab} from './functions.js'
 import {voicevox} from './voicevox.js'
 
 class GamepadController extends ReactiveController {
@@ -367,8 +369,23 @@ class GamepadController extends ReactiveController {
 						}
 						break
 					case Mode.SECONDARY:
-						if (store.lang === 'ja') {
-							store.voicevoxVoiceId = voicevox.getRandomVoiceId()
+						if (store.lang === 'Ja') {
+							if (store.jaTTS === 'voicevox') {
+								store.voicevoxVoiceId = voicevox.getRandomVoiceId()
+							}
+						}
+						if (
+							store.enTTS === 'kokoro' ||
+							store.jaTTS === 'kokoro' ||
+							store.frTTS === 'kokoro'
+						) {
+							if (!store[`kokoro${store.lang}Random`]) {
+								store[`kokoro${store.lang as Language}VoiceId`] =
+									kokoro.getRandomVoiceId({
+										lang: store.lang,
+										exclude: [],
+									})
+							}
 						}
 						mainPage.speakSelection()
 						break

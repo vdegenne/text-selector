@@ -53,7 +53,7 @@ export class AppStore extends ReactiveController {
 	/**
 	 * Language to use for the TTS when the text to play is not japanese.
 	 */
-	@state() lang: Language = 'en'
+	@state() lang: Language = 'En'
 	cycleLangs() {
 		return (this.lang =
 			languages[(languages.indexOf(this.lang) + 1) % languages.length])
@@ -309,12 +309,12 @@ export class AppStore extends ReactiveController {
 		 */
 		if (this.input) {
 			if (hasSomeJapanese(this.input)) {
-				store.lang = 'ja'
-				store.bottomRightFeedback = 'Language detected: JA'
+				store.lang = 'Ja'
+				store.bottomRightFeedback = 'Language detected: Ja'
 			} else {
 				// TODO: More than en
-				store.lang = 'en'
-				store.bottomRightFeedback = 'Language detected: EN'
+				store.lang = 'En'
+				store.bottomRightFeedback = 'Language detected: En'
 			}
 		}
 
