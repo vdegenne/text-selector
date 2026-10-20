@@ -29,10 +29,10 @@ import {
 import {kokoro} from './kokoro.js'
 import {getMainPage} from './pages/index.js'
 import {mainPage} from './pages/page-main.js'
-import {translateSelection} from './server/functions.js'
 import {store} from './store.js'
 import {copyToClipboard, isValidUrl, japsyndexOpen} from './utils.js'
 import {voicevox} from './voicevox.js'
+import {toggleSaveWord} from './words-client.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -314,7 +314,8 @@ class GamepadController extends ReactiveController {
 
 				switch (mode) {
 					case Mode.NORMAL:
-						translateSelection()
+						// translateSelection()
+						googleTranslateOpen(highlightContent, 'french')
 						break
 					case Mode.PRIMARY:
 						japsyndexOpen(highlightContent)
@@ -434,9 +435,10 @@ class GamepadController extends ReactiveController {
 						}
 						break
 					case Mode.PRIMARY:
-						const {highlightContent} = mainPage.highlighter.getInfo()
-						if (highlightContent) {
-							store.toggleFavorite(highlightContent)
+						const {highlightContent, content} = mainPage.highlighter.getInfo()
+						if (content) {
+							toggleSaveWord(store.lang, content)
+							// store.toggleFavorite(highlightContent)
 						}
 						break
 				}
