@@ -3,13 +3,13 @@ import toast from 'toastit'
 
 const wordsClient = new Rest<{
 	post: {
-		save: Endpoint<{lang: string; word: string}, {removed: boolean}>
+		toggle: Endpoint<{lang: string; word: string}, {removed: boolean}>
 	}
 }>('http://127.0.0.1:8000')
 
 export async function toggleSaveWord(lang: string, word: string) {
 	try {
-		const response = await wordsClient.post('save', {
+		const response = await wordsClient.post('toggle', {
 			lang,
 			word,
 		})
