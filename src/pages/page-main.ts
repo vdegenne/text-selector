@@ -790,9 +790,9 @@ export class PageMain extends PageElement {
 		// toast(lang, {timeoutMs: 1000})
 
 		if (
-			store.enTTS === 'kokoro' ||
-			store.jaTTS === 'kokoro' ||
-			store.frTTS === 'kokoro'
+			(lang === 'En' && store.enTTS === 'kokoro') ||
+			(lang === 'Ja' && store.jaTTS === 'kokoro') ||
+			(lang === 'Fr' && store.frTTS === 'kokoro')
 		) {
 			try {
 				kokoroPlayer.cancelAllSpeeches()
