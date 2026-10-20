@@ -369,18 +369,21 @@ class GamepadController extends ReactiveController {
 						}
 						break
 					case Mode.SECONDARY:
-						if (store.lang === 'Ja') {
-							if (store.jaTTS === 'voicevox') {
-								store.voicevoxVoiceId = voicevox.getRandomVoiceId()
-							}
+						const lang = store.lang
+						if (
+							lang === 'Ja' &&
+							store.jaTTS === 'voicevox' &&
+							!store.voicevoxRandom
+						) {
+							store.voicevoxVoiceId = voicevox.getRandomVoiceId()
 						}
 						if (
-							store.enTTS === 'kokoro' ||
-							store.jaTTS === 'kokoro' ||
-							store.frTTS === 'kokoro'
+							(lang === 'En' && store.enTTS === 'kokoro') ||
+							(lang === 'Ja' && store.jaTTS === 'kokoro') ||
+							(lang === 'Fr' && store.frTTS === 'kokoro')
 						) {
-							if (!store[`kokoro${store.lang}Random`]) {
-								store[`kokoro${store.lang as Language}VoiceId`] =
+							if (!store[`kokoro${lang}Random`]) {
+								store[`kokoro${lang as Language}VoiceId`] =
 									kokoro.getRandomVoiceId({
 										lang: store.lang,
 										exclude: [],
