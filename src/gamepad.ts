@@ -178,7 +178,7 @@ class GamepadController extends ReactiveController {
 				.for(rleft)
 				.on(({mode}) => {
 					if (mode === Mode.SECONDARY) {
-						store.fontSizePx--
+						// store.fontSizePx--
 					}
 				})
 				.before(({mode}) => {
@@ -191,7 +191,7 @@ class GamepadController extends ReactiveController {
 				.for(rright)
 				.on(({mode}) => {
 					if (mode === Mode.SECONDARY) {
-						store.fontSizePx++
+						// store.fontSizePx++
 					}
 				})
 				.before(({mode}) => {
