@@ -1,32 +1,27 @@
-import {PropertyValues, ReactiveController, state} from '@snar/lit'
-import {FormBuilder} from '@vdegenne/forms/FormBuilder.js'
-import {GeminiModel} from '@vdegenne/gemini'
-import {EnVoice, FrVoice, JaVoice} from '@vdegenne/kokoro'
-import {hasSomeJapanese} from 'asian-regexps'
-import {saveToLocalStorage} from 'snar-save-to-local-storage'
+import { PropertyValues, ReactiveController, state } from '@snar/lit'
+import { FormBuilder } from '@vdegenne/forms'
+import { GeminiModel } from '@vdegenne/gemini'
+import * as Kokoro from '@vdegenne/kokoro-proxy/core'
+import { hasSomeJapanese } from 'asian-regexps'
+import { saveToLocalStorage } from 'snar-save-to-local-storage'
 import toast from 'toastit'
-import {clickAudio} from './assets/assets.js'
+import { clickAudio } from './assets/assets.js'
 import {
 	availablePages,
-	EnTTS,
 	fontFamily,
 	FontValue,
-	FrTTS,
-	JaTTS,
 	Language,
 	languages,
 	NEW_LINE,
-	VOICEVOX_DEFAULT_HOST,
 } from './constants.js'
-import {cleanInput, findSubarray} from './functions.js'
-import {indexesHistory} from './indexesHistory.js'
-import {kokoro} from './kokoro.js'
-import {Page} from './pages/index.js'
-import {mainPage} from './pages/page-main.js'
-import {stateless} from './stateless.js'
-import {breakSentence, splitLetters} from './text-logic.js'
-import {generateHash} from './utils.js'
-import {voicevox} from './voicevox.js'
+import { cleanInput, findSubarray } from './functions.js'
+import { indexesHistory } from './indexesHistory.js'
+import { Page } from './pages/index.js'
+import { mainPage } from './pages/page-main.js'
+import { stateless } from './stateless.js'
+import { breakSentence, splitLetters } from './text-logic.js'
+import { EnTTS, FrTTS, JaTTS } from './tts2.js'
+import { generateHash } from './utils.js'
 
 @saveToLocalStorage('text-selector:store')
 export class AppStore extends ReactiveController {
@@ -66,7 +61,6 @@ export class AppStore extends ReactiveController {
 	@state() geminiApiKey = ''
 	@state() geminiModel: GeminiModel = 'gemini-3.1-flash-lite'
 
-	@state() voicevoxHost = VOICEVOX_DEFAULT_HOST
 	@state() voicevoxVoiceId = 0
 	@state() voicevoxRandom = false
 	/**
@@ -75,21 +69,21 @@ export class AppStore extends ReactiveController {
 	@state() voicevoxLastVoiceUsed = ''
 	@state() voicevoxVoiceSpeed = 1
 
-	@state() kokoroJaVoiceId: JaVoice = 'jf_alpha'
+	@state() kokoroJaVoiceId: Kokoro.JaVoice = 'jf_alpha'
 	@state() kokoroJaRandom = false
 	/**
 	 * @deprecated useless
 	 */
 	@state() kokoroJaLastVoiceUsed = ''
 
-	@state() kokoroEnVoiceId: EnVoice = 'af_heart'
+	@state() kokoroEnVoiceId: Kokoro.EnVoice = 'af_heart'
 	@state() kokoroEnRandom = false
 	/**
 	 * @deprecated useless
 	 */
 	@state() kokoroEnLastVoiceUsed = ''
 
-	@state() kokoroFrVoiceId: FrVoice = 'ff_siwis'
+	@state() kokoroFrVoiceId: Kokoro.FrVoice = 'ff_siwis'
 	@state() kokoroFrRandom = false
 	/**
 	 * @deprecated useless
@@ -121,7 +115,7 @@ export class AppStore extends ReactiveController {
 	}
 
 	#inputHash: string | undefined
-	async getInputHash(options?: {refresh?: boolean}) {
+	async getInputHash(options?: { refresh?: boolean }) {
 		if (!this.#inputHash || options?.refresh) {
 			return (this.#inputHash = await generateHash(this.input))
 		}
@@ -169,7 +163,7 @@ export class AppStore extends ReactiveController {
 
 		if (changed.has('input')) {
 			// We generate a new hash for external consumers
-			this.getInputHash({refresh: true}).then((hash) => {
+			this.getInputHash({ refresh: true }).then((hash) => {
 				console.log('HASH GENERATED', hash)
 			})
 
@@ -259,20 +253,13 @@ export class AppStore extends ReactiveController {
 			mainPage.highlighter.setLoop(this.loop)
 		}
 
-		if (changed.has('jaTTS')) {
-			if (this.jaTTS === 'voicevox') {
-				voicevox.connect()
-			} else {
-				voicevox.disconnect()
-			}
-		}
-		if (changed.has('enTTS') || changed.has('frTTS')) {
-			if (this.enTTS === 'kokoro' || this.frTTS === 'kokoro') {
-				kokoro.connect()
-			} else {
-				kokoro.disconnect()
-			}
-		}
+		// if (changed.has('enTTS') || changed.has('frTTS')) {
+		// 	if (this.enTTS === 'kokoro' || this.frTTS === 'kokoro') {
+		// 		kokoro.connect()
+		// 	} else {
+		// 		kokoro.disconnect()
+		// 	}
+		// }
 	}
 
 	async firstUpdated() {

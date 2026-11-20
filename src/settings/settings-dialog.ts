@@ -1,3 +1,8 @@
+import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/button/md-gb-button.js'
+import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/dialog/md-gb-dialog.js'
+import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/slider/md-gb-slider.js'
+import { SliderElement } from '@mahmoodkhalil/material-web-3-demo/labs/gb/components/slider/slider-element.js'
+import '@mahmoodkhalil/material-web-3-demo/labs/gb/styles/icon/md-gb-icon.js'
 import {
 	MdFilledTextField,
 	type MdDialog,
@@ -10,38 +15,31 @@ import '@material/web/select/select-option.js'
 import '@material/web/slider/slider.js'
 import '@material/web/switch/switch.js'
 import '@material/web/textfield/filled-text-field.js'
-import {withController} from '@snar/lit'
-import {geminiModels} from '@vdegenne/gemini'
-import {kokoroSettingsTemplate} from '@vdegenne/kokoro/settings-template.js'
-import {customElement} from 'custom-element-decorator'
-import {html, LitElement} from 'lit'
-import {withStyles} from 'lit-with-styles'
-import {query, state} from 'lit/decorators.js'
+import { withController } from '@snar/lit'
+import { geminiModels } from '@vdegenne/gemini'
+import { customElement } from 'custom-element-decorator'
+import { html, LitElement } from 'lit'
+import { withStyles } from 'lit-with-styles'
+import { query, state } from 'lit/decorators.js'
 import toast from 'toastit'
 import '../card-element.js'
-import {enTTSs, fontFamily, frTTSs, jaTTSs} from '../constants.js'
-import {gamepadCtrl} from '../gamepad.js'
-import {kokoro} from '../kokoro.js'
+import { fontFamily } from '../constants.js'
+import { gamepadCtrl } from '../gamepad.js'
 import '../material/dialog-patch.js'
 import '../material/item-patch.js'
-import {store} from '../store.js'
-import {renderThemeElements} from '../styles/theme-elements.js'
-import {themeStore} from '../styles/themeStore.js'
-import {voicevoxSettings} from '../templates.js'
-import {copyToClipboard} from '../utils.js'
-import {voicevox} from '../voicevox.js'
+import { store } from '../store.js'
+import { renderThemeElements } from '../styles/theme-elements.js'
+import { themeStore } from '../styles/themeStore.js'
+import { enTTSs, frTTSs, jaTTSs } from '../tts2.js'
+import { copyToClipboard } from '../utils.js'
 import styles from './settings-dialog.css?inline'
 
 type TtsSelectedLabel = 'JA' | 'EN' | 'FR'
 
-console.log(voicevox)
-
-@customElement({name: 'settings-dialog', inject: true})
+@customElement({ name: 'settings-dialog', inject: true })
 @withStyles(styles)
 @withController(themeStore)
 @withController(store)
-@withController(kokoro)
-@withController(voicevox)
 export class SettingsDialog extends LitElement {
 	@state() open = false
 
@@ -49,12 +47,12 @@ export class SettingsDialog extends LitElement {
 
 	@state() ttsSelectedLabel: TtsSelectedLabel = 'JA'
 
-	@query('md-dialog') dialog!: MdDialog
+	@query('md-gb-dialog') dialog!: MdDialog
 
 	render() {
 		// console.log('RENDER.........................')
 		return html`
-			<md-dialog
+			<md-gb-dialog
 				?open="${this.open}"
 				@open="${() => {
 					try {
@@ -70,14 +68,12 @@ export class SettingsDialog extends LitElement {
 				class="w-full h-full"
 				style="max-width:min(100vw - 18px, 600px); max-height:min(100vh - 12px, 1000px);"
 			>
-				<header slot="headline" class="select-none">
-					<md-icon>settings</md-icon>
-					Settings
-				</header>
+				<!-- <md-gb-icon slot=icon>settings</md-gb-icon> -->
+				<span slot="headline"> Settings </span>
 
-				<form slot="content" method="dialog" id="form" class="">
+				<div class="flex flex-col gap-5">
 					<card-element headline="global">
-						${store.F.SWITCH('Break on punctuations', 'breakSentences', {supportingText: 'If enabled, will add new lines between sentence punctuations.'})}
+						${store.F.SWITCH('Break on punctuations', 'breakSentences', { supportingText: 'If enabled, will add new lines between sentence punctuations.' })}
 						${store.F.SWITCH(
 							'Open in same tab on most highlighted',
 							'mostHighlightedOpenInSameTab',
@@ -93,14 +89,23 @@ export class SettingsDialog extends LitElement {
 							'fullscreenPreventClosingWhenFullSelection',
 							{
 								disabled: !store.closeFullScreenOnWindowFocus,
-								style: {['padding-left']: '24px'},
+								style: { ['padding-left']: '24px' },
 							},
 						)}
-						${store.F.SLIDER('Audio volume', 'volume', {
-							min: 0,
-							max: 2,
-							step: 0.1,
-						})}
+						<md-gb-slider
+							size="md"
+							labeled
+							step="0.1"
+							min="0"
+							max="3"
+							value="${store.volume}"
+							class="w-full"
+							@change="${(e: Event) => {
+								store.volume = (e.currentTarget as SliderElement).value
+							}}"
+						>
+							<md-gb-icon slot="icon">volume_up</md-gb-icon>
+						</md-gb-slider>
 					</card-element>
 
 					<card-element headline="display">
@@ -114,7 +119,7 @@ export class SettingsDialog extends LitElement {
 								>武力を用いた対抗措置は基本的に禁止されるが</span
 							>
 						</md-elevated-card>
-						${store.F.SELECT('Font family', 'font', fontFamily, {menuPositioning: 'popover'})}
+						${store.F.SELECT('Font family', 'font', fontFamily, { menuPositioning: 'popover' })}
 						${store.F.SLIDER('Font size (px)', 'fontSizePx', {
 							min: 8,
 							max: 100,
@@ -156,8 +161,6 @@ export class SettingsDialog extends LitElement {
 							this.ttsSelectedLabel === 'JA'
 								? html`<!---->
 										${store.F.SELECT('TTS', 'jaTTS', jaTTSs)}
-										${store.jaTTS === 'voicevox' ? voicevoxSettings(voicevox, store) : null}
-										${store.jaTTS === 'kokoro' ? kokoroSettingsTemplate(kokoro, store, 'Ja') : null}
 										<!---->`
 								: null
 						}
@@ -166,14 +169,12 @@ export class SettingsDialog extends LitElement {
 							class="flex flex-col gap-2"
 						>
 							${store.F.SELECT('TTS', 'enTTS', enTTSs)}
-							${store.enTTS === 'kokoro' ? kokoroSettingsTemplate(kokoro, store, 'En') : null}
 						</div>
 						<div
 							?hidden=${this.ttsSelectedLabel !== 'FR'}
 							class="flex flex-col gap-2"
 						>
 							${store.F.SELECT('TTS', 'frTTS', frTTSs)}
-							${store.frTTS === 'kokoro' ? kokoroSettingsTemplate(kokoro, store, 'Fr') : null}
 						</div>
 					</card-element>
 
@@ -194,7 +195,7 @@ export class SettingsDialog extends LitElement {
 							max: 500,
 							timeoutMs: 200,
 						})}
-						${store.F.SWITCH('Loop', 'loop', {supportingText: 'Whether to loop highlight on edges or not.'})}
+						${store.F.SWITCH('Loop', 'loop', { supportingText: 'Whether to loop highlight on edges or not.' })}
 					</card-element>
 
 					<card-element headline="Gemini">
@@ -248,12 +249,11 @@ export class SettingsDialog extends LitElement {
 					<card-element headline="theme">
 						${renderThemeElements()}
 					</card-element>
-				</form>
-
-				<div slot="actions">
-					<md-text-button form="form" autofocus>Close</md-text-button>
 				</div>
-			</md-dialog>
+				<form method="dialog" id="form"></form>
+
+				<md-gb-button slot="actions" form="form" autofocus>Close</md-gb-button>
+			</md-gb-dialog>
 		`
 	}
 

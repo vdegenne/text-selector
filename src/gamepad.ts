@@ -1,5 +1,5 @@
-import {ReactiveController} from '@snar/lit'
-import {Language} from '@vdegenne/kokoro'
+import { ReactiveController } from '@snar/lit'
+import { Language } from '@vdegenne/kokoro'
 import {
 	googleImagesOpen,
 	googleImagesUrl,
@@ -10,12 +10,12 @@ import {
 	siteDexOpen,
 	weblioOpen,
 } from '@vdegenne/links'
-import {MGamepad, MiniGamepad, Mode} from '@vdegenne/mini-gamepad'
-import {hasSomeJapanese} from 'asian-regexps'
-import {state} from 'lit/decorators.js'
+import { MGamepad, MiniGamepad, Mode } from '@vdegenne/mini-gamepad'
+import { hasSomeJapanese } from 'asian-regexps'
+import { state } from 'lit/decorators.js'
 import toast from 'toastit'
-import {fullscreenElement} from './fullscreen-element.js'
-import {closeTab} from './functions.js'
+import { fullscreenElement } from './fullscreen-element.js'
+import { closeTab } from './functions.js'
 import {
 	downRepeater,
 	leftNextRepeater,
@@ -26,13 +26,13 @@ import {
 	rightUpRepeater,
 	upRepeater,
 } from './gamepad-repeaters.js'
-import {kokoro} from './kokoro.js'
-import {getMainPage} from './pages/index.js'
-import {mainPage} from './pages/page-main.js'
-import {store} from './store.js'
-import {copyToClipboard, isValidUrl, japsyndexOpen} from './utils.js'
-import {voicevox} from './voicevox.js'
-import {toggleSaveWord} from './words-client.js'
+import { kokoro } from './kokoro.js'
+import { getMainPage } from './pages/index.js'
+import { mainPage } from './pages/page-main.js'
+import { store } from './store.js'
+import { voicevoxProxy } from './tts.js'
+import { copyToClipboard, isValidUrl, japsyndexOpen } from './utils.js'
+import { toggleSaveWord } from './words-client.js'
 
 class GamepadController extends ReactiveController {
 	@state() gamepad: MGamepad | undefined
@@ -99,7 +99,7 @@ class GamepadController extends ReactiveController {
 				rightDownRepeater.stop()
 			})
 
-			gamepad.for(lpress).before(({mode}) => {
+			gamepad.for(lpress).before(({ mode }) => {
 				switch (mode) {
 					case Mode.PRIMARY:
 						getMainPage()?.addCurrentSelectionToJpSynDex()
@@ -120,7 +120,7 @@ class GamepadController extends ReactiveController {
 
 			gamepad
 				.for(lleft)
-				.before(({mode}) => {
+				.before(({ mode }) => {
 					leftPrevRepeater.start(mode)
 				})
 				.after(() => {
@@ -129,7 +129,7 @@ class GamepadController extends ReactiveController {
 
 			gamepad
 				.for(lright)
-				.before(({mode}) => {
+				.before(({ mode }) => {
 					leftNextRepeater.start(mode)
 				})
 				.after(() => {
@@ -138,7 +138,7 @@ class GamepadController extends ReactiveController {
 
 			gamepad
 				.for(lup)
-				.before(({mode}) => {
+				.before(({ mode }) => {
 					upRepeater.start(mode)
 				})
 				.after(() => {
@@ -146,14 +146,14 @@ class GamepadController extends ReactiveController {
 				})
 			gamepad
 				.for(ldown)
-				.before(({mode}) => {
+				.before(({ mode }) => {
 					downRepeater.start(mode)
 				})
 				.after(() => {
 					downRepeater.stop()
 				})
 
-			gamepad.for(x).before(({mode}) => {
+			gamepad.for(x).before(({ mode }) => {
 				// To avoid running this on page call
 				// TODO: this is annoying should prob find another method
 				//	Maybe check the after event.
@@ -176,12 +176,12 @@ class GamepadController extends ReactiveController {
 
 			gamepad
 				.for(rleft)
-				.on(({mode}) => {
+				.on(({ mode }) => {
 					if (mode === Mode.SECONDARY) {
 						// store.fontSizePx--
 					}
 				})
-				.before(({mode}) => {
+				.before(({ mode }) => {
 					rightPrevRepeater.start(mode)
 				})
 				.after(() => {
@@ -189,12 +189,12 @@ class GamepadController extends ReactiveController {
 				})
 			gamepad
 				.for(rright)
-				.on(({mode}) => {
+				.on(({ mode }) => {
 					if (mode === Mode.SECONDARY) {
 						// store.fontSizePx++
 					}
 				})
-				.before(({mode}) => {
+				.before(({ mode }) => {
 					rightNextRepeater.start(mode)
 				})
 				.after(() => {
@@ -202,7 +202,7 @@ class GamepadController extends ReactiveController {
 				})
 			gamepad
 				.for(rup)
-				.before(({mode}) => {
+				.before(({ mode }) => {
 					if (mode === Mode.SECONDARY) {
 						getMainPage()?.highlighter.highlight(0)
 					} else {
@@ -214,7 +214,7 @@ class GamepadController extends ReactiveController {
 				})
 			gamepad
 				.for(rdown)
-				.before(({mode}) => {
+				.before(({ mode }) => {
 					if (mode === Mode.SECONDARY) {
 						getMainPage()?.highlighter.highlightLast()
 					} else {
@@ -225,7 +225,7 @@ class GamepadController extends ReactiveController {
 					rightDownRepeater.stop()
 				})
 
-			gamepad.for(a).before(({mode}) => {
+			gamepad.for(a).before(({ mode }) => {
 				switch (mode) {
 					case Mode.NORMAL:
 						// const {highlightIndexStart, highlightIndexEnd} =
@@ -246,7 +246,7 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(b).before(({mode}) => {
+			gamepad.for(b).before(({ mode }) => {
 				switch (mode) {
 					case Mode.NORMAL:
 						const content = mainPage.getContent()
@@ -271,7 +271,7 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(dpadleft).before(({mode}) => {
+			gamepad.for(dpadleft).before(({ mode }) => {
 				switch (mode) {
 					case Mode.NORMAL:
 						const content = mainPage.getContent()
@@ -292,14 +292,14 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(dpadright).before(({mode}) => {
+			gamepad.for(dpadright).before(({ mode }) => {
 				switch (mode) {
 					case Mode.NORMAL:
 						mainPage.openCNRTLOrJisho()
 						break
 					case Mode.PRIMARY:
 						{
-							const {highlightContent} = mainPage.highlighter.getInfo()
+							const { highlightContent } = mainPage.highlighter.getInfo()
 							if (highlightContent) {
 								japaneseSentenceBreakerOpen(highlightContent)
 							}
@@ -308,8 +308,8 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(dpadup).before(({mode}) => {
-				const {highlightContent} = mainPage.highlighter.getInfo()
+			gamepad.for(dpadup).before(({ mode }) => {
+				const { highlightContent } = mainPage.highlighter.getInfo()
 				if (!highlightContent) return
 
 				switch (mode) {
@@ -326,8 +326,8 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(dpaddown).before(({mode}) => {
-				const {highlightContent} = mainPage.highlighter.getInfo()
+			gamepad.for(dpaddown).before(({ mode }) => {
+				const { highlightContent } = mainPage.highlighter.getInfo()
 				if (highlightContent) {
 					switch (mode) {
 						case Mode.NORMAL:
@@ -356,14 +356,14 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(l1).before(({mode}) => {
+			gamepad.for(l1).before(async ({ mode }) => {
 				switch (mode) {
 					case Mode.NORMAL:
 						mainPage.speakSelection()
 						break
 
 					case Mode.PRIMARY:
-						const {content} = mainPage.highlighter.getInfo()
+						const { content } = mainPage.highlighter.getInfo()
 						if (content) {
 							// youtubeSearchOpen(`${highlightContent} prononciation`)
 							siteDexOpen(content)
@@ -376,7 +376,14 @@ class GamepadController extends ReactiveController {
 							store.jaTTS === 'voicevox' &&
 							!store.voicevoxRandom
 						) {
-							store.voicevoxVoiceId = voicevox.getRandomVoiceId()
+							// TODO:
+							const voices = await voicevoxProxy.getVoices()
+
+							if (store.voicevoxRandom) {
+								const randomVoice =
+									voices[Math.floor(Math.random() * voices.length)]
+								store.voicevoxVoiceId = randomVoice.id
+							}
 						}
 						if (
 							(lang === 'En' && store.enTTS === 'kokoro') ||
@@ -397,7 +404,7 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(r1).before(({mode}) => {
+			gamepad.for(r1).before(({ mode }) => {
 				switch (mode) {
 					case Mode.NORMAL:
 						if (fullscreenElement.open) {
@@ -421,7 +428,7 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(y).before(({mode}) => {
+			gamepad.for(y).before(({ mode }) => {
 				switch (mode) {
 					case Mode.NORMAL:
 						if (
@@ -435,7 +442,7 @@ class GamepadController extends ReactiveController {
 						}
 						break
 					case Mode.PRIMARY:
-						const {highlightContent, content} = mainPage.highlighter.getInfo()
+						const { highlightContent, content } = mainPage.highlighter.getInfo()
 						if (content) {
 							toggleSaveWord(store.lang, content)
 							// store.toggleFavorite(highlightContent)
@@ -444,10 +451,10 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(back).before(({mode}) => {
+			gamepad.for(back).before(({ mode }) => {
 				switch (mode) {
 					case Mode.NORMAL:
-						const {highlightContent} = mainPage.highlighter.getInfo()
+						const { highlightContent } = mainPage.highlighter.getInfo()
 						if (highlightContent) {
 							fullscreenElement.show(highlightContent)
 						}

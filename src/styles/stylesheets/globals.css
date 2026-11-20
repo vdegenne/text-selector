@@ -1,8 +1,9 @@
 :root {
-	/* --md-icon-font: 'Material Symbols Rounded'; */
 	--md-list-container-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 	--md-elevation-level: 2 !important;
+
+	--md-icon-font: 'Material Symbols Outlined';
 }
 
 html {

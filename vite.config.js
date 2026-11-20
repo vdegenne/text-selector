@@ -1,8 +1,7 @@
-import {defineConfig} from 'vite'
-import {materialShell} from 'material-shell/vite.js'
-import {materialAll} from 'rollup-plugin-material-all'
-import {mdicon2svg} from 'vite-plugin-mdicon2svg'
-import {PORT} from './src/server/constants.ts'
+import { materialShell } from 'material-shell/vite.js'
+import { materialAll } from 'rollup-plugin-material-all'
+import { defineConfig } from 'vite'
+import { mdicon2svg } from 'vite-plugin-mdicon2svg'
 
 /**
  * @type {import('vite').Plugin[]}
@@ -10,11 +9,11 @@ import {PORT} from './src/server/constants.ts'
 const plugins = [
 	{
 		name: 'ignore-file-change',
-		handleHotUpdate({file, server}) {
+		handleHotUpdate({ file, server }) {
 			// console.log(file);
 			if (
 				['data.json', 'server.js', 'server.ts'].some((ignore) =>
-					file.endsWith(ignore)
+					file.endsWith(ignore),
 				)
 			) {
 				// Ne rien faire = ne pas déclencher de HMR ni de reload
@@ -27,18 +26,18 @@ const plugins = [
 /** Dev plugins */
 if (process.env.NODE_ENV.startsWith('dev')) {
 	try {
-		const {vscodeUiConnectorPlugin} = await import('vscode-ui-connector')
+		const { vscodeUiConnectorPlugin } = await import('vscode-ui-connector')
 		plugins.push(
 			vscodeUiConnectorPlugin({
 				ignoredShadowDoms: ['color-picker', 'color-mode-picker'],
 				debug: true,
-			})
+			}),
 		)
 	} catch {}
 }
 
 try {
-	const {default: basicSsl} = await import('@vitejs/plugin-basic-ssl')
+	const { default: basicSsl } = await import('@vitejs/plugin-basic-ssl')
 	plugins.push(basicSsl())
 } catch {}
 
@@ -55,10 +54,10 @@ plugins.push(
 		include: [
 			'./src/**/*.ts',
 			'./node_modules/@vdegenne/material-color-helpers/lib/elements/**/*.js',
-			'./node_modules/@vdegenne/forms/lib/FormBuilder.js',
+			'./node_modules/@vdegenne/forms/lib/index.js',
 			'./node_modules/@vdegenne/player/lib/player-dialog.js',
 		],
-	})
+	}),
 )
 
 if (process.env.NODE_ENV === 'production') {
@@ -67,22 +66,22 @@ if (process.env.NODE_ENV === 'production') {
 		plugins.push(module.minifyTemplateLiterals())
 	} catch {}
 	try {
-		const {minifyHtml} = await import('@vdegenne/rollup-plugin-minify-html')
+		const { minifyHtml } = await import('@vdegenne/rollup-plugin-minify-html')
 		plugins.push(minifyHtml())
 	} catch {}
 	try {
-		const {viteSingleFile} = await import('vite-plugin-singlefile')
+		const { viteSingleFile } = await import('vite-plugin-singlefile')
 		plugins.push(
 			viteSingleFile({
 				useRecommendedBuildConfig: false,
-			})
+			}),
 		)
 	} catch {}
 }
 
 /** PWA plugin */
 try {
-	const {VitePWA} = await import('vite-plugin-pwa')
+	const { VitePWA } = await import('vite-plugin-pwa')
 	plugins.push(
 		VitePWA({
 			workbox: {
@@ -122,7 +121,7 @@ try {
 					},
 				],
 			},
-		})
+		}),
 	)
 } catch {}
 

@@ -1,12 +1,10 @@
-import {$} from 'html-vision'
-import {fullscreenElement} from './fullscreen-element.js'
-import {openInLocalhost} from './functions.js'
-import {openSettingsDialog} from './imports.js'
-import {mainPage} from './pages/page-main.js'
-import {translateSelection} from './server/functions.js'
-import {store} from './store.js'
-import {voicevox} from './voicevox.js'
-import toast from 'toastit'
+import { $ } from 'html-vision'
+import { fullscreenElement } from './fullscreen-element.js'
+import { openInLocalhost } from './functions.js'
+import { openSettingsDialog } from './imports.js'
+import { mainPage } from './pages/page-main.js'
+import { translateSelection } from './server/functions.js'
+import { store } from './store.js'
 
 const inputNames = ['INPUT', 'TEXTAREA', 'MD-FILLED-TEXT-FIELD']
 export function eventIsFromInput(event: Event) {
@@ -48,15 +46,6 @@ window.addEventListener('keypress', async (event: KeyboardEvent) => {
 
 		case 'l':
 			openInLocalhost()
-			break
-
-		case 'r':
-			if (store.jaTTS === 'voicevox' && voicevox.state === 'connected') {
-				const voiceId = voicevox.getRandomVoiceId()
-				store.voicevoxVoiceId = voiceId
-				const voiceName = voicevox.getVoiceTitleFromId(voiceId)
-				toast(voiceName)
-			}
 			break
 	}
 })

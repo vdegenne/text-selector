@@ -1,11 +1,10 @@
-import '@material/mwc-top-app-bar'
-import {withController} from '@snar/lit'
-import {html, type PropertyValues} from 'lit'
-import {withStyles} from 'lit-with-styles'
-import {customElement} from 'lit/decorators.js'
-import {MaterialShellChild} from 'material-shell/MaterialShellChild'
-import {mainPage} from '../pages/page-main.js'
-import {store} from '../store.js'
+import { withController } from '@snar/lit'
+import { html, type PropertyValues } from 'lit'
+import { withStyles } from 'lit-with-styles'
+import { customElement } from 'lit/decorators.js'
+import { MaterialShellChild } from 'material-shell/MaterialShellChild'
+import { mainPage } from '../pages/page-main.js'
+import { store } from '../store.js'
 import styles from './app-shell.css?inline'
 
 declare global {

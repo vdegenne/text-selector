@@ -1,25 +1,24 @@
-import {withController} from '@snar/lit'
-import {HighlightManager, NavigationStyle} from '@vdegenne/highlight-manager'
+import { withController } from '@snar/lit'
+import { HighlightManager, NavigationStyle } from '@vdegenne/highlight-manager'
 import {
 	chatGptMediatorOpen,
 	chatGptMediatorUrl,
 	cnrtlUrl,
 	jishoUrl,
 } from '@vdegenne/links'
-import {playJapanese, speakEnglish} from '@vdegenne/speech'
-import {tts, TTS_MODELS} from '@vdegenne/tts-server'
-import {hasSomeJapanese} from 'asian-regexps'
-import {visibilityCheck} from 'html-vision/visibility.js'
-import {css, html} from 'lit'
-import {withStyles} from 'lit-with-styles'
-import {customElement, property, query, queryAll} from 'lit/decorators.js'
+import { speakEnglish } from '@vdegenne/speech'
+import { hasSomeJapanese } from 'asian-regexps'
+import { visibilityCheck } from 'html-vision/visibility.js'
+import { css, html } from 'lit'
+import { withStyles } from 'lit-with-styles'
+import { customElement, property, query, queryAll } from 'lit/decorators.js'
 import toast from 'toastit'
-import {playClick} from '../assets/assets.js'
-import {Language, NEW_LINE} from '../constants.js'
-import {fullscreenElement} from '../fullscreen-element.js'
-import {indexesHistory} from '../indexesHistory.js'
-import {stateless} from '../stateless.js'
-import {store} from '../store.js'
+import { playClick } from '../assets/assets.js'
+import { Language, NEW_LINE } from '../constants.js'
+import { fullscreenElement } from '../fullscreen-element.js'
+import { indexesHistory } from '../indexesHistory.js'
+import { stateless } from '../stateless.js'
+import { store } from '../store.js'
 import {
 	getCharType,
 	getSpecialBoundaries,
@@ -27,14 +26,13 @@ import {
 	getWordBoundaries,
 	splitLetters,
 } from '../text-logic.js'
-import {kokoroPlayer} from '../tts.js'
+import { playTTS, ttsPlayer } from '../tts.js'
 import {
 	copyToClipboard,
 	getFirstVisibleElement,
 	getLastVisibleElement,
 } from '../utils.js'
-import {voicevox} from '../voicevox.js'
-import {PageElement} from './PageElement.js'
+import { PageElement } from './PageElement.js'
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -98,7 +96,7 @@ declare global {
 	}
 `)
 export class PageMain extends PageElement {
-	@property({type: Boolean, reflect: true}) special = false
+	@property({ type: Boolean, reflect: true }) special = false
 
 	// /**
 	//  * @deprecated Use `stateless.feedback` instead
@@ -127,7 +125,7 @@ export class PageMain extends PageElement {
 			debug: false,
 			maxDistance: 5,
 			outerOffset: 10,
-			dig: {count: 10, step: 20},
+			dig: { count: 10, step: 20 },
 		},
 		scroll: {
 			if: (is) => !is('fully-visible'),
@@ -167,7 +165,7 @@ export class PageMain extends PageElement {
 
 			// this.special = false
 			// stateless.feedback = ''
-			const {highlightContent} = info
+			const { highlightContent } = info
 			if (highlightContent) {
 				fullscreenElement.updateRemoteInfo.call('')
 				fullscreenElement.input = highlightContent
@@ -385,15 +383,15 @@ export class PageMain extends PageElement {
 
 	getTextInfo(cursorPosition?: number) {
 		if (!cursorPosition) {
-			;({highlightIndexStart: cursorPosition} = this.highlighter.getInfo())
+			;({ highlightIndexStart: cursorPosition } = this.highlighter.getInfo())
 		}
 
 		const letters = stateless.finalLetters
-		return getTextInfo(letters, {cursorPosition})
+		return getTextInfo(letters, { cursorPosition })
 	}
 
 	previousLine() {
-		const {highlightIndexStart, highlightIndexEnd, highlightElement} =
+		const { highlightIndexStart, highlightIndexEnd, highlightElement } =
 			this.highlighter.getInfo()
 		const cursorPosition = highlightIndexStart
 		// const textInfo = getTextInfo(store.input, {cursorPosition})
@@ -416,7 +414,7 @@ export class PageMain extends PageElement {
 			// return
 		}
 
-		const {lines, currentLineIndex} = textInfo
+		const { lines, currentLineIndex } = textInfo
 
 		const currLine = lines[currentLineIndex]
 
@@ -438,7 +436,7 @@ export class PageMain extends PageElement {
 	}
 
 	nextLine() {
-		const {highlightIndexStart, highlightIndexEnd, highlightElement} =
+		const { highlightIndexStart, highlightIndexEnd, highlightElement } =
 			this.highlighter.getInfo()
 
 		if (visibilityCheck(highlightElement, (is) => !is('partially-visible'))) {
@@ -457,7 +455,7 @@ export class PageMain extends PageElement {
 		const cursorPosition = highlightIndexEnd
 
 		const textInfo = this.getTextInfo(cursorPosition)
-		const {lines, currentLineIndex} = textInfo
+		const { lines, currentLineIndex } = textInfo
 
 		const currLine = lines[currentLineIndex]
 
@@ -479,11 +477,12 @@ export class PageMain extends PageElement {
 	}
 
 	moveSelectionStartToPreviousLine() {
-		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+		const { highlightIndexStart, highlightIndexEnd } =
+			this.highlighter.getInfo()
 
 		const textInfo = this.getTextInfo()
 
-		const {lines, currentLineIndex} = textInfo
+		const { lines, currentLineIndex } = textInfo
 
 		const currLine = lines[currentLineIndex]
 
@@ -499,11 +498,12 @@ export class PageMain extends PageElement {
 	}
 
 	moveSelectionStartToNextLine() {
-		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+		const { highlightIndexStart, highlightIndexEnd } =
+			this.highlighter.getInfo()
 
 		const textInfo = this.getTextInfo()
 
-		const {lines, currentLineIndex} = textInfo
+		const { lines, currentLineIndex } = textInfo
 
 		const currLine = lines[currentLineIndex]
 
@@ -523,11 +523,12 @@ export class PageMain extends PageElement {
 	}
 
 	moveSelectionEndToPreviousLine() {
-		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+		const { highlightIndexStart, highlightIndexEnd } =
+			this.highlighter.getInfo()
 
 		const textInfo = this.getTextInfo(highlightIndexEnd)
 
-		const {lines, currentLineIndex} = textInfo
+		const { lines, currentLineIndex } = textInfo
 
 		const currLine = lines[currentLineIndex]
 
@@ -550,11 +551,12 @@ export class PageMain extends PageElement {
 	}
 
 	moveSelectionEndToNextLine() {
-		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+		const { highlightIndexStart, highlightIndexEnd } =
+			this.highlighter.getInfo()
 
 		const textInfo = this.getTextInfo(highlightIndexEnd)
 
-		const {lines, currentLineIndex} = textInfo
+		const { lines, currentLineIndex } = textInfo
 
 		const currLine = lines[currentLineIndex]
 
@@ -574,7 +576,8 @@ export class PageMain extends PageElement {
 	}
 
 	increaseLeftWordSelection(jumpCharacters = [' ']): void {
-		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+		const { highlightIndexStart, highlightIndexEnd } =
+			this.highlighter.getInfo()
 		const letters = stateless.cleanLetters
 
 		let start = highlightIndexStart - 1
@@ -599,7 +602,8 @@ export class PageMain extends PageElement {
 	}
 
 	decreaseLeftWordSelection(jumpCharacters = [' ']): void {
-		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+		const { highlightIndexStart, highlightIndexEnd } =
+			this.highlighter.getInfo()
 		const letters = stateless.cleanLetters
 
 		let start = highlightIndexStart
@@ -631,7 +635,8 @@ export class PageMain extends PageElement {
 	}
 
 	increaseRightWordSelection(jumpCharacters = [' ']): void {
-		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+		const { highlightIndexStart, highlightIndexEnd } =
+			this.highlighter.getInfo()
 		const letters = stateless.cleanLetters
 
 		let end = highlightIndexEnd + 1
@@ -659,7 +664,8 @@ export class PageMain extends PageElement {
 	}
 
 	decreaseRightWordSelection(jumpCharacters = [' ']): void {
-		const {highlightIndexStart, highlightIndexEnd} = this.highlighter.getInfo()
+		const { highlightIndexStart, highlightIndexEnd } =
+			this.highlighter.getInfo()
 		const letters = stateless.cleanLetters
 
 		let end = highlightIndexEnd
@@ -693,7 +699,7 @@ export class PageMain extends PageElement {
 	}
 
 	addCurrentSelectionToJpSynDex() {
-		const {highlightContent} = this.highlighter.getInfo()
+		const { highlightContent } = this.highlighter.getInfo()
 		if (highlightContent) {
 			document.dispatchEvent(
 				new CustomEvent('add-jpsyndex-item', {
@@ -707,22 +713,22 @@ export class PageMain extends PageElement {
 	}
 
 	copySelectionToClipBoard() {
-		const {content} = this.highlighter.getInfo()
+		const { content } = this.highlighter.getInfo()
 		if (content) {
 			copyToClipboard(content)
-			toast(content, {timeoutMs: 1500})
+			toast(content, { timeoutMs: 1500 })
 		}
 	}
 
 	getContent() {
-		const {content} = this.highlighter.getInfo()
+		const { content } = this.highlighter.getInfo()
 		if (content) {
 			return content
 		}
 	}
 
 	openChatGPTSelector() {
-		const {content} = this.highlighter.getInfo()
+		const { content } = this.highlighter.getInfo()
 		if (content) {
 			if (store.mostHighlightedOpenInSameTab && this.isMostHighlighted()) {
 				window.location.href = chatGptMediatorUrl(content)
@@ -733,7 +739,7 @@ export class PageMain extends PageElement {
 	}
 
 	openCNRTLOrJisho() {
-		const {highlightContent} = this.highlighter.getInfo()
+		const { highlightContent } = this.highlighter.getInfo()
 		if (highlightContent) {
 			let url: string
 			if (hasSomeJapanese(highlightContent)) {
@@ -751,7 +757,7 @@ export class PageMain extends PageElement {
 	}
 
 	async speakSelection() {
-		const {content} = this.highlighter.getInfo()
+		const { content } = this.highlighter.getInfo()
 		if (!content) return
 
 		const text = content.trim()
@@ -795,8 +801,8 @@ export class PageMain extends PageElement {
 			(lang === 'Fr' && store.frTTS === 'kokoro')
 		) {
 			try {
-				kokoroPlayer.cancelAllSpeeches()
-				const {playPromise} = kokoroPlayer.play([text, lang], {
+				ttsPlayer.cancelAllSpeeches()
+				const { playPromise } = ttsPlayer.play([text, lang], {
 					volume: store.volume,
 				})
 				await playPromise
@@ -809,46 +815,39 @@ export class PageMain extends PageElement {
 
 		switch (lang) {
 			case 'Ja':
-				if (store.jaTTS === 'voicevox') {
-					if (store.voicevoxRandom) {
-						store.voicevoxVoiceId = voicevox.getRandomVoiceId()
-						// voicevox.play(text, voicevox.getRandomVoiceId()).then(() => {
-						// 	toast('END')
-						// })
-					}
-					const voiceName = voicevox.getVoiceTitleFromId(store.voicevoxVoiceId)
-					// toast(`voicevox: ${voiceName}`, {timeoutMs: 5000})
-					store.bottomRightFeedback = `voicevox: ${voiceName}`
-					voicevox
-						.play(text, {
-							voiceId: store.voicevoxVoiceId,
-							speed: store.voicevoxVoiceSpeed,
-							volume: store.volume,
-						})
-						.then(() => {
-							// toast('END')
-						})
-					return
+				switch (store.jaTTS) {
+					case 'gemini':
+						playTTS(text, lang)
+						break
+					case 'voicevox':
+						playTTS(text, lang)
+						break
+					case 'kokoro':
 				}
+				break
 
-				try {
-					await playJapanese(text, {fallbackToSpeechSynthesis: false})
-				} catch {
+			case 'En':
+				if (store.enTTS === 'gemini') {
 					try {
 						// Couldn't play real japanese audio, fallback to tts if possible
 						const audio = tts({
 							text,
-							languageCode: 'ja-JP',
-							model: TTS_MODELS.GEMINI_3_1_FLASH_TTS,
+							languageCode: 'en-US',
+							// model: TTS_MODELS.GEMINI_3_1_FLASH_TTS,
+							// @ts-ignore
+							model: 'gemini-3.8-flash-tts',
 							// model: TTS_MODELS.GEMINI_2_5_FLASH_TTS,
 							voice: 'random',
 						})
 						await audio.play()
-					} catch {
+					} catch (err) {
+						console.log(err)
 						toast('No TTS found.')
 					}
 				}
+
 				break
+			case 'Fr':
 			default:
 				speakEnglish(text)
 		}
