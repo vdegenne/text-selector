@@ -115,7 +115,7 @@
 		"@vdegenne/router": "^0.1.11",
 		"@vdegenne/speech": "^0.5.4",
 		"@vdegenne/vite-plugin-css-modules": "^0.1.16",
-		"@vdegenne/voicevox": "file:../voicevox",
+		"@vdegenne/voicevox": "^0.1.20",
 		"@vite-pwa/assets-generator": "^1.0.4",
 		"asian-regexps": "^5.1.0",
 		"custom-element-decorator": "^0.6.0",
