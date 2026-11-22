@@ -1,5 +1,4 @@
 import { ReactiveController } from '@snar/lit'
-import { Language } from '@vdegenne/kokoro'
 import {
 	googleImagesOpen,
 	googleImagesUrl,
@@ -13,7 +12,6 @@ import {
 import { MGamepad, MiniGamepad, Mode } from '@vdegenne/mini-gamepad'
 import { hasSomeJapanese } from 'asian-regexps'
 import { state } from 'lit/decorators.js'
-import toast from 'toastit'
 import { fullscreenElement } from './fullscreen-element.js'
 import { closeTab } from './functions.js'
 import {
@@ -26,9 +24,9 @@ import {
 	rightUpRepeater,
 	upRepeater,
 } from './gamepad-repeaters.js'
-import { kokoro } from './kokoro.js'
 import { getMainPage } from './pages/index.js'
 import { mainPage } from './pages/page-main.js'
+import { toast } from './snackbar.js'
 import { store } from './store.js'
 import { voicevoxProxy } from './tts.js'
 import { copyToClipboard, isValidUrl, japsyndexOpen } from './utils.js'
@@ -373,30 +371,30 @@ class GamepadController extends ReactiveController {
 						const lang = store.lang
 						if (
 							lang === 'Ja' &&
-							store.jaTTS === 'voicevox' &&
-							!store.voicevoxRandom
+							store.jaTTS === 'voicevox'
+							// !store.voicevoxRandom
 						) {
 							// TODO:
 							const voices = await voicevoxProxy.getVoices()
 
-							if (store.voicevoxRandom) {
-								const randomVoice =
-									voices[Math.floor(Math.random() * voices.length)]
-								store.voicevoxVoiceId = randomVoice.id
-							}
+							// if (store.voicevoxRandom) {
+							const randomVoice =
+								voices[Math.floor(Math.random() * voices.length)]
+							store.voicevoxVoiceId = randomVoice.id
+							// }
 						}
 						if (
 							(lang === 'En' && store.enTTS === 'kokoro') ||
 							(lang === 'Ja' && store.jaTTS === 'kokoro') ||
 							(lang === 'Fr' && store.frTTS === 'kokoro')
 						) {
-							if (!store[`kokoro${lang}Random`]) {
-								store[`kokoro${lang as Language}VoiceId`] =
-									kokoro.getRandomVoiceId({
-										lang: store.lang,
-										exclude: [],
-									})
-							}
+							// store[`kokoro${lang as Language}VoiceId`] =
+							// 	kokoro.getRandomVoiceId({
+							// 		lang: store.lang,
+							// 		exclude: [],
+							// 	})
+
+							// availableVoices[lang].
 						}
 						mainPage.speakSelection()
 						break

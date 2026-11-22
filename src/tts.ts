@@ -1,13 +1,13 @@
 import { AudioPlayer } from '@vdegenne/audio-player'
 import { GeminiTtsProxyClient } from '@vdegenne/gemini-tts-proxy'
 import {
+	GEMINI_TTS_VOICES,
 	GeminiSpeechOptions,
-	GeminiTtsVoice,
 } from '@vdegenne/gemini-tts-proxy/core'
 import { KokoroProxyClient } from '@vdegenne/kokoro-proxy'
-import { Language } from '@vdegenne/kokoro-proxy/core'
 import { VoicevoxProxyClient } from '@vdegenne/voicevox'
 import { handleAsync } from './errors.js'
+import { getLanguageCode, Language } from './lang.js'
 import { toast } from './snackbar.js'
 import { store } from './store.js'
 
@@ -16,10 +16,12 @@ export const geminiTtsProxy = new GeminiTtsProxyClient({
 	endpoint: 'https://gemini-tts-proxy.gl-ai-z.win',
 })
 
-export const voicevoxProxy = new VoicevoxProxyClient()
-
+// Voicevox and Kokoro use local servers
+export const voicevoxProxy = new VoicevoxProxyClient({
+	endpoint: 'http://127.0.0.1:50021',
+})
 export const kokoroProxy = new KokoroProxyClient({
-	endpoint: 'https://kokoro-proxy.gl-ai-z.win',
+	endpoint: 'http://127.0.0.1:3000',
 })
 
 export const ttsPlayer = new AudioPlayer(
@@ -39,27 +41,32 @@ export const ttsPlayer = new AudioPlayer(
 		// // 	volume_multiplier: 1,
 		// // })
 
+		// Gemini
+
+		if (store[`${lang}TTS`] === 'gemini') {
+			if (!store.geminiApiKey) {
+				throw new Error('No API key')
+			}
+
+			const options: GeminiSpeechOptions = {
+				input: text,
+				model: 'gemini-3.8-flash-lite-tts',
+				voice: store.geminiVoice,
+				languageCode: getLanguageCode(lang),
+			}
+
+			return geminiTtsProxy.createAudioRequest(options, {
+				headers: {
+					'x-goog-api-key': store.geminiApiKey,
+				},
+			})
+		}
+
+		// Other TTS
+
 		switch (lang) {
-			case 'Ja':
+			case 'ja':
 				switch (store.jaTTS) {
-					case 'gemini': {
-						if (!store.geminiApiKey) {
-							throw new Error('No API key')
-						}
-
-						const options: GeminiSpeechOptions = {
-							input: text,
-							model: 'gemini-3.8-flash-lite-tts',
-							voice: 'Aoede' as GeminiTtsVoice,
-							languageCode: 'ja-JP',
-						}
-
-						return geminiTtsProxy.createAudioRequest(options, {
-							headers: {
-								'x-goog-api-key': store.geminiApiKey,
-							},
-						})
-					}
 					case 'voicevox': {
 						await prepareVoicevoxVoice()
 
@@ -76,17 +83,15 @@ export const ttsPlayer = new AudioPlayer(
 				}
 				break
 
-			case 'En':
+			case 'en':
 				switch (store.enTTS) {
-					case 'gemini':
 					case 'kokoro':
 						break
 				}
 				break
 
-			case 'Fr':
+			case 'fr':
 				switch (store.frTTS) {
-					case 'gemini':
 					case 'kokoro':
 						break
 				}
@@ -128,4 +133,9 @@ export async function prepareVoicevoxVoice() {
 	}
 
 	store.bottomRightFeedback = `voicevox: ${voice.name}`
+}
+
+export function setGeminiRandomVoice() {
+	store.geminiVoice =
+		GEMINI_TTS_VOICES[Math.floor(Math.random() * GEMINI_TTS_VOICES.length)]
 }

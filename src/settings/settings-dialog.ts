@@ -1,14 +1,16 @@
-import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/button/md-gb-button.js'
-import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/dialog/md-gb-dialog.js'
-import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/slider/md-gb-slider.js'
-import { SliderElement } from '@mahmoodkhalil/material-web-3-demo/labs/gb/components/slider/slider-element.js'
-import '@mahmoodkhalil/material-web-3-demo/labs/gb/styles/icon/md-gb-icon.js'
+// import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/button/md-gb-button.js'
+// import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/dialog/md-gb-dialog.js'
+// import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/slider/md-gb-slider.js'
+// import '@mahmoodkhalil/material-web-3-demo/labs/gb/styles/icon/md-gb-icon.js'
 import {
 	MdFilledTextField,
 	type MdDialog,
 	type MdTabs,
 } from '@material/web/all.js'
 import '@material/web/iconbutton/icon-button.js'
+// import '@material/web/labs/gb/components/slider/md-gb-slider.js'
+// import '@material/web/labs/gb/components/slider/md-gb-slider.js'
+import '@material/web/labs/gb/styles/icon/md-gb-icon.js'
 import '@material/web/list/list-item.js'
 import '@material/web/select/filled-select.js'
 import '@material/web/select/select-option.js'
@@ -47,12 +49,12 @@ export class SettingsDialog extends LitElement {
 
 	@state() ttsSelectedLabel: TtsSelectedLabel = 'JA'
 
-	@query('md-gb-dialog') dialog!: MdDialog
+	@query('md-dialog') dialog!: MdDialog
 
 	render() {
 		// console.log('RENDER.........................')
 		return html`
-			<md-gb-dialog
+			<md-dialog
 				?open="${this.open}"
 				@open="${() => {
 					try {
@@ -71,7 +73,7 @@ export class SettingsDialog extends LitElement {
 				<!-- <md-gb-icon slot=icon>settings</md-gb-icon> -->
 				<span slot="headline"> Settings </span>
 
-				<div class="flex flex-col gap-5">
+				<div slot="content" class="flex flex-col gap-5">
 					<card-element headline="global">
 						${store.F.SWITCH('Break on punctuations', 'breakSentences', { supportingText: 'If enabled, will add new lines between sentence punctuations.' })}
 						${store.F.SWITCH(
@@ -101,7 +103,7 @@ export class SettingsDialog extends LitElement {
 							value="${store.volume}"
 							class="w-full"
 							@change="${(e: Event) => {
-								store.volume = (e.currentTarget as SliderElement).value
+								// store.volume = (e.currentTarget as SliderElement).value
 							}}"
 						>
 							<md-gb-icon slot="icon">volume_up</md-gb-icon>
@@ -253,7 +255,7 @@ export class SettingsDialog extends LitElement {
 				<form method="dialog" id="form"></form>
 
 				<md-gb-button slot="actions" form="form" autofocus>Close</md-gb-button>
-			</md-gb-dialog>
+			</md-dialog>
 		`
 	}
 

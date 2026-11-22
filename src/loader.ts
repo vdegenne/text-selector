@@ -4,10 +4,10 @@
 import './styles/styles.js'
 import './styles/themeStore.js'
 
-import { adoptStyles } from '@mahmoodkhalil/material-web-3-demo/labs/gb/styles/adopt-styles.js'
-import m3Styles from '@mahmoodkhalil/material-web-3-demo/labs/gb/styles/m3.cssresult.js'
 import '@material/web/all.js'
-
+import '@material/web/labs/gb/components/all.js'
+import { adoptStyles } from '@material/web/labs/gb/styles/adopt-styles.js'
+import m3Styles from '@material/web/labs/gb/styles/m3.cssresult.js'
 adoptStyles(document, [m3Styles])
 
 import { app } from './app-shell/app-shell.js'
@@ -17,10 +17,9 @@ document.querySelector('material-shell')?.appendChild(app)
 
 import './router.js'
 
-import './global-listeners.js'
-
 import './gamepad.js'
 
+import './global-listeners.js'
 // app.updateComplete.then(() => {});
 
 /**

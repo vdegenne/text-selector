@@ -1,21 +1,16 @@
 import { PropertyValues, ReactiveController, state } from '@snar/lit'
 import { FormBuilder } from '@vdegenne/forms'
 import { GeminiModel } from '@vdegenne/gemini'
+import { GeminiTtsVoice } from '@vdegenne/gemini-tts-proxy/core'
 import * as Kokoro from '@vdegenne/kokoro-proxy/core'
 import { hasSomeJapanese } from 'asian-regexps'
 import { saveToLocalStorage } from 'snar-save-to-local-storage'
 import toast from 'toastit'
 import { clickAudio } from './assets/assets.js'
-import {
-	availablePages,
-	fontFamily,
-	FontValue,
-	Language,
-	languages,
-	NEW_LINE,
-} from './constants.js'
+import { availablePages, fontFamily, FontValue, NEW_LINE } from './constants.js'
 import { cleanInput, findSubarray } from './functions.js'
 import { indexesHistory } from './indexesHistory.js'
+import { availableLanguages, Language } from './lang.js'
 import { Page } from './pages/index.js'
 import { mainPage } from './pages/page-main.js'
 import { stateless } from './stateless.js'
@@ -51,7 +46,9 @@ export class AppStore extends ReactiveController {
 	@state() lang: Language = 'En'
 	cycleLangs() {
 		return (this.lang =
-			languages[(languages.indexOf(this.lang) + 1) % languages.length])
+			availableLanguages[
+				(availableLanguages.indexOf(this.lang) + 1) % availableLanguages.length
+			])
 	}
 
 	@state() volume = 0.3
@@ -61,7 +58,12 @@ export class AppStore extends ReactiveController {
 	@state() geminiApiKey = ''
 	@state() geminiModel: GeminiModel = 'gemini-3.1-flash-lite'
 
+	@state() geminiVoice: GeminiTtsVoice
+
 	@state() voicevoxVoiceId = 0
+	/**
+	 * @deprecated
+	 */
 	@state() voicevoxRandom = false
 	/**
 	 * @deprecated useless

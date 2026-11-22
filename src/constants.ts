@@ -25,6 +25,3 @@ export type FontValue = (typeof fontFamily)[number]
  * apart from the ones intentionally added when "break sentences" option is on.
  */
 export const NEW_LINE = '\uE000'
-
-export const languages = ['Ja', 'En', 'Fr'] as const
-export type Language = (typeof languages)[number]

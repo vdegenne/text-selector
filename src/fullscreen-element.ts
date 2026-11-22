@@ -1,18 +1,19 @@
-import {MdDialog} from '@material/web/all.js'
-import {withController} from '@snar/lit'
-import {Debouncer} from '@vdegenne/debouncer'
-import {customElement} from 'custom-element-decorator'
-import {SS} from 'html-vision/ss.js'
-import {css, html, LitElement, PropertyValues} from 'lit'
-import {withStyles} from 'lit-with-styles'
-import {property, query, state} from 'lit/decorators.js'
-import {jpsyndexAPI} from './api.js'
-import {getFontSize} from './functions.js'
-import {mainPage} from './pages/page-main.js'
-import {RemoteInfo, stateless} from './stateless.js'
-import {store} from './store.js'
+import { MdDialog } from '@material/web/all.js'
+import '@material/web/dialog/dialog.js'
+import { withController } from '@snar/lit'
+import { Debouncer } from '@vdegenne/debouncer'
+import { customElement } from 'custom-element-decorator'
+import { SS } from 'html-vision/ss.js'
+import { css, html, LitElement, PropertyValues } from 'lit'
+import { withStyles } from 'lit-with-styles'
+import { property, query, state } from 'lit/decorators.js'
+import { jpsyndexAPI } from './api.js'
+import { getFontSize } from './functions.js'
+import { mainPage } from './pages/page-main.js'
+import { RemoteInfo, stateless } from './stateless.js'
+import { store } from './store.js'
 
-@customElement({name: 'fullscreen-element', inject: true})
+@customElement({ name: 'fullscreen-element', inject: true })
 @withStyles(css`
 	#hiragana,
 	.hideable {
@@ -29,7 +30,7 @@ import {store} from './store.js'
 `)
 @withController(store)
 class FullscreenElement extends LitElement {
-	@property({type: Boolean}) open = false
+	@property({ type: Boolean }) open = false
 	@state() input = ''
 	@state() collections: RemoteInfo['collections']
 	@state() hiragana: RemoteInfo['hiragana']
@@ -135,7 +136,7 @@ class FullscreenElement extends LitElement {
 			tasks.push(
 				jpsyndexAPI
 					.get(`/search/${encodeURIComponent(query)}` as '/search/:word')
-					.then(async ({response}) => {
+					.then(async ({ response }) => {
 						if (!response.ok) throw 0
 
 						info.collections = await response.text()
@@ -148,7 +149,7 @@ class FullscreenElement extends LitElement {
 			tasks.push(
 				jpsyndexAPI
 					.get(`/hiragana/${encodeURIComponent(query)}` as '/hiragana/:query')
-					.then(async ({response}) => {
+					.then(async ({ response }) => {
 						if (!response.ok) throw 0
 
 						const map = await response.json()
@@ -220,7 +221,7 @@ class FullscreenElement extends LitElement {
 			}
 		},
 		store.repeaterInitialDelayMs + 50,
-		{throwOnCancel: false},
+		{ throwOnCancel: false },
 	)
 }
 

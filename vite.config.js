@@ -1,7 +1,8 @@
+import { cssModules } from '@vdegenne/vite-plugin-css-modules'
 import { materialShell } from 'material-shell/vite.js'
 import { materialAll } from 'rollup-plugin-material-all'
+// import { materialAll } from 'rollup-plugin-material-all'
 import { defineConfig } from 'vite'
-import { mdicon2svg } from 'vite-plugin-mdicon2svg'
 
 /**
  * @type {import('vite').Plugin[]}
@@ -21,6 +22,7 @@ const plugins = [
 			}
 		},
 	},
+	cssModules(),
 ]
 
 /** Dev plugins */
@@ -49,15 +51,15 @@ plugins.push(
 	materialAll({
 		//includeComments: true
 	}),
-	mdicon2svg({
-		variant: 'rounded',
-		include: [
-			'./src/**/*.ts',
-			'./node_modules/@vdegenne/material-color-helpers/lib/elements/**/*.js',
-			'./node_modules/@vdegenne/forms/lib/index.js',
-			'./node_modules/@vdegenne/player/lib/player-dialog.js',
-		],
-	}),
+	// mdicon2svg({
+	// 	variant: 'rounded',
+	// 	include: [
+	// 		'./src/**/*.ts',
+	// 		'./node_modules/@vdegenne/material-color-helpers/lib/elements/**/*.js',
+	// 		'./node_modules/@vdegenne/forms/lib/index.js',
+	// 		'./node_modules/@vdegenne/player/lib/player-dialog.js',
+	// 	],
+	// }),
 )
 
 if (process.env.NODE_ENV === 'production') {
@@ -159,6 +161,9 @@ export default defineConfig({
 	},
 	esbuild: {
 		legalComments: 'none',
+	},
+	optimizeDeps: {
+		exclude: ['@material/web/labs/gb/components/snackbar/md-gb-snackbar.js'],
 	},
 	plugins,
 })
