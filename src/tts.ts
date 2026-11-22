@@ -51,7 +51,8 @@ export const ttsPlayer = new AudioPlayer(
 			const options: GeminiSpeechOptions = {
 				input: text,
 				model: 'gemini-3.8-flash-lite-tts',
-				voice: store.geminiVoice,
+				// TODO: update this
+				voice: 'Achird',
 				languageCode: getLanguageCode(lang),
 			}
 
