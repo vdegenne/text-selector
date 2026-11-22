@@ -254,7 +254,9 @@ export class SettingsDialog extends LitElement {
 				</div>
 				<form method="dialog" id="form"></form>
 
-				<md-gb-button slot="actions" form="form" autofocus>Close</md-gb-button>
+				<div slot="actions">
+					<md-text-button form="form" autofocus>Close</md-text-button>
+				</div>
 			</md-dialog>
 		`
 	}

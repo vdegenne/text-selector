@@ -1,6 +1,9 @@
-import {ydotool} from '@vdegenne/py-server'
-import {api} from './api.js'
-import {NEW_LINE} from './constants.js'
+import { hasSomeJapanese } from 'asian-regexps'
+import { app } from './app-shell/app-shell.js'
+import { NEW_LINE } from './constants.js'
+import { geminiTranslate } from './gemini.js'
+import { toast } from './snackbar.js'
+import { store } from './store.js'
 
 export function cleanInput(input: string) {
 	return input
@@ -59,4 +62,31 @@ export function closeTab() {
 		},
 		'*',
 	)
+}
+
+export async function translateSelection() {
+	if (!store.geminiApiKey) {
+		toast({
+			message: 'No Gemini API Key found. (press S to open the settings.)',
+		})
+		return
+	}
+	const content = app.mainPage.getContent()
+	if (!content) {
+		toast({ message: 'No content to analyze.' })
+		return
+	}
+
+	if (!hasSomeJapanese(content)) {
+		toast({ message: 'Only Japanese content supported for now.' })
+		return
+	}
+
+	try {
+		const result = await geminiTranslate(content)
+		if (result) toast({ message: result, timeoutMs: 0 })
+	} catch (err) {
+		console.log(err)
+		// toast(err)
+	}
 }

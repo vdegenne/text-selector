@@ -14,9 +14,10 @@ import { withStyles } from 'lit-with-styles'
 import { customElement, property, query, queryAll } from 'lit/decorators.js'
 import toast from 'toastit'
 import { playClick } from '../assets/assets.js'
-import { Language, NEW_LINE } from '../constants.js'
+import { NEW_LINE } from '../constants.js'
 import { fullscreenElement } from '../fullscreen-element.js'
 import { indexesHistory } from '../indexesHistory.js'
+import { Language } from '../lang.js'
 import { stateless } from '../stateless.js'
 import { store } from '../store.js'
 import {
@@ -766,7 +767,7 @@ export class PageMain extends PageElement {
 		let lang: Language
 
 		if (hasSomeJapanese(text)) {
-			lang = 'Ja'
+			lang = 'ja'
 		} else {
 			// const {detect} = await import('tinyld')
 			// lang = detect(text, {only: ['en', 'fr']})
@@ -777,11 +778,11 @@ export class PageMain extends PageElement {
 			const s = t.toLowerCase()
 
 			// FR
-			if (/[éèêàùç]/.test(s)) return 'Fr'
-			if (/\b(le|la|les|un|une|des|est|et)\b/.test(s)) return 'Fr'
+			if (/[éèêàùç]/.test(s)) return 'fr'
+			if (/\b(le|la|les|un|une|des|est|et)\b/.test(s)) return 'fr'
 
 			// EN
-			if (/\b(a|an|the|and|is|are|this|that)\b/.test(s)) return 'En'
+			if (/\b(a|an|the|and|is|are|this|that)\b/.test(s)) return 'en'
 
 			return null
 		}
@@ -791,14 +792,14 @@ export class PageMain extends PageElement {
 		}
 
 		// fallback final assumé
-		if (!lang) lang = 'En'
+		if (!lang) lang = 'en'
 
 		// toast(lang, {timeoutMs: 1000})
 
 		if (
-			(lang === 'En' && store.enTTS === 'kokoro') ||
-			(lang === 'Ja' && store.jaTTS === 'kokoro') ||
-			(lang === 'Fr' && store.frTTS === 'kokoro')
+			(lang === 'en' && store.enTTS === 'kokoro') ||
+			(lang === 'ja' && store.jaTTS === 'kokoro') ||
+			(lang === 'fr' && store.frTTS === 'kokoro')
 		) {
 			try {
 				ttsPlayer.cancelAllSpeeches()
@@ -814,7 +815,7 @@ export class PageMain extends PageElement {
 		}
 
 		switch (lang) {
-			case 'Ja':
+			case 'ja':
 				switch (store.jaTTS) {
 					case 'gemini':
 						playTTS(text, lang)
@@ -826,33 +827,33 @@ export class PageMain extends PageElement {
 				}
 				break
 
-			case 'En':
-				if (store.enTTS === 'gemini') {
-					try {
-						// Couldn't play real japanese audio, fallback to tts if possible
-						const audio = tts({
-							text,
-							languageCode: 'en-US',
-							// model: TTS_MODELS.GEMINI_3_1_FLASH_TTS,
-							// @ts-ignore
-							model: 'gemini-3.8-flash-tts',
-							// model: TTS_MODELS.GEMINI_2_5_FLASH_TTS,
-							voice: 'random',
-						})
-						await audio.play()
-					} catch (err) {
-						console.log(err)
-						toast('No TTS found.')
-					}
-				}
+			case 'en':
+				// if (store.enTTS === 'gemini') {
+				// 	try {
+				// 		// Couldn't play real japanese audio, fallback to tts if possible
+				// 		const audio = tts({
+				// 			text,
+				// 			languageCode: 'en-US',
+				// 			// model: TTS_MODELS.GEMINI_3_1_FLASH_TTS,
+				// 			// @ts-ignore
+				// 			model: 'gemini-3.8-flash-tts',
+				// 			// model: TTS_MODELS.GEMINI_2_5_FLASH_TTS,
+				// 			voice: 'random',
+				// 		})
+				// 		await audio.play()
+				// 	} catch (err) {
+				// 		console.log(err)
+				// 		toast('No TTS found.')
+				// 	}
+				// }
 
 				break
-			case 'Fr':
+			case 'fr':
 			default:
 				speakEnglish(text)
 		}
 	}
 }
 
-export let mainPage = new PageMain()
-mainPage.active = true
+// export let mainPage = new PageMain()
+// mainPage.active = true

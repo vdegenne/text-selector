@@ -2,7 +2,7 @@ import { AudioPlayer } from '@vdegenne/audio-player'
 import { GeminiTtsProxyClient } from '@vdegenne/gemini-tts-proxy'
 import {
 	GEMINI_TTS_VOICES,
-	GeminiSpeechOptions,
+	SpeechOptions as GeminiSpeechOptions,
 } from '@vdegenne/gemini-tts-proxy/core'
 import { KokoroProxyClient } from '@vdegenne/kokoro-proxy'
 import { VoicevoxProxyClient } from '@vdegenne/voicevox'

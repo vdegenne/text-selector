@@ -1,8 +1,8 @@
-import {NavigationStyle} from '@vdegenne/highlight-manager'
-import {Mode} from '@vdegenne/mini-gamepad'
-import {Repeater} from '@vdegenne/mini-gamepad/repeater.js'
-import {mainPage} from './pages/page-main.js'
-import {store} from './store.js'
+import { NavigationStyle } from '@vdegenne/highlight-manager'
+import { Mode } from '@vdegenne/mini-gamepad'
+import { Repeater } from '@vdegenne/mini-gamepad/repeater.js'
+import { app } from './app-shell/app-shell.js'
+import { store } from './store.js'
 
 // const profiler = new Profiler(1000)
 // profiler.startReporting()
@@ -14,17 +14,17 @@ export const leftPrevRepeater = new Repeater({
 		switch (mode) {
 			case Mode.NORMAL:
 				// profiler.start()
-				mainPage.highlighter.previous({
+				app.mainPage.highlighter.previous({
 					navigationStyle: NavigationStyle.INDEX_BASED,
 				})
 				// profiler.end()
 				break
 			case Mode.PRIMARY:
-				mainPage.highlighter.extendLeftHighlight()
+				app.mainPage.highlighter.extendLeftHighlight()
 				break
 			case Mode.TERTIARY:
-				// mainPage.highlighter.reduceRightHighlight()
-				mainPage.increaseLeftWordSelection()
+				// app.mainPage.highlighter.reduceRightHighlight()
+				app.mainPage.increaseLeftWordSelection()
 				break
 		}
 	},
@@ -37,17 +37,17 @@ export const leftNextRepeater = new Repeater({
 		switch (mode) {
 			case Mode.NORMAL:
 				// profiler.start()
-				mainPage.highlighter.next({
+				app.mainPage.highlighter.next({
 					navigationStyle: NavigationStyle.INDEX_BASED,
 				})
 				// profiler.end()
 				break
 			case Mode.PRIMARY:
-				// mainPage.highlighter.extendRightHighlight()
-				mainPage.highlighter.reduceLeftHighlight()
+				// app.mainPage.highlighter.extendRightHighlight()
+				app.mainPage.highlighter.reduceLeftHighlight()
 				break
 			case Mode.TERTIARY:
-				mainPage.decreaseLeftWordSelection()
+				app.mainPage.decreaseLeftWordSelection()
 				break
 		}
 	},
@@ -59,11 +59,11 @@ export const upRepeater = new Repeater({
 	action(mode) {
 		switch (mode) {
 			case Mode.NORMAL:
-				// mainPage.previousLine()
+				// app.mainPage.previousLine()
 				// profiler.start()
-				if (!mainPage.highlighter.up({medianBreak: false})) {
-					mainPage.previousLine()
-					// mainPage.highlighter.relativeMotion({
+				if (!app.mainPage.highlighter.up({ medianBreak: false })) {
+					app.mainPage.previousLine()
+					// app.mainPage.highlighter.relativeMotion({
 					// 	anchor: Anchor.TOP_CENTER,
 					// 	rectOverride: {
 					// 		top: window.innerHeight - 10,
@@ -74,8 +74,8 @@ export const upRepeater = new Repeater({
 				// profiler.end()
 				break
 			case Mode.PRIMARY:
-				// mainPage.previousLine(true)
-				mainPage.moveSelectionStartToPreviousLine()
+				// app.mainPage.previousLine(true)
+				app.mainPage.moveSelectionStartToPreviousLine()
 				break
 		}
 	},
@@ -89,12 +89,12 @@ export const downRepeater = new Repeater({
 			case Mode.NORMAL:
 				// profiler.start()
 				if (
-					!mainPage.highlighter.down({
+					!app.mainPage.highlighter.down({
 						medianBreak: false,
 					})
 				) {
-					mainPage.nextLine()
-					// mainPage.highlighter.relativeMotion({
+					app.mainPage.nextLine()
+					// app.mainPage.highlighter.relativeMotion({
 					// 	anchor: Anchor.BOTTOM_CENTER,
 					// 	rectOverride: {
 					// 		top: 0,
@@ -105,8 +105,8 @@ export const downRepeater = new Repeater({
 				// profiler.end()
 				break
 			case Mode.PRIMARY:
-				// mainPage.nextLine(true)
-				mainPage.moveSelectionStartToNextLine()
+				// app.mainPage.nextLine(true)
+				app.mainPage.moveSelectionStartToNextLine()
 				break
 		}
 	},
@@ -125,11 +125,11 @@ export const rightPrevRepeater = new Repeater({
 			case Mode.NORMAL:
 				break
 			case Mode.PRIMARY:
-				// mainPage.highlighter.extendRightHighlight()
-				mainPage.highlighter.reduceRightHighlight()
+				// app.mainPage.highlighter.extendRightHighlight()
+				app.mainPage.highlighter.reduceRightHighlight()
 				break
 			case Mode.TERTIARY:
-				mainPage.decreaseRightWordSelection()
+				app.mainPage.decreaseRightWordSelection()
 				break
 		}
 	},
@@ -143,12 +143,12 @@ export const rightNextRepeater = new Repeater({
 			case Mode.NORMAL:
 				break
 			case Mode.PRIMARY:
-				mainPage.highlighter.extendRightHighlight()
+				app.mainPage.highlighter.extendRightHighlight()
 				break
 
 			case Mode.TERTIARY:
-				// mainPage.highlighter.reduceRightHighlight()
-				mainPage.increaseRightWordSelection()
+				// app.mainPage.highlighter.reduceRightHighlight()
+				app.mainPage.increaseRightWordSelection()
 				break
 		}
 	},
@@ -162,8 +162,8 @@ export const rightUpRepeater = new Repeater({
 			case Mode.NORMAL:
 				break
 			case Mode.PRIMARY:
-				// mainPage.nextLine(true)
-				mainPage.moveSelectionEndToPreviousLine()
+				// app.mainPage.nextLine(true)
+				app.mainPage.moveSelectionEndToPreviousLine()
 				break
 		}
 	},
@@ -177,8 +177,8 @@ export const rightDownRepeater = new Repeater({
 			case Mode.NORMAL:
 				break
 			case Mode.PRIMARY:
-				// mainPage.nextLine(true)
-				mainPage.moveSelectionEndToNextLine()
+				// app.mainPage.nextLine(true)
+				app.mainPage.moveSelectionEndToNextLine()
 				break
 		}
 	},

@@ -1,9 +1,8 @@
 import { $ } from 'html-vision'
+import { app } from './app-shell/app-shell.js'
 import { fullscreenElement } from './fullscreen-element.js'
-import { openInLocalhost } from './functions.js'
+import { openInLocalhost, translateSelection } from './functions.js'
 import { openSettingsDialog } from './imports.js'
-import { mainPage } from './pages/page-main.js'
-import { translateSelection } from './server/functions.js'
 import { store } from './store.js'
 
 const inputNames = ['INPUT', 'TEXTAREA', 'MD-FILLED-TEXT-FIELD']
@@ -54,7 +53,7 @@ window.addEventListener('focus', () => {
 	if (store.closeFullScreenOnWindowFocus) {
 		if (
 			store.fullscreenPreventClosingWhenFullSelection &&
-			mainPage.highlighter.isFullyHighlighted
+			app.mainPage.highlighter.isFullyHighlighted
 		)
 			return
 

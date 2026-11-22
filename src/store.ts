@@ -1,18 +1,17 @@
 import { PropertyValues, ReactiveController, state } from '@snar/lit'
 import { FormBuilder } from '@vdegenne/forms'
 import { GeminiModel } from '@vdegenne/gemini'
-import { GeminiTtsVoice } from '@vdegenne/gemini-tts-proxy/core'
 import * as Kokoro from '@vdegenne/kokoro-proxy/core'
 import { hasSomeJapanese } from 'asian-regexps'
 import { saveToLocalStorage } from 'snar-save-to-local-storage'
 import toast from 'toastit'
+import { app } from './app-shell/app-shell.js'
 import { clickAudio } from './assets/assets.js'
 import { availablePages, fontFamily, FontValue, NEW_LINE } from './constants.js'
 import { cleanInput, findSubarray } from './functions.js'
 import { indexesHistory } from './indexesHistory.js'
 import { availableLanguages, Language } from './lang.js'
 import { Page } from './pages/index.js'
-import { mainPage } from './pages/page-main.js'
 import { stateless } from './stateless.js'
 import { breakSentence, splitLetters } from './text-logic.js'
 import { EnTTS, FrTTS, JaTTS } from './tts2.js'
@@ -43,7 +42,7 @@ export class AppStore extends ReactiveController {
 	/**
 	 * Language to use for the TTS when the text to play is not japanese.
 	 */
-	@state() lang: Language = 'En'
+	@state() lang: Language = 'en'
 	cycleLangs() {
 		return (this.lang =
 			availableLanguages[
@@ -58,7 +57,8 @@ export class AppStore extends ReactiveController {
 	@state() geminiApiKey = ''
 	@state() geminiModel: GeminiModel = 'gemini-3.1-flash-lite'
 
-	@state() geminiVoice: GeminiTtsVoice
+	// TODO: fix the type
+	@state() geminiVoice: any
 
 	@state() voicevoxVoiceId = 0
 	/**
@@ -252,7 +252,9 @@ export class AppStore extends ReactiveController {
 		}
 
 		if (changed.has('loop')) {
-			mainPage.highlighter.setLoop(this.loop)
+			pagePromise.then(() => {
+				app.mainPage.highlighter.setLoop(this.loop)
+			})
 		}
 
 		// if (changed.has('enTTS') || changed.has('frTTS')) {
@@ -298,11 +300,11 @@ export class AppStore extends ReactiveController {
 		 */
 		if (this.input) {
 			if (hasSomeJapanese(this.input)) {
-				store.lang = 'Ja'
+				store.lang = 'ja'
 				store.bottomRightFeedback = 'Language detected: Ja'
 			} else {
 				// TODO: More than en
-				store.lang = 'En'
+				store.lang = 'en'
 				store.bottomRightFeedback = 'Language detected: En'
 			}
 		}
@@ -329,7 +331,7 @@ export class AppStore extends ReactiveController {
 					found,
 					found + hash.length - 1,
 				)
-				mainPage.highlighter.highlight(start, end)
+				app.mainPage.highlighter.highlight(start, end)
 				// window.location.hash = ''
 				window.history.replaceState(
 					null,

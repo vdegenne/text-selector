@@ -8,8 +8,8 @@ import { css, html, LitElement, PropertyValues } from 'lit'
 import { withStyles } from 'lit-with-styles'
 import { property, query, state } from 'lit/decorators.js'
 import { jpsyndexAPI } from './api.js'
+import { app } from './app-shell/app-shell.js'
 import { getFontSize } from './functions.js'
-import { mainPage } from './pages/page-main.js'
 import { RemoteInfo, stateless } from './stateless.js'
 import { store } from './store.js'
 
@@ -198,7 +198,7 @@ class FullscreenElement extends LitElement {
 			this.input = query
 			this.collections = ''
 			this.hiragana = undefined
-			mainPage.special = false
+			app.mainPage.special = false
 
 			if (!query) return
 
@@ -211,7 +211,7 @@ class FullscreenElement extends LitElement {
 			}
 
 			if (info.collections) {
-				mainPage.special = true
+				app.mainPage.special = true
 				this.collections = info.collections
 			}
 

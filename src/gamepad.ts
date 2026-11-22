@@ -12,6 +12,7 @@ import {
 import { MGamepad, MiniGamepad, Mode } from '@vdegenne/mini-gamepad'
 import { hasSomeJapanese } from 'asian-regexps'
 import { state } from 'lit/decorators.js'
+import { app } from './app-shell/app-shell.js'
 import { fullscreenElement } from './fullscreen-element.js'
 import { closeTab } from './functions.js'
 import {
@@ -25,7 +26,6 @@ import {
 	upRepeater,
 } from './gamepad-repeaters.js'
 import { getMainPage } from './pages/index.js'
-import { mainPage } from './pages/page-main.js'
 import { toast } from './snackbar.js'
 import { store } from './store.js'
 import { voicevoxProxy } from './tts.js'
@@ -106,11 +106,13 @@ class GamepadController extends ReactiveController {
 						getMainPage()?.copySelectionToClipBoard()
 						break
 					case Mode.TERTIARY:
-						const content = mainPage.getContent()
+						const content = app.mainPage.getContent()
 						if (content) {
-							const input = `[${content}]`
-							copyToClipboard(input)
-							toast(input)
+							const message = `[${content}]`
+							copyToClipboard(message)
+							toast({
+								message,
+							})
 						}
 						break
 				}
@@ -165,10 +167,10 @@ class GamepadController extends ReactiveController {
 						leftPrevRepeater.stop()
 						// rightNextRepeater.stop()
 						// rightPrevRepeater.stop()
-						mainPage.expandHighlight()
+						app.mainPage.expandHighlight()
 						break
 					case Mode.PRIMARY:
-						mainPage.selectAll()
+						app.mainPage.selectAll()
 				}
 			})
 
@@ -247,7 +249,7 @@ class GamepadController extends ReactiveController {
 			gamepad.for(b).before(({ mode }) => {
 				switch (mode) {
 					case Mode.NORMAL:
-						const content = mainPage.getContent()
+						const content = app.mainPage.getContent()
 						if (content) {
 							if (isValidUrl(content)) {
 								window.open(content, '_blank')
@@ -272,7 +274,7 @@ class GamepadController extends ReactiveController {
 			gamepad.for(dpadleft).before(({ mode }) => {
 				switch (mode) {
 					case Mode.NORMAL:
-						const content = mainPage.getContent()
+						const content = app.mainPage.getContent()
 						if (content) {
 							if (hasSomeJapanese(content)) {
 								weblioOpen(content)
@@ -282,7 +284,7 @@ class GamepadController extends ReactiveController {
 					case Mode.PRIMARY:
 						// Trick to avoid trigger this event on page open
 						if (Date.now() - loadTime > 70) {
-							mainPage.openChatGPTSelector()
+							app.mainPage.openChatGPTSelector()
 						}
 						break
 					case Mode.TERTIARY:
@@ -293,11 +295,11 @@ class GamepadController extends ReactiveController {
 			gamepad.for(dpadright).before(({ mode }) => {
 				switch (mode) {
 					case Mode.NORMAL:
-						mainPage.openCNRTLOrJisho()
+						app.mainPage.openCNRTLOrJisho()
 						break
 					case Mode.PRIMARY:
 						{
-							const { highlightContent } = mainPage.highlighter.getInfo()
+							const { highlightContent } = app.mainPage.highlighter.getInfo()
 							if (highlightContent) {
 								japaneseSentenceBreakerOpen(highlightContent)
 							}
@@ -307,7 +309,7 @@ class GamepadController extends ReactiveController {
 			})
 
 			gamepad.for(dpadup).before(({ mode }) => {
-				const { highlightContent } = mainPage.highlighter.getInfo()
+				const { highlightContent } = app.mainPage.highlighter.getInfo()
 				if (!highlightContent) return
 
 				switch (mode) {
@@ -325,13 +327,13 @@ class GamepadController extends ReactiveController {
 			})
 
 			gamepad.for(dpaddown).before(({ mode }) => {
-				const { highlightContent } = mainPage.highlighter.getInfo()
+				const { highlightContent } = app.mainPage.highlighter.getInfo()
 				if (highlightContent) {
 					switch (mode) {
 						case Mode.NORMAL:
 							if (
 								store.mostHighlightedOpenInSameTab &&
-								mainPage.isMostHighlighted()
+								app.mainPage.isMostHighlighted()
 							) {
 								window.location.href = googleImagesUrl(highlightContent)
 							} else {
@@ -341,7 +343,7 @@ class GamepadController extends ReactiveController {
 						case Mode.PRIMARY:
 							if (
 								store.mostHighlightedOpenInSameTab &&
-								mainPage.isMostHighlighted()
+								app.mainPage.isMostHighlighted()
 							) {
 								// window.location.href = lazyMapUrl(highlightContent)
 								window.location.href = lensHistoryUrl(highlightContent)
@@ -357,11 +359,11 @@ class GamepadController extends ReactiveController {
 			gamepad.for(l1).before(async ({ mode }) => {
 				switch (mode) {
 					case Mode.NORMAL:
-						mainPage.speakSelection()
+						app.mainPage.speakSelection()
 						break
 
 					case Mode.PRIMARY:
-						const { content } = mainPage.highlighter.getInfo()
+						const { content } = app.mainPage.highlighter.getInfo()
 						if (content) {
 							// youtubeSearchOpen(`${highlightContent} prononciation`)
 							siteDexOpen(content)
@@ -370,7 +372,7 @@ class GamepadController extends ReactiveController {
 					case Mode.SECONDARY:
 						const lang = store.lang
 						if (
-							lang === 'Ja' &&
+							lang === 'ja' &&
 							store.jaTTS === 'voicevox'
 							// !store.voicevoxRandom
 						) {
@@ -384,9 +386,9 @@ class GamepadController extends ReactiveController {
 							// }
 						}
 						if (
-							(lang === 'En' && store.enTTS === 'kokoro') ||
-							(lang === 'Ja' && store.jaTTS === 'kokoro') ||
-							(lang === 'Fr' && store.frTTS === 'kokoro')
+							(lang === 'en' && store.enTTS === 'kokoro') ||
+							(lang === 'ja' && store.jaTTS === 'kokoro') ||
+							(lang === 'fr' && store.frTTS === 'kokoro')
 						) {
 							// store[`kokoro${lang as Language}VoiceId`] =
 							// 	kokoro.getRandomVoiceId({
@@ -396,7 +398,7 @@ class GamepadController extends ReactiveController {
 
 							// availableVoices[lang].
 						}
-						mainPage.speakSelection()
+						app.mainPage.speakSelection()
 						break
 					case Mode.TERTIARY:
 				}
@@ -408,7 +410,8 @@ class GamepadController extends ReactiveController {
 						if (fullscreenElement.open) {
 							store.fullScreenShowHiragana = !store.fullScreenShowHiragana
 						} else {
-							toast(store.cycleLangs())
+							// TODO: fix
+							// toast(store.cycleLangs())
 						}
 						break
 
@@ -431,7 +434,7 @@ class GamepadController extends ReactiveController {
 					case Mode.NORMAL:
 						if (
 							fullscreenElement.open === false ||
-							mainPage.highlighter.isFullyHighlighted
+							app.mainPage.highlighter.isFullyHighlighted
 						) {
 							// window.close()
 							closeTab()
@@ -440,7 +443,8 @@ class GamepadController extends ReactiveController {
 						}
 						break
 					case Mode.PRIMARY:
-						const { highlightContent, content } = mainPage.highlighter.getInfo()
+						const { highlightContent, content } =
+							app.mainPage.highlighter.getInfo()
 						if (content) {
 							toggleSaveWord(store.lang, content)
 							// store.toggleFavorite(highlightContent)
@@ -452,7 +456,7 @@ class GamepadController extends ReactiveController {
 			gamepad.for(back).before(({ mode }) => {
 				switch (mode) {
 					case Mode.NORMAL:
-						const { highlightContent } = mainPage.highlighter.getInfo()
+						const { highlightContent } = app.mainPage.highlighter.getInfo()
 						if (highlightContent) {
 							fullscreenElement.show(highlightContent)
 						}
