@@ -48,6 +48,8 @@ export const ttsPlayer = new AudioPlayer(
 				throw new Error('No API key')
 			}
 
+			store.bottomRightFeedback = `Gemini: Achird`
+
 			const options: GeminiSpeechOptions = {
 				input: text,
 				model: 'gemini-3.8-flash-lite-tts',
