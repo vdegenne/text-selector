@@ -1,1 +1,0 @@
-import{H as e,K as t,Q as n,W as r,it as i,n as a,rt as o}from"./app-shell-g23YvKt1.js";import{t as s}from"./PageElement-CWav_TVV.js";var c=class extends s{render(){return o`404 NOT FOUND`}};c=r([e(`page-404`),t(a),n(i``)],c);export{c as Page404};
