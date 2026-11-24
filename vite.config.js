@@ -4,6 +4,10 @@ import { materialAll } from 'rollup-plugin-material-all'
 // import { materialAll } from 'rollup-plugin-material-all'
 import { defineConfig } from 'vite'
 
+// console.log('\n\n🚨🚨🚨  VITE CONFIG ARGUMENTS  🚨🚨🚨')
+// console.log('🔥🔥🔥', process.argv, '🔥🔥🔥')
+// console.log('🚨🚨🚨  END OF ARGUMENTS  🚨🚨🚨\n\n')
+
 /**
  * @type {import('vite').Plugin[]}
  */
@@ -163,7 +167,8 @@ export default defineConfig({
 		legalComments: 'none',
 	},
 	optimizeDeps: {
-		exclude: ['@material/web/labs/gb/components/snackbar/md-gb-snackbar.js'],
+		include: ['kuromoji'],
+		// exclude: ['@material/web/labs/gb/components/snackbar/md-gb-snackbar.js'],
 	},
 	plugins,
 })
