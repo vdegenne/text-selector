@@ -26,6 +26,30 @@ const plugins = [
 			}
 		},
 	},
+	{
+		name: 'serve-dictionary-gzip-as-raw',
+		configureServer(server) {
+			server.middlewares.use((req, res, next) => {
+				const url = req.url?.split('?')[0]
+
+				if (!url?.startsWith('/dict/') || !url.endsWith('.gz')) {
+					return next()
+				}
+
+				const originalSetHeader = res.setHeader
+
+				res.setHeader = function (name, value) {
+					if (name.toLowerCase() === 'content-encoding') {
+						return this
+					}
+
+					return originalSetHeader.call(this, name, value)
+				}
+
+				next()
+			})
+		},
+	},
 	cssModules(),
 ]
 
@@ -166,9 +190,26 @@ export default defineConfig({
 	esbuild: {
 		legalComments: 'none',
 	},
-	optimizeDeps: {
-		include: ['kuromoji'],
-		// exclude: ['@material/web/labs/gb/components/snackbar/md-gb-snackbar.js'],
+	resolve: {
+		alias: [
+			{
+				find: /^path$/,
+				replacement: 'path-browserify',
+			},
+		],
 	},
+	// optimizeDeps: {
+	// 	// include: ['kuromoji'],
+	// 	// exclude: ['@material/web/labs/gb/components/snackbar/md-gb-snackbar.js'],
+	// },
+	// resolve: {
+	// 	alias: [
+	// 		{
+	// 			find: /kuromoji\/src\/loader\/NodeDictionaryLoader\.js$/,
+	// 			replacement: 'kuromoji/src/loader/BrowserDictionaryLoader.js',
+	// 		},
+	// 	],
+	// 	mainFields: ['browser', 'module', 'jsnext:main', 'jsnext', 'main'],
+	// },
 	plugins,
 })

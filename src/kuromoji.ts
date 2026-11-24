@@ -1,3 +1,69 @@
+/**
+ * Kuromoji browser integration (Vite)
+ *
+ * 1. Install dependencies:
+ *
+ *    npm install -D kuromoji path-browserify patch-package
+ *
+ * 2. Copy dictionary files:
+ *
+ *    mkdir -p public/dict
+ *    cp -r node_modules/kuromoji/dict/* public/dict/
+ *
+ * 3. Configure Vite (`vite.config.ts`):
+ *
+ *    resolve: {
+ *      alias: [
+ *        {
+ *          find: /^path$/,
+ *          replacement: 'path-browserify',
+ *        },
+ *      ],
+ *    }
+ *
+ * 4. Patch zlibjs:
+ *
+ *    File: node_modules/zlibjs/bin/gunzip.min.js
+ *
+ *    Replace:
+ *    var p=void 0,aa=this;
+ *
+ *    With:
+ *    var p=void 0,aa=globalThis;
+ *
+ *    Generate patch:
+ *    npx patch-package zlibjs
+ *
+ * 5. Patch Kuromoji's browser loader:
+ *
+ *    File: node_modules/kuromoji/src/loader/BrowserDictionaryLoader.js
+ *
+ *    Replace:
+ *    new zlib.Zlib.Gunzip(
+ *
+ *    With:
+ *    new globalThis.Zlib.Gunzip(
+ *
+ *    Generate patch:
+ *    npx patch-package kuromoji
+ *
+ * 6. Add to package.json:
+ *    "postinstall": "patch-package"
+ *
+ * 7. Add a Vite middleware plugin:
+ *    Intercept requests under `/dict/` ending in `.gz`.
+ *    Prevent the response from setting the `Content-Encoding` header.
+ *    This ensures the browser passes the original compressed bytes
+ *    to Kuromoji instead of decompressing them automatically.
+ *
+ * 8. Configure Kuromoji's dictionary path:
+ *
+ *    dicPath: `${import.meta.env.BASE_URL}dict/`
+ *
+ * 9. Force Vite dependency optimization:
+ *    npm run dev -- --force
+ */
+
 import * as kuromoji from 'kuromoji'
 
 type Tokenizer = kuromoji.Tokenizer<kuromoji.IpadicFeatures>
