@@ -1,1 +1,0 @@
-import{$ as e,V as t,W as n,it as r}from"./app-shell-D2mUk4LW.js";var i=class extends e{constructor(...e){super(...e),this.active=!1}static{this.styles=r`:host{flex-direction:column;flex:1;display:flex}:host(:not([active])){display:none}`}shouldUpdate(e){return this.active}};n([t({type:Boolean,reflect:!0})],i.prototype,`active`,void 0);export{i as t};
