@@ -28,6 +28,7 @@ import {
 import { getMainPage } from './pages/index.js'
 import { toast } from './snackbar.js'
 import { store } from './store.js'
+import { translate } from './translate.js'
 import { voicevoxProxy } from './tts.js'
 import { copyToClipboard, isValidUrl, japsyndexOpen } from './utils.js'
 import { toggleSaveWord } from './words-client.js'
@@ -308,14 +309,18 @@ class GamepadController extends ReactiveController {
 				}
 			})
 
-			gamepad.for(dpadup).before(({ mode }) => {
+			gamepad.for(dpadup).before(async ({ mode }) => {
 				const { highlightContent } = app.mainPage.highlighter.getInfo()
 				if (!highlightContent) return
 
 				switch (mode) {
 					case Mode.NORMAL:
 						// translateSelection()
-						googleTranslateOpen(highlightContent, 'french')
+						// googleTranslateOpen(highlightContent, 'french')
+						const translation = await translate(highlightContent, '', 'fr')
+						if (translation) {
+							toast(translation, { timeoutMs: 9000 })
+						}
 						break
 					case Mode.PRIMARY:
 						japsyndexOpen(highlightContent)
