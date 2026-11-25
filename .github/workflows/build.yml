@@ -18,6 +18,11 @@ jobs:
 
       - run: npm ci
 
+      - name: Verify Kuromoji source patch
+        run: |
+          echo "Checking BrowserDictionaryLoader.js:"
+          grep -nE 'Gunzip|0x1f' node_modules/kuromoji/src/loader/BrowserDictionaryLoader.js
+
       - run: npm run build
         env:
           WIREIT_FAILURES: continue
