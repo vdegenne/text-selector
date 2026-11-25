@@ -92,7 +92,7 @@ try {
 				// globIgnores: ['data/**/exchangeInfo.json'],
 			},
 			registerType: 'autoUpdate',
-			includeAssets: ['**/*.{mp3,png,ico,json,svg,otf,ttf,woff2}'],
+			includeAssets: ['**/*.{mp3,png,ico,json,svg,otf,ttf,woff2,dat}'],
 			manifest: {
 				theme_color: undefined,
 				background_color: undefined,

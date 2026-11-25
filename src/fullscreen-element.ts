@@ -2,7 +2,7 @@ import { MdDialog } from '@material/web/all.js'
 import '@material/web/dialog/dialog.js'
 import { withController } from '@snar/lit'
 import { Debouncer } from '@vdegenne/debouncer'
-import { convert } from '@vdegenne/kuroshiro'
+import { Kuromoji } from '@vdegenne/kuromoji'
 import { customElement } from 'custom-element-decorator'
 import { SS } from 'html-vision/ss.js'
 import { css, html, LitElement, PropertyValues } from 'lit'
@@ -13,6 +13,10 @@ import { app } from './app-shell/app-shell.js'
 import { getFontSize } from './functions.js'
 import { RemoteInfo, stateless } from './stateless.js'
 import { store } from './store.js'
+
+const kuromoji = new Kuromoji({
+	onProgress(progress) {},
+})
 
 @customElement({ name: 'fullscreen-element', inject: true })
 @withStyles(css`
@@ -161,8 +165,8 @@ class FullscreenElement extends LitElement {
 				// 			})
 				// 			.catch(() => {}),
 				(async () => {
-					// info.hiragana = await toHiragana(query)
-					info.hiragana = await convert(query)
+					info.hiragana = await kuromoji.toHiragana(query)
+					// info.hiragana = await convert(query)
 				})(),
 			)
 		}
