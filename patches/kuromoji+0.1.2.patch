@@ -1,16 +1,8 @@
 diff --git a/node_modules/kuromoji/src/loader/BrowserDictionaryLoader.js b/node_modules/kuromoji/src/loader/BrowserDictionaryLoader.js
-index 04bfdcd..d41c102 100644
+index 04bfdcd..a798abb 100644
 --- a/node_modules/kuromoji/src/loader/BrowserDictionaryLoader.js
 +++ b/node_modules/kuromoji/src/loader/BrowserDictionaryLoader.js
-@@ -17,7 +17,6 @@
- 
- "use strict";
- 
--var zlib = require("zlibjs/bin/gunzip.min.js");
- var DictionaryLoader = require("./DictionaryLoader");
- 
- /**
-@@ -45,11 +44,8 @@ BrowserDictionaryLoader.prototype.loadArrayBuffer = function (url, callback) {
+@@ -45,11 +45,15 @@ BrowserDictionaryLoader.prototype.loadArrayBuffer = function (url, callback) {
              callback(xhr.statusText, null);
              return;
          }
@@ -19,7 +11,14 @@ index 04bfdcd..d41c102 100644
 -        var gz = new zlib.Zlib.Gunzip(new Uint8Array(arraybuffer));
 -        var typed_array = gz.decompress();
 -        callback(null, typed_array.buffer);
-+        callback(null, xhr.response);
++        var buffer = new Uint8Array(xhr.response);
++
++        // Decompress only if the browser hasn't already done it.
++        if (buffer[0] === 0x1f && buffer[1] === 0x8b) {
++            buffer = new globalThis.Zlib.Gunzip(buffer).decompress();
++        }
++
++        callback(null, buffer.buffer);
      };
      xhr.onerror = function (err) {
          callback(err, null);
