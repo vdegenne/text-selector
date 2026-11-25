@@ -10,6 +10,7 @@ import {
 import '@material/web/iconbutton/icon-button.js'
 // import '@material/web/labs/gb/components/slider/md-gb-slider.js'
 // import '@material/web/labs/gb/components/slider/md-gb-slider.js'
+import '@material/web/labs/gb/components/slider/md-gb-slider.js'
 import '@material/web/labs/gb/styles/icon/md-gb-icon.js'
 import '@material/web/list/list-item.js'
 import '@material/web/select/filled-select.js'

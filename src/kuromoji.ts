@@ -10,7 +10,7 @@
  *    mkdir -p public/dict
  *    cp -r node_modules/kuromoji/dict/* public/dict/
  *
- * 3. Configure Vite (`vite.config.ts`):
+ * 3. Configure Vite (vite.config.ts):
  *
  *    resolve: {
  *      alias: [
@@ -21,46 +21,31 @@
  *      ],
  *    }
  *
- * 4. Patch zlibjs:
+ * 4. Apply the required patches:
  *
- *    File: node_modules/zlibjs/bin/gunzip.min.js
+ *    Patches are available here:
+ *    https://github.com/vdegenne/text-selector/tree/main/patches
  *
- *    Replace:
- *    var p=void 0,aa=this;
+ *    Copy the patch files into your project's ./patches/ directory.
  *
- *    With:
- *    var p=void 0,aa=globalThis;
+ *    Add to package.json:
  *
- *    Generate patch:
- *    npx patch-package zlibjs
- *
- * 5. Patch Kuromoji's browser loader:
- *
- *    File: node_modules/kuromoji/src/loader/BrowserDictionaryLoader.js
- *
- *    Replace:
- *    new zlib.Zlib.Gunzip(
- *
- *    With:
- *    new globalThis.Zlib.Gunzip(
- *
- *    Generate patch:
- *    npx patch-package kuromoji
- *
- * 6. Add to package.json:
  *    "postinstall": "patch-package"
  *
- * 7. Add a Vite middleware plugin:
- *    Intercept requests under `/dict/` ending in `.gz`.
- *    Prevent the response from setting the `Content-Encoding` header.
- *    This ensures the browser passes the original compressed bytes
- *    to Kuromoji instead of decompressing them automatically.
+ *    Run:
  *
- * 8. Configure Kuromoji's dictionary path:
+ *    npx patch-package
+ *
+ *    This applies all patches to the installed dependencies.
+ *    The postinstall script automatically reapplies them after
+ *    every npm install.
+ *
+ * 5. Configure Kuromoji's dictionary path:
  *
  *    dicPath: `${import.meta.env.BASE_URL}dict/`
  *
- * 9. Force Vite dependency optimization:
+ * 6. Force Vite dependency optimization if needed:
+ *
  *    npm run dev -- --force
  */
 
