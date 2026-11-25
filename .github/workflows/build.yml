@@ -8,8 +8,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 26
           cache: npm
@@ -17,6 +17,12 @@ jobs:
       - uses: google/wireit@setup-github-actions-caching/v2
 
       - run: npm ci
+      - name: Verify Kuromoji patch
+        run: |
+          echo "Generated bundles:"
+          ls -lh dist/assets/*.js
+          echo "Bundles containing Gunzip:"
+          grep -l 'Gunzip' dist/assets/*.js
       - run: npm run build
         env:
           WIREIT_FAILURES: continue
