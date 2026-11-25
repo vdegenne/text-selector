@@ -2,6 +2,7 @@ import { MdDialog } from '@material/web/all.js'
 import '@material/web/dialog/dialog.js'
 import { withController } from '@snar/lit'
 import { Debouncer } from '@vdegenne/debouncer'
+import { convert } from '@vdegenne/kuroshiro'
 import { customElement } from 'custom-element-decorator'
 import { SS } from 'html-vision/ss.js'
 import { css, html, LitElement, PropertyValues } from 'lit'
@@ -10,7 +11,6 @@ import { property, query, state } from 'lit/decorators.js'
 import { jpsyndexAPI } from './api.js'
 import { app } from './app-shell/app-shell.js'
 import { getFontSize } from './functions.js'
-import { toHiragana } from './kuromoji.js'
 import { RemoteInfo, stateless } from './stateless.js'
 import { store } from './store.js'
 
@@ -161,7 +161,8 @@ class FullscreenElement extends LitElement {
 				// 			})
 				// 			.catch(() => {}),
 				(async () => {
-					info.hiragana = await toHiragana(query)
+					// info.hiragana = await toHiragana(query)
+					info.hiragana = await convert(query)
 				})(),
 			)
 		}
