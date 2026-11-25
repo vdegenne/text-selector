@@ -78,7 +78,8 @@
 				"./vite.config.js",
 				"./src/",
 				"./index.html",
-				"./public"
+				"./public/",
+				"./patches/"
 			],
 			"output": [
 				"./dist/"
