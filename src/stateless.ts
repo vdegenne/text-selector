@@ -1,8 +1,11 @@
-import {ReactiveController as Snar, state} from '@snar/lit'
-import {TemplateResult} from 'lit'
+import { ReactiveController as Snar, state } from '@snar/lit'
+import { TemplateResult } from 'lit'
 
 export interface RemoteInfo {
 	collections?: string
+	/**
+	 * @deprecated
+	 */
 	hiragana?: string
 }
 
@@ -16,7 +19,7 @@ class StatelessController extends Snar {
 	// @state() special = false
 	@state() feedback: string | TemplateResult = ''
 
-	remoteInfoMap: {[query: string]: RemoteInfo} = {}
+	remoteInfoMap: { [query: string]: RemoteInfo } = {}
 
 	@state() cleanLetters: string[] = []
 	@state() finalLetters: string[] = []

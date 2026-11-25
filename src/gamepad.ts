@@ -25,7 +25,6 @@ import {
 	rightUpRepeater,
 	upRepeater,
 } from './gamepad-repeaters.js'
-import { toHiragana } from './kuromoji.js'
 import { getMainPage } from './pages/index.js'
 import { toast } from './snackbar.js'
 import { store } from './store.js'
@@ -318,10 +317,6 @@ class GamepadController extends ReactiveController {
 					case Mode.NORMAL:
 						// translateSelection()
 						// googleTranslateOpen(highlightContent, 'french')
-						console.log('?')
-						const hiragana = await toHiragana(highlightContent)
-						toast(hiragana)
-						return
 						const translation = await translate(highlightContent, '', 'fr')
 						if (translation) {
 							toast(translation, { timeoutMs: 9000 })

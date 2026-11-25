@@ -55,7 +55,7 @@ type Tokenizer = kuromoji.Tokenizer<kuromoji.IpadicFeatures>
 
 let tokenizerPromise: Promise<Tokenizer> | undefined
 
-const readingCache = new Map<string, string>()
+const readingCache = new Map<string, Promise<string>>()
 
 function loadTokenizer(): Promise<Tokenizer> {
 	if (!tokenizerPromise) {
@@ -87,48 +87,57 @@ function katakanaToHiragana(text: string): string {
 	)
 }
 
-export async function toHiragana(text: string): Promise<string> {
-	if (!text) return text
+async function analyze(text: string): Promise<string> {
+	// No dictionary required when the text contains no kanji.
+	if (!/\p{Script=Han}/u.test(text)) {
+		return katakanaToHiragana(text)
+	}
+
+	const tokenizer = await loadTokenizer()
+	const tokens = tokenizer.tokenize(text)
+
+	let result = ''
+	let cursor = 0
+
+	for (const token of tokens) {
+		const start = token.word_position - 1
+
+		// Preserve whitespace and other characters between tokens.
+		if (start > cursor) {
+			result += text.slice(cursor, start)
+		}
+
+		const reading =
+			token.reading && token.reading !== '*'
+				? token.reading
+				: token.surface_form
+
+		result += katakanaToHiragana(reading)
+		cursor = start + token.surface_form.length
+	}
+
+	result += text.slice(cursor)
+
+	return result
+}
+
+export function toHiragana(text: string): Promise<string> {
+	if (!text) {
+		return Promise.resolve(text)
+	}
 
 	const cached = readingCache.get(text)
 
-	if (cached !== undefined) {
+	if (cached) {
 		return cached
 	}
 
-	let result: string
+	const promise = analyze(text).catch((error: unknown) => {
+		readingCache.delete(text)
+		throw error
+	})
 
-	// No dictionary required when the text contains no kanji.
-	if (!/\p{Script=Han}/u.test(text)) {
-		result = katakanaToHiragana(text)
-	} else {
-		const tokenizer = await loadTokenizer()
-		const tokens = tokenizer.tokenize(text)
+	readingCache.set(text, promise)
 
-		result = ''
-		let cursor = 0
-
-		for (const token of tokens) {
-			const start = token.word_position - 1
-
-			// Preserve whitespace and other characters between tokens.
-			if (start > cursor) {
-				result += text.slice(cursor, start)
-			}
-
-			const reading =
-				token.reading && token.reading !== '*'
-					? token.reading
-					: token.surface_form
-
-			result += katakanaToHiragana(reading)
-			cursor = start + token.surface_form.length
-		}
-
-		result += text.slice(cursor)
-	}
-
-	readingCache.set(text, result)
-
-	return result
+	return promise
 }

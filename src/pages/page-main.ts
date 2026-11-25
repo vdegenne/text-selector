@@ -1,4 +1,5 @@
 import { withController } from '@snar/lit'
+import { Debouncer } from '@vdegenne/debouncer'
 import { HighlightManager, NavigationStyle } from '@vdegenne/highlight-manager'
 import {
 	chatGptMediatorOpen,
@@ -12,12 +13,12 @@ import { visibilityCheck } from 'html-vision/visibility.js'
 import { css, html } from 'lit'
 import { withStyles } from 'lit-with-styles'
 import { customElement, property, query, queryAll } from 'lit/decorators.js'
-import toast from 'toastit'
 import { playClick } from '../assets/assets.js'
 import { NEW_LINE } from '../constants.js'
 import { fullscreenElement } from '../fullscreen-element.js'
 import { indexesHistory } from '../indexesHistory.js'
 import { Language } from '../lang.js'
+import { toast } from '../snackbar.js'
 import { stateless } from '../stateless.js'
 import { store } from '../store.js'
 import {
@@ -40,8 +41,6 @@ declare global {
 		'page-main': PageMain
 	}
 }
-
-// const {fullscreenElement} = await import('../fullscreen-element.js')
 
 @customElement('page-main')
 @withController(store)
@@ -120,6 +119,32 @@ export class PageMain extends PageElement {
 
 	// firstHighlight = true
 
+	#onHighlightChange = new Debouncer(
+		async () => {
+			const { highlightContent } = this.highlighter.getInfo()
+			if (highlightContent) {
+				// const hiragana = await toHiragana(highlightContent)
+				// toast({ message: hiragana })
+				// fullscreenElement.hiragana = hiragana
+
+				// fullscreenElement.input = highlightContent
+				// fullscreenElement.updateRemoteInfo.cancel()
+				// if (highlightContent.length < 15) {
+				// 	const info = stateless.remoteInfoMap[highlightContent]
+				// 	if (info && info.collections) {
+				// 		fullscreenElement.updateRemoteInfo.call(highlightContent)
+				// 	} else {
+				// 		fullscreenElement.updateRemoteInfo.debounce(highlightContent)
+				// 	}
+				// }
+				//
+				// fullscreenElement.hiragana = await toHiragana(highlightContent)
+			}
+		},
+		500,
+		{ throwOnCancel: false },
+	)
+
 	highlighter = new HighlightManager('.letter', {
 		navigationStyle: NavigationStyle.RELATIVE_TO,
 		relativeOptions: {
@@ -172,12 +197,18 @@ export class PageMain extends PageElement {
 				fullscreenElement.input = highlightContent
 				if (highlightContent.length < 15) {
 					const info = stateless.remoteInfoMap[highlightContent]
+					if (info && info.hiragana) {
+						fullscreenElement.hiragana = info.hiragana
+					}
 					if (info && info.collections) {
+						toast('retrieved ')
 						fullscreenElement.updateRemoteInfo.call(highlightContent)
 					} else {
 						fullscreenElement.updateRemoteInfo.debounce(highlightContent)
 					}
 				}
+
+				this.#onHighlightChange.debounce()
 			}
 
 			// if (this.firstHighlight) {

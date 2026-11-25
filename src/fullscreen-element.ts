@@ -10,6 +10,7 @@ import { property, query, state } from 'lit/decorators.js'
 import { jpsyndexAPI } from './api.js'
 import { app } from './app-shell/app-shell.js'
 import { getFontSize } from './functions.js'
+import { toHiragana } from './kuromoji.js'
 import { RemoteInfo, stateless } from './stateless.js'
 import { store } from './store.js'
 
@@ -147,18 +148,21 @@ class FullscreenElement extends LitElement {
 
 		if (!info.hiragana) {
 			tasks.push(
-				jpsyndexAPI
-					.get(`/hiragana/${encodeURIComponent(query)}` as '/hiragana/:query')
-					.then(async ({ response }) => {
-						if (!response.ok) throw 0
-
-						const map = await response.json()
-
-						if (!map[query]) throw 0
-
-						info.hiragana = map[query]
-					})
-					.catch(() => {}),
+				// 		jpsyndexAPI
+				// 			.get(`/hiragana/${encodeURIComponent(query)}` as '/hiragana/:query')
+				// 			.then(async ({ response }) => {
+				// 				if (!response.ok) throw 0
+				//
+				// 				const map = await response.json()
+				//
+				// 				if (!map[query]) throw 0
+				//
+				// 				info.hiragana = map[query]
+				// 			})
+				// 			.catch(() => {}),
+				(async () => {
+					info.hiragana = await toHiragana(query)
+				})(),
 			)
 		}
 
