@@ -3,7 +3,7 @@ import { type MdInputChip } from '@material/web/chips/input-chip.js'
 import { type CloseMenuEvent, type MdMenu } from '@material/web/menu/menu.js'
 import { html, type TemplateResult } from 'lit'
 import { createRef, ref } from 'lit/directives/ref.js'
-import { DEFAULT_SHARED_OPTIONS, SharedOptions } from '../index.js'
+import { DEFAULT_SHARED_OPTIONS, type SharedOptions } from '../options.js'
 
 export interface ChipSelectOptions extends SharedOptions<MdFilterChip> {
 	/**

@@ -1,12 +1,12 @@
 import { type MdFilledTextField } from '@material/web/textfield/filled-text-field.js'
 import { type MdOutlinedTextField } from '@material/web/textfield/outlined-text-field.js'
-import { html, nothing, TemplateResult } from 'lit'
+import { html, nothing, type TemplateResult } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { createRef, ref } from 'lit/directives/ref.js'
 import { styleMap } from 'lit/directives/style-map.js'
 import { literal, html as staticHtml, StaticValue } from 'lit/static-html.js'
 import { bindInput } from '../bindInput.js'
-import { DEFAULT_SHARED_OPTIONS, type SharedOptions } from '../index.js'
+import { DEFAULT_SHARED_OPTIONS, type SharedOptions } from '../options.js'
 
 type TextField = MdFilledTextField | MdOutlinedTextField
 

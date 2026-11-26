@@ -1,9 +1,9 @@
-import { MdFilledSelect } from '@material/web/select/filled-select.js'
+import { type MdFilledSelect } from '@material/web/select/filled-select.js'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { createRef, ref } from 'lit/directives/ref.js'
 import { styleMap } from 'lit/directives/style-map.js'
-import { DEFAULT_SHARED_OPTIONS, SharedOptions } from '../index.js'
+import { DEFAULT_SHARED_OPTIONS, type SharedOptions } from '../options.js'
 
 export interface SelectOptions extends SharedOptions<MdFilledSelect> {
 	/**

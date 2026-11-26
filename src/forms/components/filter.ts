@@ -2,7 +2,7 @@ import { type ChipSetElement } from '@mahmoodkhalil/material-web-3-demo/labs/gb/
 import { type ChipElement } from '@material/web/labs/gb/components/chip/chip-element.js'
 import { html } from 'lit'
 import { createRef, ref, type Ref } from 'lit/directives/ref.js'
-import { DEFAULT_SHARED_OPTIONS, type SharedOptions } from '../index.js'
+import { DEFAULT_SHARED_OPTIONS, type SharedOptions } from '../options.js'
 
 export const FilterBehavior = {
 	ZeroOrMore: 'zero-or-more',

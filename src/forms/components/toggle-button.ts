@@ -1,6 +1,6 @@
-import { IconButtonElement } from '@material/web/labs/gb/components/iconbutton/icon-button-element.js'
+import { type IconButtonElement } from '@material/web/labs/gb/components/iconbutton/icon-button-element.js'
 import { html, TemplateResult } from 'lit'
-import { DEFAULT_SHARED_OPTIONS, SharedOptions } from '../index.js'
+import { type SharedOptions, DEFAULT_SHARED_OPTIONS } from '../options.js'
 
 export interface ToggleButtonOptions extends SharedOptions<IconButtonElement> {
 	icon: string | TemplateResult

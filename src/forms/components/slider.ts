@@ -4,7 +4,7 @@ import { html, type TemplateResult } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { createRef, ref } from 'lit/directives/ref.js'
 import { styleMap } from 'lit/directives/style-map.js'
-import { DEFAULT_SHARED_OPTIONS, SharedOptions } from '../index.js'
+import { DEFAULT_SHARED_OPTIONS, type SharedOptions } from '../options.js'
 
 export interface SliderOptions extends SharedOptions<MdSlider> {
 	min: number

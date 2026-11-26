@@ -1,10 +1,10 @@
-import { CheckboxElement } from '@material/web/labs/gb/components/checkbox/checkbox-element.js'
+import { type CheckboxElement } from '@material/web/labs/gb/components/checkbox/checkbox-element.js'
 import '@material/web/labs/gb/components/switch/md-gb-switch.js'
-import { SwitchElement } from '@material/web/labs/gb/components/switch/switch-element.js'
-import { html, TemplateResult } from 'lit'
+import { type SwitchElement } from '@material/web/labs/gb/components/switch/switch-element.js'
+import { html, type TemplateResult } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { styleMap } from 'lit/directives/style-map.js'
-import { DEFAULT_SHARED_OPTIONS, SharedOptions } from '../index.js'
+import { DEFAULT_SHARED_OPTIONS, type SharedOptions } from '../options.js'
 
 export interface SwitchOptions extends SharedOptions<SwitchElement> {
 	/** @default 'button' */
@@ -46,12 +46,7 @@ export function SWITCH<T>(
 			_options.disabled || _options.type === 'text' ? 'initial' : 'pointer',
 		..._options.style,
 	}
-	if (!customElements.get('md-list-item')) {
-		// import('@material/web/list/list-item.js');
-	}
-	if (!customElements.get('md-switch')) {
-		// import('@material/web/switch/switch.js');
-	}
+
 	return html`
 		<md-gb-list-item
 			type="${_options.type}"
