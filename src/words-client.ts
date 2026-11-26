@@ -1,9 +1,9 @@
-import {Endpoint, Rest} from '@vdegenne/mini-rest'
-import toast from 'toastit'
+import { Endpoint, Rest } from '@vdegenne/mini-rest'
+import { toast } from './snackbar.js'
 
 const wordsClient = new Rest<{
 	post: {
-		toggle: Endpoint<{lang: string; word: string}, {removed: boolean}>
+		toggle: Endpoint<{ lang: string; word: string }, { removed: boolean }>
 	}
 }>('http://127.0.0.1:8000')
 

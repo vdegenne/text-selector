@@ -4,11 +4,7 @@
 import './styles/styles.js'
 import './styles/themeStore.js'
 
-import '@material/web/all.js'
-import '@material/web/labs/gb/components/all.js'
-import { adoptStyles } from '@material/web/labs/gb/styles/adopt-styles.js'
-import m3Styles from '@material/web/labs/gb/styles/m3.cssresult.js'
-adoptStyles(document, [m3Styles])
+import './material-web.js'
 
 import { app } from './app-shell/app-shell.js'
 document.querySelector('material-shell')?.appendChild(app)

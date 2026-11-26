@@ -1,41 +1,29 @@
-// import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/button/md-gb-button.js'
-// import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/dialog/md-gb-dialog.js'
-// import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/slider/md-gb-slider.js'
-// import '@mahmoodkhalil/material-web-3-demo/labs/gb/styles/icon/md-gb-icon.js'
-import {
-	MdFilledTextField,
-	type MdDialog,
-	type MdTabs,
-} from '@material/web/all.js'
-import '@material/web/iconbutton/icon-button.js'
-// import '@material/web/labs/gb/components/slider/md-gb-slider.js'
-// import '@material/web/labs/gb/components/slider/md-gb-slider.js'
-import '@material/web/labs/gb/components/slider/md-gb-slider.js'
-import '@material/web/labs/gb/styles/icon/md-gb-icon.js'
-import '@material/web/list/list-item.js'
-import '@material/web/select/filled-select.js'
-import '@material/web/select/select-option.js'
-import '@material/web/slider/slider.js'
-import '@material/web/switch/switch.js'
-import '@material/web/textfield/filled-text-field.js'
+import { type SliderElement } from '@material/web/labs/gb/components/slider/slider-element.js'
+import { type TabsElement } from '@material/web/labs/gb/components/tabs/tabs-element.js'
 import { withController } from '@snar/lit'
-import { geminiModels } from '@vdegenne/gemini'
+import { geminiModels } from '@vdegenne/gemini/core'
 import { customElement } from 'custom-element-decorator'
 import { html, LitElement } from 'lit'
 import { withStyles } from 'lit-with-styles'
 import { query, state } from 'lit/decorators.js'
-import toast from 'toastit'
 import '../card-element.js'
 import { fontFamily } from '../constants.js'
+import { SELECT } from '../forms/components/select.js'
+import { SLIDER } from '../forms/components/slider.js'
+import { SWITCH } from '../forms/components/switch.js'
 import { gamepadCtrl } from '../gamepad.js'
-import '../material/dialog-patch.js'
-import '../material/item-patch.js'
 import { store } from '../store.js'
-import { renderThemeElements } from '../styles/theme-elements.js'
 import { themeStore } from '../styles/themeStore.js'
 import { enTTSs, frTTSs, jaTTSs } from '../tts2.js'
 import { copyToClipboard } from '../utils.js'
 import styles from './settings-dialog.css?inline'
+
+// TODO: remove when expressive elements are officially released
+import { type DialogElement } from '@mahmoodkhalil/material-web-3-demo/labs/gb/components/dialog/dialog-element.js'
+import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/dialog/md-gb-dialog.js'
+import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/textfield/md-gb-text-field.js'
+import { TextFieldElement } from '@mahmoodkhalil/material-web-3-demo/labs/gb/components/textfield/text-field-element.js'
+import { toast } from '../snackbar.js'
 
 type TtsSelectedLabel = 'JA' | 'EN' | 'FR'
 
@@ -44,19 +32,15 @@ type TtsSelectedLabel = 'JA' | 'EN' | 'FR'
 @withController(themeStore)
 @withController(store)
 export class SettingsDialog extends LitElement {
-	@state() open = false
-
 	@state() passwordHidden = true
 
 	@state() ttsSelectedLabel: TtsSelectedLabel = 'JA'
 
-	@query('md-dialog') dialog!: MdDialog
+	@query('md-gb-dialog') dialog!: DialogElement
 
 	render() {
-		// console.log('RENDER.........................')
 		return html`
-			<md-dialog
-				?open="${this.open}"
+			<md-gb-dialog
 				@open="${() => {
 					try {
 						gamepadCtrl.gamepad.enabled = false
@@ -67,28 +51,29 @@ export class SettingsDialog extends LitElement {
 						gamepadCtrl.gamepad.enabled = true
 					} catch {}
 				}}"
-				@closed="${() => (this.open = false)}"
-				class="w-full h-full"
-				style="max-width:min(100vw - 18px, 600px); max-height:min(100vh - 12px, 1000px);"
 			>
-				<!-- <md-gb-icon slot=icon>settings</md-gb-icon> -->
-				<span slot="headline"> Settings </span>
+				<span slot="headline" class="flex gap-3"
+					><md-gb-icon>settings</md-gb-icon>Settings</span
+				>
 
-				<div slot="content" class="flex flex-col gap-5">
-					<card-element headline="global">
-						${store.F.SWITCH('Break on punctuations', 'breakSentences', { supportingText: 'If enabled, will add new lines between sentence punctuations.' })}
-						${store.F.SWITCH(
+				<div class="flex flex-col gap-5">
+					<card-element headline="Global">
+						${SWITCH('Break on punctuations', store, 'breakSentences', { supportingText: 'If enabled, will add new lines between sentence punctuations.' })}
+						${SWITCH(
 							'Open in same tab on most highlighted',
+							store,
 							'mostHighlightedOpenInSameTab',
 						)}
-						<md-divider></md-divider>
-						${store.F.SWITCH(
+						<md-gb-divider></md-gb-divider>
+						${SWITCH(
 							"Close fullscreen on window's focus",
+							store,
 							'closeFullScreenOnWindowFocus',
 							{},
 						)}
-						${store.F.SWITCH(
+						${SWITCH(
 							'Prevent closing on full selection',
+							store,
 							'fullscreenPreventClosingWhenFullSelection',
 							{
 								disabled: !store.closeFullScreenOnWindowFocus,
@@ -104,14 +89,14 @@ export class SettingsDialog extends LitElement {
 							value="${store.volume}"
 							class="w-full"
 							@change="${(e: Event) => {
-								// store.volume = (e.currentTarget as SliderElement).value
+								store.volume = (e.currentTarget as SliderElement).value
 							}}"
 						>
 							<md-gb-icon slot="icon">volume_up</md-gb-icon>
 						</md-gb-slider>
 					</card-element>
 
-					<card-element headline="display">
+					<card-element headline="Display">
 						<md-elevated-card
 							hidden
 							jp
@@ -122,48 +107,59 @@ export class SettingsDialog extends LitElement {
 								>武力を用いた対抗措置は基本的に禁止されるが</span
 							>
 						</md-elevated-card>
-						${store.F.SELECT('Font family', 'font', fontFamily, { menuPositioning: 'popover' })}
-						${store.F.SLIDER('Font size (px)', 'fontSizePx', {
-							min: 8,
-							max: 100,
-							step: 1,
-							// timeoutMs: 20,
-						})}
-						${store.F.SLIDER('Font weight', 'fontWeight', {
-							min: 100,
-							max: 900,
-							step: 50,
-							// timeoutMs: 20,
-						})}
-						${store.F.SLIDER(
-							'Line vertical padding (px)',
-							'lineVerticalPaddingPx',
+						${SELECT('Font family', store, 'font', fontFamily, { menuPositioning: 'popover' })}
+						${SLIDER(
+							{ label: 'Font size (px)', host: store, key: 'fontSizePx' },
+							{
+								min: 8,
+								max: 100,
+								step: 1,
+								iconName: 'format_size',
+								// timeoutMs: 20,
+							},
+						)}
+						${SLIDER(
+							{ label: 'Font weight', host: store, key: 'fontWeight' },
+							{
+								min: 100,
+								max: 900,
+								step: 50,
+								iconName: 'format_bold',
+								// timeoutMs: 20,
+							},
+						)}
+						${SLIDER(
+							{
+								label: 'Line vertical padding (px)',
+								host: store,
+								key: 'lineVerticalPaddingPx',
+							},
 							{
 								min: 0,
 								max: 50,
 								step: 1,
+								iconName: 'height',
 							},
 						)}
 					</card-element>
 
 					<card-element headline="TTS">
-						<md-tabs
+						<md-gb-tabs
 							@change="${(event: CustomEvent) => {
-								const tabs = event.currentTarget as MdTabs
-								const label = tabs.activeTab?.textContent?.trim()
-
+								const tabs = event.currentTarget as TabsElement
+								const label = tabs.selectedTab.textContent?.trim()
 								this.ttsSelectedLabel = label as TtsSelectedLabel
 							}}"
 						>
-							<md-primary-tab>JA</md-primary-tab>
-							<md-primary-tab>EN</md-primary-tab>
-							<md-primary-tab>FR</md-primary-tab>
-						</md-tabs>
+							<md-gb-tab>JA</md-gb-tab>
+							<md-gb-tab>EN</md-gb-tab>
+							<md-gb-tab>FR</md-gb-tab>
+						</md-gb-tabs>
 
 						${
 							this.ttsSelectedLabel === 'JA'
 								? html`<!---->
-										${store.F.SELECT('TTS', 'jaTTS', jaTTSs)}
+										${SELECT('TTS', store, 'jaTTS', jaTTSs)}
 										<!---->`
 								: null
 						}
@@ -171,20 +167,23 @@ export class SettingsDialog extends LitElement {
 							?hidden=${this.ttsSelectedLabel !== 'EN'}
 							class="flex flex-col gap-2"
 						>
-							${store.F.SELECT('TTS', 'enTTS', enTTSs)}
+							${SELECT('TTS', store, 'enTTS', enTTSs)}
 						</div>
 						<div
 							?hidden=${this.ttsSelectedLabel !== 'FR'}
 							class="flex flex-col gap-2"
 						>
-							${store.F.SELECT('TTS', 'frTTS', frTTSs)}
+							${SELECT('TTS', store, 'frTTS', frTTSs)}
 						</div>
 					</card-element>
 
 					<card-element headline="Gamepad">
-						${store.F.SLIDER(
-							'Repeater initial delay (ms)',
-							'repeaterInitialDelayMs',
+						${SLIDER(
+							{
+								label: 'Repeater initial delay (ms)',
+								host: store,
+								key: 'repeaterInitialDelayMs',
+							},
 							{
 								min: 100,
 								max: 500,
@@ -193,47 +192,56 @@ export class SettingsDialog extends LitElement {
 								ticks: true,
 							},
 						)}
-						${store.F.SLIDER('Repeater interval (ms)', 'repeaterIntervalMs', {
-							min: 10,
-							max: 500,
-							timeoutMs: 200,
-						})}
-						${store.F.SWITCH('Loop', 'loop', { supportingText: 'Whether to loop highlight on edges or not.' })}
+						${SLIDER(
+							{
+								label: 'Repeater interval (ms)',
+								host: store,
+								key: 'repeaterIntervalMs',
+							},
+							{
+								min: 10,
+								max: 500,
+								timeoutMs: 200,
+							},
+						)}
+						${SWITCH('Loop', store, 'loop', { supportingText: 'Whether to loop highlight on edges or not.' })}
 					</card-element>
 
 					<card-element headline="Gemini">
-						<div class="flex items-center gap-3">
+						<div class="flex items-center justify-between">
 							You can use Gemini to quickly create new sets.
-							<md-outlined-button
+							<md-gb-button
+								color="outlined"
 								form=""
 								href="https://aistudio.google.com/apikey"
 								target="_blank"
-								>Create key</md-outlined-button
+								>Create key</md-gb-button
 							>
 						</div>
-						<md-filled-text-field
+						<md-gb-text-field
+							color="filled"
 							label="API key"
 							value="${store.geminiApiKey}"
 							type="${this.passwordHidden ? 'password' : 'text'}"
 							autocomplete="off"
 							@input="${(event: Event) => {
 								const target = event.target
-								if (target instanceof MdFilledTextField) {
+								if (target instanceof TextFieldElement) {
 									store.geminiApiKey = (event.target as any).value
 								}
 							}}"
 						>
 							<div slot="trailing-icon">
-								<md-icon-button
+								<md-gb-icon-button
 									toggle
 									form=""
 									@click="${() => (this.passwordHidden = !this.passwordHidden)}"
 								>
-									<md-icon>visibility_off</md-icon>
-									<md-icon slot="selected">visibility</md-icon>
-								</md-icon-button>
+									<md-gb-icon>visibility_off</md-gb-icon>
+									<md-gb-icon slot="selected">visibility</md-gb-icon>
+								</md-gb-icon-button>
 
-								<md-icon-button
+								<md-gb-icon-button
 									form=""
 									@click="${() => {
 										if (store.geminiApiKey) {
@@ -242,43 +250,27 @@ export class SettingsDialog extends LitElement {
 										}
 									}}"
 								>
-									<md-icon>content_copy</md-icon>
-								</md-icon-button>
+									<md-gb-icon>content_copy</md-gb-icon>
+								</md-gb-icon-button>
 							</div>
-						</md-filled-text-field>
-						${store.F.SELECT('Model', 'geminiModel', geminiModels)}
-					</card-element>
-
-					<card-element headline="theme">
-						${renderThemeElements()}
+						</md-gb-text-field>
+						${SELECT('Model', store, 'geminiModel', geminiModels)}
 					</card-element>
 				</div>
 				<form method="dialog" id="form"></form>
 
-				<div slot="actions">
-					<md-text-button form="form" autofocus>Close</md-text-button>
-				</div>
-			</md-dialog>
+				<md-gb-button slot="actions" form="form" autofocus>Close</md-gb-button>
+			</md-gb-dialog>
 		`
 	}
 
-	async show() {
-		if (this.dialog.open) {
-			const dialogClose = new Promise((resolve) => {
-				const resolveCB = () => {
-					resolve(null)
-					this.dialog.removeEventListener('closed', resolveCB)
-				}
-				this.dialog.addEventListener('closed', resolveCB)
-			})
-			this.dialog.close()
-			await dialogClose
-		}
-		this.open = true
+	show() {
+		this.dialog.show()
 	}
 
 	close(returnValue?: string) {
-		return this.dialog.close(returnValue)
+		// return this.dialog.close(returnValue)
+		this.dialog.close()
 	}
 }
 

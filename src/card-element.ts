@@ -1,7 +1,6 @@
-import '@material/web/labs/card/elevated-card.js'
-import {html, LitElement} from 'lit'
-import {withStyles} from 'lit-with-styles'
-import {property} from 'lit/decorators.js'
+import { html, LitElement } from 'lit'
+import { withStyles } from 'lit-with-styles'
+import { property } from 'lit/decorators.js'
 
 @withStyles()
 class CardElement extends LitElement {

@@ -32,13 +32,13 @@ export function TOGGLEBUTTON<T>(
 		>
 			${
 				typeof _options.icon === 'string'
-					? html`<md-icon>${_options.icon}</md-icon>`
+					? html`<md-gb-icon>${_options.icon}</md-gb-icon>`
 					: _options.icon
 			}
 			<div slot="selected">
 				${
 					typeof _options.selectedIcon === 'string'
-						? html`<md-icon>${_options.selectedIcon}</md-icon>`
+						? html`<md-gb-icon>${_options.selectedIcon}</md-gb-icon>`
 						: _options.selectedIcon
 				}
 			</div>

@@ -5,7 +5,6 @@ import {
 	chatGptMediatorOpen,
 	chatGptMediatorUrl,
 	cnrtlUrl,
-	jishoUrl,
 } from '@vdegenne/links'
 import { speakEnglish } from '@vdegenne/speech'
 import { hasSomeJapanese } from 'asian-regexps'
@@ -17,6 +16,7 @@ import { playClick } from '../assets/assets.js'
 import { NEW_LINE } from '../constants.js'
 import { fullscreenElement } from '../fullscreen-element.js'
 import { indexesHistory } from '../indexesHistory.js'
+import { kuromoji } from '../kuromoji/index.js'
 import { Language } from '../lang.js'
 import { toast } from '../snackbar.js'
 import { stateless } from '../stateless.js'
@@ -303,6 +303,8 @@ export class PageMain extends PageElement {
 			</div>
 
 			${fullscreenElement}
+
+			<md-gb-tooltip></md-gb-tooltip>
 
 			<!----> `
 	}
@@ -770,12 +772,14 @@ export class PageMain extends PageElement {
 		}
 	}
 
-	openCNRTLOrJisho() {
+	async openCNRTLOrJisho() {
 		const { highlightContent } = this.highlighter.getInfo()
 		if (highlightContent) {
 			let url: string
 			if (hasSomeJapanese(highlightContent)) {
-				url = jishoUrl(highlightContent)
+				// url = jishoUrl(highlightContent)
+				toast({ message: await kuromoji.toHiragana(highlightContent) })
+				return
 			} else {
 				// url = `https://www.cnrtl.fr/definition/${encodeURIComponent(highlightContent)}`
 				url = cnrtlUrl(highlightContent)

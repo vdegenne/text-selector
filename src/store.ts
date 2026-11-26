@@ -1,10 +1,8 @@
-import { PropertyValues, ReactiveController, state } from '@snar/lit'
-import { FormBuilder } from '@vdegenne/forms'
-import { GeminiModel } from '@vdegenne/gemini'
+import { type PropertyValues, ReactiveController, state } from '@snar/lit'
+import { type GeminiModel } from '@vdegenne/gemini'
 import * as Kokoro from '@vdegenne/kokoro-proxy/core'
 import { hasSomeJapanese } from 'asian-regexps'
 import { saveToLocalStorage } from 'snar-save-to-local-storage'
-import toast from 'toastit'
 import { app } from './app-shell/app-shell.js'
 import { clickAudio } from './assets/assets.js'
 import { availablePages, fontFamily, FontValue, NEW_LINE } from './constants.js'
@@ -12,6 +10,7 @@ import { cleanInput, findSubarray } from './functions.js'
 import { indexesHistory } from './indexesHistory.js'
 import { availableLanguages, Language } from './lang.js'
 import { Page } from './pages/index.js'
+import { toast } from './snackbar.js'
 import { stateless } from './stateless.js'
 import { breakSentence, splitLetters } from './text-logic.js'
 import { EnTTS, FrTTS, JaTTS } from './tts2.js'
@@ -150,8 +149,6 @@ export class AppStore extends ReactiveController {
 	// async getHighlightIndexes() {
 	// 	return this.highlightIndexesHistory[await this.getInputHash()]
 	// }
-
-	F = new FormBuilder(this)
 
 	protected async updated(changed: PropertyValues<this>) {
 		let pagePromise = Promise.resolve()

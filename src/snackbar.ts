@@ -1,4 +1,4 @@
-// import '@material/web/labs/gb/components/snackbar/md-gb-snackbar.js'
+import '@material/web/labs/gb/components/snackbar/md-gb-snackbar.js'
 
 import type { SnackbarElement } from '@material/web/labs/gb/components/snackbar/snackbar-element.js'
 

@@ -1,7 +1,6 @@
 import { hasSomeJapanese } from 'asian-regexps'
 import { app } from './app-shell/app-shell.js'
 import { NEW_LINE } from './constants.js'
-import { geminiTranslate } from './gemini.js'
 import { toast } from './snackbar.js'
 import { store } from './store.js'
 
@@ -83,8 +82,8 @@ export async function translateSelection() {
 	}
 
 	try {
-		const result = await geminiTranslate(content)
-		if (result) toast({ message: result, timeoutMs: 0 })
+		// const result = await geminiTranslate(content)
+		// if (result) toast({ message: result, timeoutMs: 0 })
 	} catch (err) {
 		console.log(err)
 		// toast(err)

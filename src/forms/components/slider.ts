@@ -1,15 +1,26 @@
-import { type MdSlider } from '@material/web/all.js'
+import { type SliderElement } from '@material/web/labs/gb/components/slider/slider-element.js'
 import { Debouncer } from '@vdegenne/debouncer'
-import { html, type TemplateResult } from 'lit'
+import { html, nothing, type TemplateResult } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { createRef, ref } from 'lit/directives/ref.js'
 import { styleMap } from 'lit/directives/style-map.js'
 import { DEFAULT_SHARED_OPTIONS, type SharedOptions } from '../options.js'
 
-export interface SliderOptions extends SharedOptions<MdSlider> {
+export interface SliderOptions extends SharedOptions<SliderElement> {
+	step: number
 	min: number
 	max: number
-	step: number
+
+	/**
+	 * @default xs
+	 */
+	size: 'xs' | 'md' | 'lg'
+
+	/**
+	 * @default undefined
+	 */
+	iconName: string | undefined
+
 	/*
 	 * @default false
 	 */
@@ -27,7 +38,7 @@ export interface SliderOptions extends SharedOptions<MdSlider> {
 	timeoutMs: number
 
 	/**
-	 * @default true
+	 * @default false
 	 */
 	ticks: boolean
 
@@ -35,19 +46,14 @@ export interface SliderOptions extends SharedOptions<MdSlider> {
 	 * @default true
 	 */
 	labeled: boolean
-
-	/**
-	 * Should persist the label or not.
-	 *
-	 * @default false
-	 */
-	persistLabel: boolean
 }
 
 export function SLIDER<T>(
-	label: string | TemplateResult,
-	host: T,
-	key: keyof T,
+	context: {
+		label: string | TemplateResult
+		host: T
+		key: keyof T
+	},
 	options?: Partial<SliderOptions>,
 ) {
 	const _options: SliderOptions = {
@@ -58,19 +64,26 @@ export function SLIDER<T>(
 		range: false,
 		eventType: 'input',
 		timeoutMs: 0,
-		ticks: true,
-		persistLabel: false,
+		ticks: false,
 		labeled: true,
+		size:
+			options.iconName && (!options.size || options.size === 'xs')
+				? 'md'
+				: (options.size ?? 'xs'),
+		iconName: undefined,
 		...options,
 	}
 
-	const sliderRef = createRef<MdSlider>()
+	const sliderRef = createRef<SliderElement>()
 	function assignValues() {
 		const slider = sliderRef.value!
 		if (slider.range) {
-			;(host[key] as [number, number]) = [slider.valueStart, slider.valueEnd]
+			;(context.host[context.key] as [number, number]) = [
+				slider.valueStart,
+				slider.valueEnd,
+			]
 		} else {
-			;(host[key] as number) = slider.value
+			;(context.host[context.key] as number) = slider.value
 		}
 	}
 	const assignValuesDebouncer = new Debouncer(
@@ -89,29 +102,25 @@ export function SLIDER<T>(
 	}
 
 	return html`
-		<div class="flex items-center gap-3 flex-1">
-			${label ? html`<span>${label}</span>` : null}
-			<md-slider
-				?disabled=${_options.disabled}
-				${ref(sliderRef)}
-				?persist-label=${_options.persistLabel}
-				class="flex-1"
-				?ticks=${_options.ticks}
-				?labeled=${_options.labeled}
-				min=${_options.min}
-				max=${_options.max}
-				?range=${_options.range}
-				value-start=${ifDefined(_options.range ? host[key][0] : undefined)}
-				value-end=${ifDefined(_options.range ? host[key][1] : undefined)}
-				value=${ifDefined(!_options.range ? host[key] : undefined)}
-				step=${_options.step}
-				@input=${eventCallBack}
-				@change=${eventCallBack}
-				style=${ifDefined(
-					_options.style ? styleMap(_options.style) : undefined,
-				)}
-			>
-			</md-slider>
-		</div>
+		<md-gb-slider
+			size=${_options.size}
+			?disabled=${_options.disabled}
+			${ref(sliderRef)}
+			class="w-full"
+			?ticks=${_options.ticks}
+			?labeled=${_options.labeled}
+			min=${_options.min}
+			max=${_options.max}
+			?range=${_options.range}
+			value-start=${ifDefined(_options.range ? context.host[context.key][0] : undefined)}
+			value-end=${ifDefined(_options.range ? context.host[context.key][1] : undefined)}
+			value=${ifDefined(!_options.range ? context.host[context.key] : undefined)}
+			step=${_options.step}
+			@input=${eventCallBack}
+			@change=${eventCallBack}
+			style=${ifDefined(_options.style ? styleMap(_options.style) : undefined)}
+		>
+			${_options.iconName ? html`<md-gb-icon slot="icon">${_options.iconName}</md-gb-icon>` : nothing}
+		</md-gb-slider>
 	`
 }

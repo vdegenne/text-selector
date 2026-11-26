@@ -34,7 +34,7 @@ export function CHIPSELECT<T>(
 ) {
 	const _options: ChipSelectOptions = {
 		...DEFAULT_SHARED_OPTIONS,
-		leadingIcon: html`<md-icon>sort</md-icon>`,
+		leadingIcon: html`<md-gb-icon>sort</md-gb-icon>`,
 		displayValues: undefined,
 		elevated: false,
 		...options,
@@ -68,7 +68,9 @@ export function CHIPSELECT<T>(
 				${
 					_options.leadingIcon
 						? typeof _options.leadingIcon === 'string'
-							? html`<md-icon slot="icon">${_options.leadingIcon}</md-icon>`
+							? html`<md-gb-icon slot="icon"
+									>${_options.leadingIcon}</md-gb-icon
+								>`
 							: html`<div slot="icon" style="--md-icon-size:18px;">
 									${_options.leadingIcon}
 								</div>`
@@ -77,9 +79,9 @@ export function CHIPSELECT<T>(
 				<span
 					>${_choices.find(({ item }) => item === host[key])?.displayValue ?? host[key]}</span
 				>
-				<md-icon slot="remove-trailing-icon" style="--md-icon-size:18px;">
+				<md-gb-icon slot="remove-trailing-icon" style="--md-icon-size:18px;">
 					arrow_drop_down
-				</md-icon>
+				</md-gb-icon>
 			</md-filter-chip>
 
 			<md-menu

@@ -1,11 +1,8 @@
-import { MdDialog } from '@material/web/all.js'
-import '@material/web/dialog/dialog.js'
 import { withController } from '@snar/lit'
 import { Debouncer } from '@vdegenne/debouncer'
-import { Kuromoji } from '@vdegenne/kuromoji'
 import { customElement } from 'custom-element-decorator'
 import { SS } from 'html-vision/ss.js'
-import { css, html, LitElement, PropertyValues } from 'lit'
+import { css, html, LitElement, type PropertyValues } from 'lit'
 import { withStyles } from 'lit-with-styles'
 import { property, query, state } from 'lit/decorators.js'
 import { jpsyndexAPI } from './api.js'
@@ -14,9 +11,9 @@ import { getFontSize } from './functions.js'
 import { RemoteInfo, stateless } from './stateless.js'
 import { store } from './store.js'
 
-const kuromoji = new Kuromoji({
-	onProgress(progress) {},
-})
+// TODO: remove when expressive elements are officially released
+import { type DialogElement } from '@mahmoodkhalil/material-web-3-demo/labs/gb/components/dialog/dialog-element.js'
+import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/dialog/md-gb-dialog.js'
 
 @customElement({ name: 'fullscreen-element', inject: true })
 @withStyles(css`
@@ -35,6 +32,9 @@ const kuromoji = new Kuromoji({
 `)
 @withController(store)
 class FullscreenElement extends LitElement {
+	/**
+	 * @deprecated
+	 */
 	@property({ type: Boolean }) open = false
 	@state() input = ''
 	@state() collections: RemoteInfo['collections']
@@ -42,15 +42,14 @@ class FullscreenElement extends LitElement {
 
 	// @state() showHiragana = false
 
-	@query('md-dialog') dialog!: MdDialog
+	@query('md-gb-dialog') dialog!: DialogElement
 
 	protected render() {
 		return html`<!-- -->
-			<md-dialog
+			<md-gb-dialog
 				?quick="${true}"
 				?open="${this.open}"
 				@closed="${() => (this.open = false)}"
-				style="min-width: calc(100vw - 0px); min-height: calc(100vh - 0px); --md-dialog-container-color: var(--md-sys-color-surface-container);"
 			>
 				<div slot="content" class="flex-1 flex flex-col">
 					<div></div>
@@ -70,7 +69,7 @@ class FullscreenElement extends LitElement {
 						>
 					</div>
 					<div class="flex items-center justify-start text-lg gap-2" primary>
-						<md-icon ?invisible="${!this.collections}">verified</md-icon>
+						<md-gb-icon ?invisible="${!this.collections}">verified</md-gb-icon>
 						<div
 							?invisible="${!store.fullScreenShowHiragana}"
 							class="hideable opacity-70"
@@ -82,7 +81,7 @@ class FullscreenElement extends LitElement {
 						</div>
 					</div>
 				</div>
-			</md-dialog>
+			</md-gb-dialog>
 			<!-- -->`
 	}
 
@@ -165,8 +164,9 @@ class FullscreenElement extends LitElement {
 				// 			})
 				// 			.catch(() => {}),
 				(async () => {
-					info.hiragana = await kuromoji.toHiragana(query)
-					// info.hiragana = await convert(query)
+					// TODO: update this?
+					info.hiragana = ''
+					// info.hiragana = await kuromoji.toHiragana(query)
 				})(),
 			)
 		}

@@ -5,6 +5,10 @@ import { createRef, ref } from 'lit/directives/ref.js'
 import { styleMap } from 'lit/directives/style-map.js'
 import { DEFAULT_SHARED_OPTIONS, type SharedOptions } from '../options.js'
 
+// TODO: remove
+import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/select/md-gb-select-option.js'
+import '@mahmoodkhalil/material-web-3-demo/labs/gb/components/select/md-gb-select.js'
+
 export interface SelectOptions extends SharedOptions<MdFilledSelect> {
 	/**
 	 * @default 'popover'
@@ -56,7 +60,7 @@ export function SELECT<T>(
 	}
 
 	return html`
-		<md-filled-select
+		<md-gb-select
 			${ref(_select)}
 			?disabled="${_options.disabled}"
 			quick
@@ -75,7 +79,7 @@ export function SELECT<T>(
 		>
 			${_choices.map(
 				([item, displayValue, index]) => html`
-					<md-select-option
+					<md-gb-select-option
 						?selected="${
 							_options.type === 'number'
 								? host[key] === index
@@ -84,9 +88,9 @@ export function SELECT<T>(
 						value="${item}"
 					>
 						${displayValue}
-					</md-select-option>
+					</md-gb-select-option>
 				`,
 			)}
-		</md-filled-select>
+		</md-gb-select>
 	`
 }
