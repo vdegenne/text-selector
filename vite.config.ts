@@ -9,7 +9,7 @@ const plugins: PluginOption[] = [
 		filename: './dist/stats.html',
 		gzipSize: true,
 		brotliSize: true,
-		open: true,
+		open: false,
 	}),
 	// {
 	// 	name: 'ignore-file-change',
